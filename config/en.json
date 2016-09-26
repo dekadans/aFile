@@ -1,0 +1,13 @@
+{
+    "LOADING" : "Loading...",
+    "LOGIN" : "Sign in",
+    "USERNAME" : "Username",
+    "PASSWORD" : "Password",
+    "LOGIN_FAILED" : "Wrong username or password.",
+
+    "BRAND" : "aFile",
+    "SEARCH" : "Search",
+    "SETTINGS" : "Settings",
+    "LOGOUT" : "Sign out",
+    "HOME" : "Home"
+}

@@ -1,0 +1,217 @@
+	/*
+  	Flaticon icon font: Flaticon
+  	Creation date: 22/06/2016 15:03
+  	*/
+
+@font-face {
+  font-family: "Flaticon";
+  src: url("./Flaticon.eot");
+  src: url("./Flaticon.eot?#iefix") format("embedded-opentype"),
+       url("./Flaticon.woff") format("woff"),
+       url("./Flaticon.ttf") format("truetype"),
+       url("./Flaticon.svg#Flaticon") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+  @font-face {
+    font-family: "Flaticon";
+    src: url("./Flaticon.svg#Flaticon") format("svg");
+  }
+}
+
+[class^="flaticon-"]:before, [class*=" flaticon-"]:before,
+[class^="flaticon-"]:after, [class*=" flaticon-"]:after {
+    font-family: Flaticon;
+    font-size: 40px;
+    font-style: normal;
+}
+
+.flaticon-3dm:before { content: "\f100"; }
+.flaticon-3ds:before { content: "\f101"; }
+.flaticon-3g2:before { content: "\f102"; }
+.flaticon-3gp:before { content: "\f103"; }
+.flaticon-7z:before { content: "\f104"; }
+.flaticon-aac:before { content: "\f105"; }
+.flaticon-ai:before { content: "\f106"; }
+.flaticon-aif:before { content: "\f107"; }
+.flaticon-angel:before { content: "\f108"; }
+.flaticon-apk:before { content: "\f109"; }
+.flaticon-app:before { content: "\f10a"; }
+.flaticon-asf:before { content: "\f10b"; }
+.flaticon-asp:before { content: "\f10c"; }
+.flaticon-aspx:before { content: "\f10d"; }
+.flaticon-asx:before { content: "\f10e"; }
+.flaticon-avi:before { content: "\f10f"; }
+.flaticon-bak:before { content: "\f110"; }
+.flaticon-bat:before { content: "\f111"; }
+.flaticon-bin:before { content: "\f112"; }
+.flaticon-blank:before { content: "\f113"; }
+.flaticon-bmp:before { content: "\f114"; }
+.flaticon-cab:before { content: "\f115"; }
+.flaticon-cad:before { content: "\f116"; }
+.flaticon-cdr:before { content: "\f117"; }
+.flaticon-cer:before { content: "\f118"; }
+.flaticon-cfg:before { content: "\f119"; }
+.flaticon-cfm:before { content: "\f11a"; }
+.flaticon-cgi:before { content: "\f11b"; }
+.flaticon-class:before { content: "\f11c"; }
+.flaticon-com:before { content: "\f11d"; }
+.flaticon-cpl:before { content: "\f11e"; }
+.flaticon-cpp:before { content: "\f11f"; }
+.flaticon-crx:before { content: "\f120"; }
+.flaticon-csr:before { content: "\f121"; }
+.flaticon-css:before { content: "\f122"; }
+.flaticon-csv:before { content: "\f123"; }
+.flaticon-cue:before { content: "\f124"; }
+.flaticon-cur:before { content: "\f125"; }
+.flaticon-dat:before { content: "\f126"; }
+.flaticon-db:before { content: "\f127"; }
+.flaticon-dbf:before { content: "\f128"; }
+.flaticon-dds:before { content: "\f129"; }
+.flaticon-deb:before { content: "\f12a"; }
+.flaticon-dem:before { content: "\f12b"; }
+.flaticon-demon:before { content: "\f12c"; }
+.flaticon-dll:before { content: "\f12d"; }
+.flaticon-dmg:before { content: "\f12e"; }
+.flaticon-dmp:before { content: "\f12f"; }
+.flaticon-doc:before { content: "\f130"; }
+.flaticon-docx:before { content: "\f131"; }
+.flaticon-drv:before { content: "\f132"; }
+.flaticon-dtd:before { content: "\f133"; }
+.flaticon-dwg:before { content: "\f134"; }
+.flaticon-dxf:before { content: "\f135"; }
+.flaticon-elf:before { content: "\f136"; }
+.flaticon-elf-variant:before { content: "\f137"; }
+.flaticon-eml:before { content: "\f138"; }
+.flaticon-eps:before { content: "\f139"; }
+.flaticon-eps-variant:before { content: "\f13a"; }
+.flaticon-exe:before { content: "\f13b"; }
+.flaticon-fla:before { content: "\f13c"; }
+.flaticon-flash:before { content: "\f13d"; }
+.flaticon-flv:before { content: "\f13e"; }
+.flaticon-fnt:before { content: "\f13f"; }
+.flaticon-fon:before { content: "\f140"; }
+.flaticon-gam:before { content: "\f141"; }
+.flaticon-gbr:before { content: "\f142"; }
+.flaticon-ged:before { content: "\f143"; }
+.flaticon-gif:before { content: "\f144"; }
+.flaticon-gpx:before { content: "\f145"; }
+.flaticon-gz:before { content: "\f146"; }
+.flaticon-gzip:before { content: "\f147"; }
+.flaticon-hqz:before { content: "\f148"; }
+.flaticon-html:before { content: "\f149"; }
+.flaticon-ibooks:before { content: "\f14a"; }
+.flaticon-icns:before { content: "\f14b"; }
+.flaticon-ico:before { content: "\f14c"; }
+.flaticon-ics:before { content: "\f14d"; }
+.flaticon-iff:before { content: "\f14e"; }
+.flaticon-indd:before { content: "\f14f"; }
+.flaticon-ipa:before { content: "\f150"; }
+.flaticon-iso:before { content: "\f151"; }
+.flaticon-iso-variant:before { content: "\f152"; }
+.flaticon-jar:before { content: "\f153"; }
+.flaticon-jpg:before { content: "\f154"; }
+.flaticon-js:before { content: "\f155"; }
+.flaticon-jsp:before { content: "\f156"; }
+.flaticon-key:before { content: "\f157"; }
+.flaticon-kml:before { content: "\f158"; }
+.flaticon-kmz:before { content: "\f159"; }
+.flaticon-lnk:before { content: "\f15a"; }
+.flaticon-log:before { content: "\f15b"; }
+.flaticon-lua:before { content: "\f15c"; }
+.flaticon-m3u:before { content: "\f15d"; }
+.flaticon-m4a:before { content: "\f15e"; }
+.flaticon-m4v:before { content: "\f15f"; }
+.flaticon-mach-o-file:before { content: "\f160"; }
+.flaticon-mach-o-file-format:before { content: "\f161"; }
+.flaticon-max:before { content: "\f162"; }
+.flaticon-mdb:before { content: "\f163"; }
+.flaticon-mdf:before { content: "\f164"; }
+.flaticon-mid:before { content: "\f165"; }
+.flaticon-mim:before { content: "\f166"; }
+.flaticon-mov:before { content: "\f167"; }
+.flaticon-mp3:before { content: "\f168"; }
+.flaticon-mp4:before { content: "\f169"; }
+.flaticon-mpa:before { content: "\f16a"; }
+.flaticon-mpg:before { content: "\f16b"; }
+.flaticon-msg-variant:before { content: "\f16c"; }
+.flaticon-msg:before { content: "\f16d"; }
+.flaticon-msi:before { content: "\f16e"; }
+.flaticon-nes:before { content: "\f16f"; }
+.flaticon-obj:before { content: "\f170"; }
+.flaticon-odb:before { content: "\f171"; }
+.flaticon-odc:before { content: "\f172"; }
+.flaticon-odf:before { content: "\f173"; }
+.flaticon-odg:before { content: "\f174"; }
+.flaticon-odi:before { content: "\f175"; }
+.flaticon-odp:before { content: "\f176"; }
+.flaticon-ods:before { content: "\f177"; }
+.flaticon-odt:before { content: "\f178"; }
+.flaticon-odt-variant:before { content: "\f179"; }
+.flaticon-odx:before { content: "\f17a"; }
+.flaticon-ogg:before { content: "\f17b"; }
+.flaticon-otf:before { content: "\f17c"; }
+.flaticon-otf-variant:before { content: "\f17d"; }
+.flaticon-pages:before { content: "\f17e"; }
+.flaticon-pct:before { content: "\f17f"; }
+.flaticon-pdb:before { content: "\f180"; }
+.flaticon-pdf:before { content: "\f181"; }
+.flaticon-pif:before { content: "\f182"; }
+.flaticon-pkg:before { content: "\f183"; }
+.flaticon-pl:before { content: "\f184"; }
+.flaticon-png:before { content: "\f185"; }
+.flaticon-pps:before { content: "\f186"; }
+.flaticon-ppt:before { content: "\f187"; }
+.flaticon-pptx:before { content: "\f188"; }
+.flaticon-ps:before { content: "\f189"; }
+.flaticon-psd:before { content: "\f18a"; }
+.flaticon-pub:before { content: "\f18b"; }
+.flaticon-py:before { content: "\f18c"; }
+.flaticon-ra:before { content: "\f18d"; }
+.flaticon-rar:before { content: "\f18e"; }
+.flaticon-raw:before { content: "\f18f"; }
+.flaticon-rm:before { content: "\f190"; }
+.flaticon-rom:before { content: "\f191"; }
+.flaticon-rom-variant:before { content: "\f192"; }
+.flaticon-rpm:before { content: "\f193"; }
+.flaticon-rss:before { content: "\f194"; }
+.flaticon-rtf:before { content: "\f195"; }
+.flaticon-sav:before { content: "\f196"; }
+.flaticon-sdf:before { content: "\f197"; }
+.flaticon-sitx:before { content: "\f198"; }
+.flaticon-sql:before { content: "\f199"; }
+.flaticon-sql-variant:before { content: "\f19a"; }
+.flaticon-srt:before { content: "\f19b"; }
+.flaticon-svg:before { content: "\f19c"; }
+.flaticon-swf:before { content: "\f19d"; }
+.flaticon-sys:before { content: "\f19e"; }
+.flaticon-tar:before { content: "\f19f"; }
+.flaticon-tex:before { content: "\f1a0"; }
+.flaticon-tga:before { content: "\f1a1"; }
+.flaticon-thm:before { content: "\f1a2"; }
+.flaticon-tiff:before { content: "\f1a3"; }
+.flaticon-tmp:before { content: "\f1a4"; }
+.flaticon-torrent:before { content: "\f1a5"; }
+.flaticon-ttf:before { content: "\f1a6"; }
+.flaticon-txt:before { content: "\f1a7"; }
+.flaticon-uue:before { content: "\f1a8"; }
+.flaticon-vb:before { content: "\f1a9"; }
+.flaticon-vcd:before { content: "\f1aa"; }
+.flaticon-vcf:before { content: "\f1ab"; }
+.flaticon-vob:before { content: "\f1ac"; }
+.flaticon-wav:before { content: "\f1ad"; }
+.flaticon-wma:before { content: "\f1ae"; }
+.flaticon-wmv:before { content: "\f1af"; }
+.flaticon-wpd:before { content: "\f1b0"; }
+.flaticon-wps:before { content: "\f1b1"; }
+.flaticon-wsf:before { content: "\f1b2"; }
+.flaticon-xhtml:before { content: "\f1b3"; }
+.flaticon-xlr:before { content: "\f1b4"; }
+.flaticon-xls:before { content: "\f1b5"; }
+.flaticon-xlsx:before { content: "\f1b6"; }
+.flaticon-xml:before { content: "\f1b7"; }
+.flaticon-yuv:before { content: "\f1b8"; }
+.flaticon-zip:before { content: "\f1b9"; }
+.flaticon-zip-variant:before { content: "\f1ba"; }
