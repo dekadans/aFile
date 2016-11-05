@@ -1,4 +1,4 @@
-html, body {
+html, body, #AppContainer {
     height: 100%;
 }
 
@@ -9,7 +9,7 @@ html, body {
 /* VIEWS */
 
 .view {
-    display: none;
+    /*display: none;*/
 }
 
 #Loading {
