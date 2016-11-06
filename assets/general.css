@@ -12,6 +12,10 @@ html, body, #AppContainer {
     /*display: none;*/
 }
 
+.wrap {
+    display: inline;
+}
+
 #Loading {
     position: fixed;
     top: 0;
@@ -59,7 +63,6 @@ html, body, #AppContainer {
 
 #LoginMessage {
     border-bottom: 1px solid #dddddd;
-    display: none;
 }
 
 #LoginMessage > .alert {

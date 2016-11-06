@@ -12,59 +12,101 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
  * REACT COMPONENTS
  */
 
-var App = function (_React$Component) {
-    _inherits(App, _React$Component);
+var UI = function (_React$Component) {
+    _inherits(UI, _React$Component);
 
-    function App() {
-        _classCallCheck(this, App);
+    function UI() {
+        _classCallCheck(this, UI);
 
-        var _this = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this));
+        var _this = _possibleConstructorReturn(this, (UI.__proto__ || Object.getPrototypeOf(UI)).call(this));
 
         _this.state = {
-            login: false
+            login: false,
+            loading: false,
+            hasChecked: false
         };
 
         _this.check();
         return _this;
     }
 
-    _createClass(App, [{
+    _createClass(UI, [{
         key: 'check',
         value: function check() {
             var _this2 = this;
 
+            //this.setState({loading : true});
             $.getJSON('app/api.php?do=Check', function (data) {
                 APP.init(data);
-                _this2.setState({ login: data.login });
+                _this2.setState({
+                    hasChecked: true,
+                    login: data.login,
+                    loading: false
+                });
             });
         }
     }, {
         key: 'login',
         value: function login(username, password) {
-            console.log(username, password);
+            var _this3 = this;
+
+            if (username.length && password.length) {
+                this.setState({ loading: true });
+
+                $.post('app/api.php?do=Login', { username: username, password: password }, function (data) {
+                    if (data.error) {
+                        _this3.setState({
+                            loading: false,
+                            errorMessage: APP.l[data.error]
+                        });
+                    } else if (data.status == 'ok') {
+                        _this3.check();
+                    }
+                });
+            }
+        }
+    }, {
+        key: 'logout',
+        value: function logout() {
+            var _this4 = this;
+
+            this.setState({ loading: true });
+            $.getJSON('app/api.php?do=Logout', function (data) {
+                _this4.check();
+            });
         }
     }, {
         key: 'render',
         value: function render() {
-            var _this3 = this;
+            var _this5 = this;
 
-            console.log(APP);
-            //this.check();
+            if (!this.state.hasChecked) {
+                return null;
+            }
+
             if (this.state.login) {
                 return React.createElement(
-                    'span',
-                    null,
-                    'inloggad'
+                    'div',
+                    { className: 'wrap' },
+                    React.createElement(Loading, { show: this.state.loading }),
+                    React.createElement(MainScreen, { logout: function logout() {
+                            return _this5.logout();
+                        } })
                 );
             } else {
-                return React.createElement(LoginScreen, { login: function login(username, password) {
-                        return _this3.login(username, password);
-                    } });
+                return React.createElement(
+                    'div',
+                    { className: 'wrap' },
+                    React.createElement(Loading, { show: this.state.loading }),
+                    React.createElement(LoginScreen, { login: function login(username, password) {
+                            return _this5.login(username, password);
+                        }, loginMessage: this.state.errorMessage })
+                );
             }
         }
     }]);
 
-    return App;
+    return UI;
 }(React.Component);
 
 var LoginScreen = function (_React$Component2) {
@@ -73,13 +115,14 @@ var LoginScreen = function (_React$Component2) {
     function LoginScreen(props) {
         _classCallCheck(this, LoginScreen);
 
-        var _this4 = _possibleConstructorReturn(this, (LoginScreen.__proto__ || Object.getPrototypeOf(LoginScreen)).call(this, props));
+        var _this6 = _possibleConstructorReturn(this, (LoginScreen.__proto__ || Object.getPrototypeOf(LoginScreen)).call(this, props));
 
-        _this4.state = { username: '', password: '' };
-        _this4.usernameChange = _this4.usernameChange.bind(_this4);
-        _this4.passwordChange = _this4.passwordChange.bind(_this4);
-        _this4.loginClick = _this4.loginClick.bind(_this4);
-        return _this4;
+        _this6.state = { username: '', password: '' };
+        _this6.usernameChange = _this6.usernameChange.bind(_this6);
+        _this6.passwordChange = _this6.passwordChange.bind(_this6);
+        _this6.inputReturn = _this6.inputReturn.bind(_this6);
+        _this6.loginClick = _this6.loginClick.bind(_this6);
+        return _this6;
     }
 
     _createClass(LoginScreen, [{
@@ -91,6 +134,13 @@ var LoginScreen = function (_React$Component2) {
         key: 'passwordChange',
         value: function passwordChange(e) {
             this.setState({ password: e.target.value });
+        }
+    }, {
+        key: 'inputReturn',
+        value: function inputReturn(e) {
+            if (e.keyCode == 13) {
+                this.loginClick();
+            }
         }
     }, {
         key: 'loginClick',
@@ -115,7 +165,7 @@ var LoginScreen = function (_React$Component2) {
                         { id: 'LoginCenter' },
                         React.createElement(
                             'div',
-                            { id: 'LoginContainer', className: 'col-md-4 col-md-offset-4 col-sm-6 col-sm-offset-3' },
+                            { className: 'col-md-4 col-md-offset-4 col-sm-6 col-sm-offset-3' },
                             React.createElement(
                                 'div',
                                 { className: 'panel panel-default' },
@@ -128,17 +178,9 @@ var LoginScreen = function (_React$Component2) {
                                         APP.l.LOGIN
                                     )
                                 ),
-                                React.createElement(
-                                    'div',
-                                    { className: 'panel-body', id: 'LoginMessage' },
-                                    React.createElement('div', { className: 'alert alert-danger', role: 'alert' })
-                                ),
-                                React.createElement(
-                                    'div',
-                                    { id: 'LoginInputs' },
-                                    React.createElement('input', { type: 'text', id: 'LoginUsername', onChange: this.usernameChange, value: this.state.username, placeholder: APP.l.USERNAME }),
-                                    React.createElement('input', { type: 'password', id: 'LoginPassword', onChange: this.passwordChange, value: this.state.password, placeholder: APP.l.PASSWORD })
-                                ),
+                                React.createElement(LoginMessage, { text: this.props.loginMessage }),
+                                React.createElement('input', { type: 'text', onChange: this.usernameChange, onKeyDown: this.inputReturn, value: this.state.username, placeholder: APP.l.USERNAME }),
+                                React.createElement('input', { type: 'password', onChange: this.passwordChange, onKeyDown: this.inputReturn, value: this.state.password, placeholder: APP.l.PASSWORD }),
                                 React.createElement(
                                     'div',
                                     { className: 'panel-footer' },
@@ -160,6 +202,210 @@ var LoginScreen = function (_React$Component2) {
     return LoginScreen;
 }(React.Component);
 
+var LoginMessage = function (_React$Component3) {
+    _inherits(LoginMessage, _React$Component3);
+
+    function LoginMessage() {
+        _classCallCheck(this, LoginMessage);
+
+        return _possibleConstructorReturn(this, (LoginMessage.__proto__ || Object.getPrototypeOf(LoginMessage)).apply(this, arguments));
+    }
+
+    _createClass(LoginMessage, [{
+        key: 'render',
+        value: function render() {
+            if (this.props.text) {
+                return React.createElement(
+                    'div',
+                    { className: 'panel-body', id: 'LoginMessage' },
+                    React.createElement(
+                        'div',
+                        { className: 'alert alert-danger', role: 'alert' },
+                        this.props.text
+                    )
+                );
+            } else {
+                return null;
+            }
+        }
+    }]);
+
+    return LoginMessage;
+}(React.Component);
+
+var MainScreen = function (_React$Component4) {
+    _inherits(MainScreen, _React$Component4);
+
+    function MainScreen() {
+        _classCallCheck(this, MainScreen);
+
+        return _possibleConstructorReturn(this, (MainScreen.__proto__ || Object.getPrototypeOf(MainScreen)).apply(this, arguments));
+    }
+
+    _createClass(MainScreen, [{
+        key: 'render',
+        value: function render() {
+            return React.createElement(
+                'div',
+                { id: 'Main' },
+                React.createElement(NavBar, { logout: this.props.logout })
+            );
+        }
+    }]);
+
+    return MainScreen;
+}(React.Component);
+
+var NavBar = function (_React$Component5) {
+    _inherits(NavBar, _React$Component5);
+
+    function NavBar(props) {
+        _classCallCheck(this, NavBar);
+
+        return _possibleConstructorReturn(this, (NavBar.__proto__ || Object.getPrototypeOf(NavBar)).call(this, props));
+        //this.logoutClick = this.logoutClick.bind(this);
+    }
+
+    _createClass(NavBar, [{
+        key: 'logoutClick',
+        value: function logoutClick(e) {
+            e.preventDefault();
+            this.props.logout();
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            var _this10 = this;
+
+            return React.createElement(
+                'nav',
+                { className: 'navbar navbar-default navbar-fixed-top' },
+                React.createElement(
+                    'div',
+                    { className: 'container' },
+                    React.createElement(
+                        'div',
+                        { className: 'navbar-header' },
+                        React.createElement(
+                            'button',
+                            { type: 'button', className: 'navbar-toggle collapsed', 'data-toggle': 'collapse', 'data-target': '#test', 'aria-expanded': 'false' },
+                            React.createElement(
+                                'span',
+                                { className: 'sr-only' },
+                                'Toggle navigation'
+                            ),
+                            React.createElement('span', { className: 'icon-bar' }),
+                            React.createElement('span', { className: 'icon-bar' }),
+                            React.createElement('span', { className: 'icon-bar' })
+                        ),
+                        React.createElement(
+                            'a',
+                            { href: '#', className: 'navbar-brand' },
+                            APP.l.BRAND
+                        )
+                    ),
+                    React.createElement(
+                        'div',
+                        { className: 'navbar-collapse collapse', id: 'test', 'aria-expanded': 'true' },
+                        React.createElement(
+                            'ul',
+                            { className: 'nav navbar-nav navbar-right' },
+                            React.createElement(
+                                'li',
+                                null,
+                                React.createElement(
+                                    'a',
+                                    { href: '#' },
+                                    React.createElement('span', { className: 'glyphicon glyphicon-search', 'aria-hidden': 'true' }),
+                                    ' ',
+                                    React.createElement(
+                                        'span',
+                                        { className: 'visible-xs-inline' },
+                                        APP.l.SEARCH
+                                    )
+                                )
+                            ),
+                            React.createElement(
+                                'li',
+                                { className: 'dropdown' },
+                                React.createElement(
+                                    'a',
+                                    { href: '#', className: 'dropdown-toggle', 'data-toggle': 'dropdown', role: 'button', 'aria-haspopup': 'true', 'aria-expanded': 'false' },
+                                    React.createElement('span', { className: 'glyphicon glyphicon-cog', 'aria-hidden': 'true' }),
+                                    ' ',
+                                    React.createElement(
+                                        'span',
+                                        { className: 'visible-xs-inline' },
+                                        APP.l.SETTINGS
+                                    ),
+                                    ' ',
+                                    React.createElement('span', { className: 'caret' })
+                                ),
+                                React.createElement(
+                                    'ul',
+                                    { className: 'dropdown-menu' },
+                                    React.createElement(
+                                        'li',
+                                        null,
+                                        React.createElement(
+                                            'a',
+                                            { href: '#' },
+                                            'Something else here'
+                                        )
+                                    ),
+                                    React.createElement('li', { role: 'separator', className: 'divider' }),
+                                    React.createElement(
+                                        'li',
+                                        null,
+                                        React.createElement(
+                                            'a',
+                                            { href: '#', onClick: function onClick(e) {
+                                                    return _this10.logoutClick(e);
+                                                } },
+                                            React.createElement('span', { className: 'glyphicon glyphicon-log-out', 'aria-hidden': 'true' }),
+                                            ' ',
+                                            APP.l.LOGOUT
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            );
+        }
+    }]);
+
+    return NavBar;
+}(React.Component);
+
+var Loading = function (_React$Component6) {
+    _inherits(Loading, _React$Component6);
+
+    function Loading() {
+        _classCallCheck(this, Loading);
+
+        return _possibleConstructorReturn(this, (Loading.__proto__ || Object.getPrototypeOf(Loading)).apply(this, arguments));
+    }
+
+    _createClass(Loading, [{
+        key: 'render',
+        value: function render() {
+            if (this.props.show) {
+                return React.createElement(
+                    'div',
+                    { id: 'Loading' },
+                    APP.l.LOADING
+                );
+            } else {
+                return null;
+            }
+        }
+    }]);
+
+    return Loading;
+}(React.Component);
+
 /**
  * aFILE CLASS
  */
@@ -169,6 +415,7 @@ var aFile = function () {
         _classCallCheck(this, aFile);
 
         this.l = {};
+        this.path = [];
     }
 
     _createClass(aFile, [{
@@ -187,5 +434,5 @@ var APP = null;
 $(function () {
     APP = new aFile();
 
-    ReactDOM.render(React.createElement(App, null), document.getElementById('AppContainer'));
+    ReactDOM.render(React.createElement(UI, null), document.getElementById('AppContainer'));
 });
