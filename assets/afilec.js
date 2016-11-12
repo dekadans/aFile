@@ -262,6 +262,29 @@ var MainScreen = function (_React$Component4) {
                                 { className: 'col-md-12' },
                                 React.createElement(Breadcrumbs, null)
                             )
+                        ),
+                        React.createElement(
+                            'div',
+                            { className: 'row' },
+                            React.createElement(
+                                'div',
+                                { className: 'col-md-12' },
+                                React.createElement(
+                                    'div',
+                                    { className: 'btn-group' },
+                                    React.createElement(MenuButton, { icon: 'glyphicon-trash' }),
+                                    React.createElement(MenuButton, { icon: 'glyphicon-edit' }),
+                                    React.createElement(MenuButton, { icon: 'glyphicon-share' }),
+                                    React.createElement(MenuButton, { icon: 'glyphicon-download-alt' })
+                                ),
+                                React.createElement(
+                                    'div',
+                                    { className: 'btn-group pull-right' },
+                                    React.createElement(MenuButton, { icon: 'glyphicon-folder-open' }),
+                                    React.createElement(MenuButton, { icon: 'glyphicon-link' }),
+                                    React.createElement(MenuButton, { icon: 'glyphicon-font' })
+                                )
+                            )
                         )
                     )
                 )
@@ -422,8 +445,31 @@ var Breadcrumbs = function (_React$Component6) {
     return Breadcrumbs;
 }(React.Component);
 
-var Loading = function (_React$Component7) {
-    _inherits(Loading, _React$Component7);
+var MenuButton = function (_React$Component7) {
+    _inherits(MenuButton, _React$Component7);
+
+    function MenuButton() {
+        _classCallCheck(this, MenuButton);
+
+        return _possibleConstructorReturn(this, (MenuButton.__proto__ || Object.getPrototypeOf(MenuButton)).apply(this, arguments));
+    }
+
+    _createClass(MenuButton, [{
+        key: 'render',
+        value: function render() {
+            return React.createElement(
+                'button',
+                { type: 'button', className: 'btn btn-default' },
+                React.createElement('span', { className: "glyphicon " + this.props.icon })
+            );
+        }
+    }]);
+
+    return MenuButton;
+}(React.Component);
+
+var Loading = function (_React$Component8) {
+    _inherits(Loading, _React$Component8);
 
     function Loading() {
         _classCallCheck(this, Loading);
@@ -459,6 +505,7 @@ var aFile = function () {
 
         this.l = {};
         this.path = [];
+        this.findDefinedFiletypes();
     }
 
     _createClass(aFile, [{
@@ -466,6 +513,30 @@ var aFile = function () {
         value: function init(checkData) {
             this.l = checkData.language;
             this.siprefix = checkData.siprefix;
+        }
+
+        /**
+         * Find which file extentions that has icons defined for them
+         */
+
+    }, {
+        key: 'findDefinedFiletypes',
+        value: function findDefinedFiletypes() {
+            this.exts = [];
+            for (var i = 0; i < document.styleSheets.length; i++) {
+                var name = document.styleSheets[i].href.split('/').pop();
+                if (name == 'flaticon.css') {
+                    for (var j = 0; j < document.styleSheets[i].rules.length; j++) {
+                        var definition = document.styleSheets[i].rules[j].selectorText;
+                        if (typeof definition != 'undefined') {
+                            if (definition.substring(0, 10) == '.flaticon-') {
+                                var ext = definition.substring(10, definition.search(':'));
+                                this.exts.push(ext);
+                            }
+                        }
+                    }
+                }
+            }
         }
     }]);
 

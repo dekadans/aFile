@@ -158,6 +158,21 @@ class MainScreen extends React.Component {
                                 <Breadcrumbs />
                             </div>
                         </div>
+                        <div className="row">
+                            <div className="col-md-12">
+                                <div className="btn-group">
+                                    <MenuButton icon="glyphicon-trash" />
+                                    <MenuButton icon="glyphicon-edit" />
+                                    <MenuButton icon="glyphicon-share" />
+                                    <MenuButton icon="glyphicon-download-alt" />
+                                </div>
+                                <div className="btn-group pull-right">
+                                    <MenuButton icon="glyphicon-folder-open" />
+                                    <MenuButton icon="glyphicon-link" />
+                                    <MenuButton icon="glyphicon-font" />
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -225,7 +240,7 @@ class Breadcrumbs extends React.Component {
 class MenuButton extends React.Component {
     render() {
         return (
-            <button type="button" className="btn btn-default"><span className="glyphicon glyphicon-trash"></span></button>
+            <button type="button" className="btn btn-default"><span className={"glyphicon " + this.props.icon}></span></button>
         );
     }
 }
@@ -251,11 +266,33 @@ class aFile {
     constructor() {
         this.l = {};
         this.path = [];
+        this.findDefinedFiletypes();
     }
 
     init(checkData) {
         this.l = checkData.language;
         this.siprefix = checkData.siprefix;
+    }
+
+    /**
+     * Find which file extentions that has icons defined for them
+     */
+    findDefinedFiletypes() {
+        this.exts = [];
+        for (var i = 0; i < document.styleSheets.length; i++) {
+            var name = document.styleSheets[i].href.split('/').pop();
+            if (name == 'flaticon.css') {
+                for (var j = 0; j < document.styleSheets[i].rules.length; j++) {
+                    var definition = document.styleSheets[i].rules[j].selectorText;
+                    if (typeof definition != 'undefined') {
+                        if (definition.substring(0,10) == '.flaticon-') {
+                            var ext = definition.substring(10, definition.search(':'));
+                            this.exts.push(ext);
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 
