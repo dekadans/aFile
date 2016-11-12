@@ -35,7 +35,6 @@ var UI = function (_React$Component) {
         value: function check() {
             var _this2 = this;
 
-            //this.setState({loading : true});
             $.getJSON('app/api.php?do=Check', function (data) {
                 APP.init(data);
                 _this2.setState({
@@ -156,7 +155,7 @@ var LoginScreen = function (_React$Component2) {
         value: function render() {
             return React.createElement(
                 'div',
-                { id: 'Login', className: 'view' },
+                { id: 'Login' },
                 React.createElement(
                     'div',
                     { id: 'LoginSplash' },
@@ -248,7 +247,24 @@ var MainScreen = function (_React$Component4) {
             return React.createElement(
                 'div',
                 { id: 'Main' },
-                React.createElement(NavBar, { logout: this.props.logout })
+                React.createElement(NavBar, { logout: this.props.logout }),
+                React.createElement(
+                    'div',
+                    { id: 'Menu' },
+                    React.createElement(
+                        'div',
+                        { className: 'container' },
+                        React.createElement(
+                            'div',
+                            { className: 'row' },
+                            React.createElement(
+                                'div',
+                                { className: 'col-md-12' },
+                                React.createElement(Breadcrumbs, null)
+                            )
+                        )
+                    )
+                )
             );
         }
     }]);
@@ -379,8 +395,35 @@ var NavBar = function (_React$Component5) {
     return NavBar;
 }(React.Component);
 
-var Loading = function (_React$Component6) {
-    _inherits(Loading, _React$Component6);
+var Breadcrumbs = function (_React$Component6) {
+    _inherits(Breadcrumbs, _React$Component6);
+
+    function Breadcrumbs() {
+        _classCallCheck(this, Breadcrumbs);
+
+        return _possibleConstructorReturn(this, (Breadcrumbs.__proto__ || Object.getPrototypeOf(Breadcrumbs)).apply(this, arguments));
+    }
+
+    _createClass(Breadcrumbs, [{
+        key: 'render',
+        value: function render() {
+            return React.createElement(
+                'ol',
+                { className: 'breadcrumb' },
+                React.createElement(
+                    'li',
+                    null,
+                    APP.l.HOME
+                )
+            );
+        }
+    }]);
+
+    return Breadcrumbs;
+}(React.Component);
+
+var Loading = function (_React$Component7) {
+    _inherits(Loading, _React$Component7);
 
     function Loading() {
         _classCallCheck(this, Loading);

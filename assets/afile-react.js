@@ -107,7 +107,7 @@ class LoginScreen extends React.Component {
 
     render() {
         return (
-            <div id="Login" className="view">
+            <div id="Login">
                 <div id="LoginSplash">
                     <div id="LoginCenter">
                         <div className="col-md-4 col-md-offset-4 col-sm-6 col-sm-offset-3">
@@ -151,6 +151,15 @@ class MainScreen extends React.Component {
         return (
             <div id="Main">
                 <NavBar logout={this.props.logout} />
+                <div id="Menu">
+                    <div className="container">
+                        <div className="row">
+                            <div className="col-md-12">
+                                <Breadcrumbs />
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         );
     }
@@ -199,6 +208,24 @@ class NavBar extends React.Component {
                     </div>
                 </div>
             </nav>
+        );
+    }
+}
+
+class Breadcrumbs extends React.Component {
+    render() {
+        return (
+            <ol className="breadcrumb">
+                <li>{APP.l.HOME}</li>
+            </ol>
+        );
+    }
+}
+
+class MenuButton extends React.Component {
+    render() {
+        return (
+            <button type="button" className="btn btn-default"><span className="glyphicon glyphicon-trash"></span></button>
         );
     }
 }
