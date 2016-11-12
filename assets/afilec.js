@@ -22,6 +22,7 @@ var UI = function (_React$Component) {
 
         _this.state = {
             login: false,
+            loginMessage: '',
             loading: false,
             hasChecked: false
         };
@@ -40,7 +41,8 @@ var UI = function (_React$Component) {
                 _this2.setState({
                     hasChecked: true,
                     login: data.login,
-                    loading: false
+                    loading: false,
+                    loginMessage: ''
                 });
             });
         }
@@ -56,7 +58,7 @@ var UI = function (_React$Component) {
                     if (data.error) {
                         _this3.setState({
                             loading: false,
-                            errorMessage: APP.l[data.error]
+                            loginMessage: APP.l[data.error]
                         });
                     } else if (data.status == 'ok') {
                         _this3.check();
@@ -99,7 +101,7 @@ var UI = function (_React$Component) {
                     React.createElement(Loading, { show: this.state.loading }),
                     React.createElement(LoginScreen, { login: function login(username, password) {
                             return _this5.login(username, password);
-                        }, loginMessage: this.state.errorMessage })
+                        }, loginMessage: this.state.loginMessage })
                 );
             }
         }
@@ -286,6 +288,11 @@ var MainScreen = function (_React$Component4) {
                                 )
                             )
                         )
+                    ),
+                    React.createElement(
+                        'div',
+                        { className: 'container' },
+                        React.createElement(FileList, null)
                     )
                 )
             );
@@ -468,8 +475,27 @@ var MenuButton = function (_React$Component7) {
     return MenuButton;
 }(React.Component);
 
-var Loading = function (_React$Component8) {
-    _inherits(Loading, _React$Component8);
+var FileList = function (_React$Component8) {
+    _inherits(FileList, _React$Component8);
+
+    function FileList() {
+        _classCallCheck(this, FileList);
+
+        return _possibleConstructorReturn(this, (FileList.__proto__ || Object.getPrototypeOf(FileList)).apply(this, arguments));
+    }
+
+    _createClass(FileList, [{
+        key: 'render',
+        value: function render() {
+            return React.createElement('table', { id: 'List' });
+        }
+    }]);
+
+    return FileList;
+}(React.Component);
+
+var Loading = function (_React$Component9) {
+    _inherits(Loading, _React$Component9);
 
     function Loading() {
         _classCallCheck(this, Loading);

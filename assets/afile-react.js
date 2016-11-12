@@ -7,6 +7,7 @@ class UI extends React.Component {
         super();
         this.state = {
             login : false,
+            loginMessage : '',
             loading : false,
             hasChecked : false
         };
@@ -20,7 +21,8 @@ class UI extends React.Component {
             this.setState({
                 hasChecked : true,
                 login : data.login,
-                loading : false
+                loading : false,
+                loginMessage : ''
             });
         });
     }
@@ -33,7 +35,7 @@ class UI extends React.Component {
                 if (data.error) {
                     this.setState({
                         loading : false,
-                        errorMessage : APP.l[data.error]
+                        loginMessage : APP.l[data.error]
                     });
                 }
                 else if (data.status == 'ok') {
@@ -67,7 +69,7 @@ class UI extends React.Component {
             return (
                 <div className="wrap">
                     <Loading show={this.state.loading} />
-                    <LoginScreen login={(username, password) => this.login(username, password)} loginMessage={this.state.errorMessage} />
+                    <LoginScreen login={(username, password) => this.login(username, password)} loginMessage={this.state.loginMessage} />
                 </div>
             );
         }
@@ -174,6 +176,9 @@ class MainScreen extends React.Component {
                             </div>
                         </div>
                     </div>
+                    <div className="container">
+                        <FileList />
+                    </div>
                 </div>
             </div>
         );
@@ -241,6 +246,15 @@ class MenuButton extends React.Component {
     render() {
         return (
             <button type="button" className="btn btn-default"><span className={"glyphicon " + this.props.icon}></span></button>
+        );
+    }
+}
+
+class FileList extends React.Component {
+    render() {
+        return (
+            <table id="List">
+            </table>
         );
     }
 }
