@@ -149,6 +149,26 @@ class LoginMessage extends React.Component {
 }
 
 class MainScreen extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            files : [],
+            path : []
+        };
+
+        this.fetch();
+    }
+
+    fetch() {
+        var path = '/' + this.state.path.join('/');
+        path = btoa(path);
+        $.getJSON('app/api.php',{do : 'ListFiles', location : path}, data => {
+            this.setState({
+                files : data
+            });
+        });
+    }
+
     render () {
         return (
             <div id="Main">
@@ -176,9 +196,9 @@ class MainScreen extends React.Component {
                             </div>
                         </div>
                     </div>
-                    <div className="container">
-                        <FileList />
-                    </div>
+                </div>
+                <div className="container">
+                    <FileList files={this.state.files} />
                 </div>
             </div>
         );
@@ -252,9 +272,36 @@ class MenuButton extends React.Component {
 
 class FileList extends React.Component {
     render() {
+        var fileJSX = [];
+
+        for (var i = 0; i < this.props.files.length; i++) {
+            fileJSX.push(<File fileinfo={this.props.files[i]} key={i} />);
+        }
+        
         return (
             <table id="List">
+                <tbody>
+                    {fileJSX}
+                </tbody>
             </table>
+        );
+    }
+}
+
+class File extends React.Component {
+    render() {
+        var ext = this.props.fileinfo.name.split('.').pop();
+        if (APP.exts.indexOf(ext) == -1) {
+            ext = 'blank';
+        }
+
+        return (
+            <tr className="listItem">
+                <td><span className={"flaticon-" + ext}></span></td>
+                <td>{this.props.fileinfo.name}</td>
+                <td>{APP.humanFileSize(this.props.fileinfo.size)}</td>
+                <td>{this.props.fileinfo.last_edit}</td>
+            </tr>
         );
     }
 }
@@ -307,6 +354,24 @@ class aFile {
                 }
             }
         }
+    }
+
+    humanFileSize(bytes) {
+        var si = this.siprefix == '1' ? true : false;
+
+        var thresh = si ? 1000 : 1024;
+        if(Math.abs(bytes) < thresh) {
+            return bytes + ' B';
+        }
+        var units = si
+            ? ['kB','MB','GB','TB','PB','EB','ZB','YB']
+            : ['KiB','MiB','GiB','TiB','PiB','EiB','ZiB','YiB'];
+        var u = -1;
+        do {
+            bytes /= thresh;
+            ++u;
+        } while(Math.abs(bytes) >= thresh && u < units.length - 1);
+        return bytes.toFixed(1)+' '+units[u];
     }
 }
 

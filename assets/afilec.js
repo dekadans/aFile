@@ -237,13 +237,34 @@ var LoginMessage = function (_React$Component3) {
 var MainScreen = function (_React$Component4) {
     _inherits(MainScreen, _React$Component4);
 
-    function MainScreen() {
+    function MainScreen(props) {
         _classCallCheck(this, MainScreen);
 
-        return _possibleConstructorReturn(this, (MainScreen.__proto__ || Object.getPrototypeOf(MainScreen)).apply(this, arguments));
+        var _this8 = _possibleConstructorReturn(this, (MainScreen.__proto__ || Object.getPrototypeOf(MainScreen)).call(this, props));
+
+        _this8.state = {
+            files: [],
+            path: []
+        };
+
+        _this8.fetch();
+        return _this8;
     }
 
     _createClass(MainScreen, [{
+        key: 'fetch',
+        value: function fetch() {
+            var _this9 = this;
+
+            var path = '/' + this.state.path.join('/');
+            path = btoa(path);
+            $.getJSON('app/api.php', { do: 'ListFiles', location: path }, function (data) {
+                _this9.setState({
+                    files: data
+                });
+            });
+        }
+    }, {
         key: 'render',
         value: function render() {
             return React.createElement(
@@ -288,12 +309,12 @@ var MainScreen = function (_React$Component4) {
                                 )
                             )
                         )
-                    ),
-                    React.createElement(
-                        'div',
-                        { className: 'container' },
-                        React.createElement(FileList, null)
                     )
+                ),
+                React.createElement(
+                    'div',
+                    { className: 'container' },
+                    React.createElement(FileList, { files: this.state.files })
                 )
             );
         }
@@ -321,7 +342,7 @@ var NavBar = function (_React$Component5) {
     }, {
         key: 'render',
         value: function render() {
-            var _this10 = this;
+            var _this11 = this;
 
             return React.createElement(
                 'nav',
@@ -406,7 +427,7 @@ var NavBar = function (_React$Component5) {
                                         React.createElement(
                                             'a',
                                             { href: '#', onClick: function onClick(e) {
-                                                    return _this10.logoutClick(e);
+                                                    return _this11.logoutClick(e);
                                                 } },
                                             React.createElement('span', { className: 'glyphicon glyphicon-log-out', 'aria-hidden': 'true' }),
                                             ' ',
@@ -487,15 +508,76 @@ var FileList = function (_React$Component8) {
     _createClass(FileList, [{
         key: 'render',
         value: function render() {
-            return React.createElement('table', { id: 'List' });
+            var fileJSX = [];
+
+            for (var i = 0; i < this.props.files.length; i++) {
+                fileJSX.push(React.createElement(File, { fileinfo: this.props.files[i], key: i }));
+            }
+
+            return React.createElement(
+                'table',
+                { id: 'List' },
+                React.createElement(
+                    'tbody',
+                    null,
+                    fileJSX
+                )
+            );
         }
     }]);
 
     return FileList;
 }(React.Component);
 
-var Loading = function (_React$Component9) {
-    _inherits(Loading, _React$Component9);
+var File = function (_React$Component9) {
+    _inherits(File, _React$Component9);
+
+    function File() {
+        _classCallCheck(this, File);
+
+        return _possibleConstructorReturn(this, (File.__proto__ || Object.getPrototypeOf(File)).apply(this, arguments));
+    }
+
+    _createClass(File, [{
+        key: 'render',
+        value: function render() {
+            var ext = this.props.fileinfo.name.split('.').pop();
+            if (APP.exts.indexOf(ext) == -1) {
+                ext = 'blank';
+            }
+
+            return React.createElement(
+                'tr',
+                { className: 'listItem' },
+                React.createElement(
+                    'td',
+                    null,
+                    React.createElement('span', { className: "flaticon-" + ext })
+                ),
+                React.createElement(
+                    'td',
+                    null,
+                    this.props.fileinfo.name
+                ),
+                React.createElement(
+                    'td',
+                    null,
+                    APP.humanFileSize(this.props.fileinfo.size)
+                ),
+                React.createElement(
+                    'td',
+                    null,
+                    this.props.fileinfo.last_edit
+                )
+            );
+        }
+    }]);
+
+    return File;
+}(React.Component);
+
+var Loading = function (_React$Component10) {
+    _inherits(Loading, _React$Component10);
 
     function Loading() {
         _classCallCheck(this, Loading);
@@ -563,6 +645,23 @@ var aFile = function () {
                     }
                 }
             }
+        }
+    }, {
+        key: 'humanFileSize',
+        value: function humanFileSize(bytes) {
+            var si = this.siprefix == '1' ? true : false;
+
+            var thresh = si ? 1000 : 1024;
+            if (Math.abs(bytes) < thresh) {
+                return bytes + ' B';
+            }
+            var units = si ? ['kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'] : ['KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB'];
+            var u = -1;
+            do {
+                bytes /= thresh;
+                ++u;
+            } while (Math.abs(bytes) >= thresh && u < units.length - 1);
+            return bytes.toFixed(1) + ' ' + units[u];
         }
     }]);
 
