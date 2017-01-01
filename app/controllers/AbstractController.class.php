@@ -1,6 +1,6 @@
 <?php
 
-namespace app\controllers;
+namespace controllers;
 
 abstract class AbstractController {
     const ACCESS_OPEN = 0;

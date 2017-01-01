@@ -1,6 +1,6 @@
 <?php
 
-namespace app\lib;
+namespace lib;
 
 class Registry {
     public static $storage;

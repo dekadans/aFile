@@ -1,6 +1,6 @@
 <?php
 
-namespace app\controllers;
+namespace controllers;
 
 class Logout extends AbstractController {
     public function getAccessLevel() {
@@ -11,7 +11,7 @@ class Logout extends AbstractController {
         unset($_SESSION['aFile_User']);
         unset($_SESSION['aFile_User_Key']);
         session_regenerate_id();
-        
+
         $this->outputJSON([
             'status' => 'ok'
         ]);

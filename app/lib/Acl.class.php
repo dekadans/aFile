@@ -1,6 +1,6 @@
 <?php
 
-namespace app\lib;
+namespace lib;
 
 class Acl {
 
@@ -10,18 +10,18 @@ class Acl {
      * @param  AbstractController $controller
      * @return boolean
      */
-    public static function checkAccess(\app\controllers\AbstractController $controller) {
+    public static function checkAccess(\controllers\AbstractController $controller) {
         switch ($controller->getAccessLevel()) {
-            case \app\controllers\AbstractController::ACCESS_OPEN:
+            case \controllers\AbstractController::ACCESS_OPEN:
                 return true;
-            case \app\controllers\AbstractController::ACCESS_LOGIN:
+            case \controllers\AbstractController::ACCESS_LOGIN:
                 if (Registry::get('user')) {
                     return true;
                 }
                 else {
                     return false;
                 }
-            case \app\controllers\AbstractController::ACCESS_ADMIN:
+            case \controllers\AbstractController::ACCESS_ADMIN:
                 if (Registry::get('user') && Registry::get('user')->getType() == 'ADMIN') {
                     return true;
                 }

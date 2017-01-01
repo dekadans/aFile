@@ -1,6 +1,6 @@
 <?php
 
-namespace app\lib;
+namespace lib;
 
 class File {
     protected $id;

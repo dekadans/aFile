@@ -1,6 +1,6 @@
 <?php
 
-namespace app\controllers;
+namespace controllers;
 
 class ListFiles extends AbstractController {
     public function getAccessLevel() {
@@ -14,7 +14,7 @@ class ListFiles extends AbstractController {
             $location = base64_encode('/');
         }
 
-        $list = new \app\lib\FileList(\app\lib\Registry::get('user'), $location);
+        $list = new \lib\FileList(\lib\Registry::get('user'), $location);
         $this->outputJSON($list->run());
     }
 }

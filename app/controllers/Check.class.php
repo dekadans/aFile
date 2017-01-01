@@ -1,8 +1,8 @@
 <?php
 
-namespace app\controllers;
+namespace controllers;
 
-use \app\lib\Registry;
+use \lib\Registry;
 
 class Check extends AbstractController {
     public function getAccessLevel() {
@@ -24,9 +24,9 @@ class Check extends AbstractController {
             $info['login'] = false;
         }
 
-        $info['siprefix'] = \app\lib\Registry::get('config')->presentation->siprefix;
+        $info['siprefix'] = Registry::get('config')->presentation->siprefix;
 
-        $languagePath = __DIR__ . '/../../config/' . \app\lib\Registry::get('config')->language . '.json';
+        $languagePath = __DIR__ . '/../../config/' . Registry::get('config')->language . '.json';
         $languageFile = file_get_contents($languagePath);
         $languageFile = json_decode($languageFile, true);
 
