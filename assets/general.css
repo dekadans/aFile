@@ -95,6 +95,7 @@ html, body, #AppContainer {
 
 .listItem {
     border-bottom: 1px solid #dddddd;
+    cursor:pointer;
 }
 
 .listItem > td:nth-child(2) {
@@ -103,6 +104,10 @@ html, body, #AppContainer {
 
 .listItem > td:last-child {
     text-align: right;
+}
+
+.listItemActive {
+    background-color: #dddddd;
 }
 
 /* MISC */

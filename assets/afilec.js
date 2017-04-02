@@ -23,7 +23,12 @@ var FileList = function (_React$Component) {
             var fileJSX = [];
 
             for (var i = 0; i < this.props.files.length; i++) {
-                fileJSX.push(React.createElement(File, { fileinfo: this.props.files[i], key: i }));
+                if (this.props.activeFile == i) {
+                    var active = true;
+                } else {
+                    var active = false;
+                }
+                fileJSX.push(React.createElement(File, { fileinfo: this.props.files[i], key: i, index: i, active: active, fileCallback: this.props.fileCallback }));
             }
 
             return React.createElement(
@@ -44,13 +49,26 @@ var FileList = function (_React$Component) {
 var File = function (_React$Component2) {
     _inherits(File, _React$Component2);
 
-    function File() {
+    function File(props) {
         _classCallCheck(this, File);
 
-        return _possibleConstructorReturn(this, (File.__proto__ || Object.getPrototypeOf(File)).apply(this, arguments));
+        var _this2 = _possibleConstructorReturn(this, (File.__proto__ || Object.getPrototypeOf(File)).call(this, props));
+
+        _this2.fileClick = _this2.fileClick.bind(_this2);
+        return _this2;
     }
 
     _createClass(File, [{
+        key: 'fileClick',
+        value: function fileClick() {
+            if (this.props.active) {
+                this.props.fileCallback(-1);
+                return;
+            }
+
+            this.props.fileCallback(this.props.index);
+        }
+    }, {
         key: 'render',
         value: function render() {
             var ext = this.props.fileinfo.name.split('.').pop();
@@ -58,9 +76,15 @@ var File = function (_React$Component2) {
                 ext = 'blank';
             }
 
+            var classes = 'listItem';
+
+            if (this.props.active) {
+                classes += ' listItemActive';
+            }
+
             return React.createElement(
                 'tr',
-                { className: 'listItem' },
+                { className: classes, onClick: this.fileClick },
                 React.createElement(
                     'td',
                     null,
@@ -316,9 +340,13 @@ var MainScreen = function (_React$Component) {
 
         var _this = _possibleConstructorReturn(this, (MainScreen.__proto__ || Object.getPrototypeOf(MainScreen)).call(this, props));
 
+        _this.setActiveFile = _this.setActiveFile.bind(_this);
+        _this.drag = _this.drag.bind(_this);
+        _this.dropFile = _this.dropFile.bind(_this);
         _this.state = {
             files: [],
-            path: []
+            path: [],
+            activeFile: -1
         };
 
         _this.fetch();
@@ -339,11 +367,62 @@ var MainScreen = function (_React$Component) {
             });
         }
     }, {
+        key: 'setActiveFile',
+        value: function setActiveFile(index) {
+            this.setState({
+                activeFile: index
+            });
+        }
+    }, {
+        key: 'drag',
+        value: function drag(event) {
+            // Split this and do more stuff
+            event.preventDefault();
+            event.stopPropagation();
+        }
+    }, {
+        key: 'dropFile',
+        value: function dropFile(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            var filesToUpload = event.dataTransfer.files;
+
+            var ajaxData = new FormData();
+
+            if (filesToUpload) {
+                $.each(filesToUpload, function (i, file) {
+                    ajaxData.append('fileinput', file);
+                });
+            }
+
+            var path = '/' + this.state.path.join('/');
+            path = btoa(path);
+
+            $.ajax({
+                url: 'app/api.php?do=Upload&location=' + path,
+                type: 'POST',
+                data: ajaxData,
+                dataType: 'json',
+                cache: false,
+                contentType: false,
+                processData: false,
+                complete: function complete() {
+                    console.log('complete');
+                },
+                success: function success(data) {
+                    console.log('success');
+                },
+                error: function error() {
+                    console.log('error');
+                }
+            });
+        }
+    }, {
         key: 'render',
         value: function render() {
             return React.createElement(
                 'div',
-                { id: 'Main' },
+                { id: 'Main', onDragStart: this.drag, onDragEnter: this.drag, onDragOver: this.drag, onDragLeave: this.drag, onDrop: this.dropFile },
                 React.createElement(NavBar, { logout: this.props.logout }),
                 React.createElement(
                     'div',
@@ -369,10 +448,10 @@ var MainScreen = function (_React$Component) {
                                 React.createElement(
                                     'div',
                                     { className: 'btn-group' },
-                                    React.createElement(MenuButton, { icon: 'glyphicon-trash' }),
-                                    React.createElement(MenuButton, { icon: 'glyphicon-edit' }),
-                                    React.createElement(MenuButton, { icon: 'glyphicon-share' }),
-                                    React.createElement(MenuButton, { icon: 'glyphicon-download-alt' })
+                                    React.createElement(MenuButton, { icon: 'glyphicon-trash', action: 'DELETE', files: this.state.files, activeFile: this.state.activeFile }),
+                                    React.createElement(MenuButton, { icon: 'glyphicon-edit', action: 'EDIT', files: this.state.files, activeFile: this.state.activeFile }),
+                                    React.createElement(MenuButton, { icon: 'glyphicon-share', action: 'SHARE', files: this.state.files, activeFile: this.state.activeFile }),
+                                    React.createElement(MenuButton, { icon: 'glyphicon-download-alt', action: 'DOWNLOAD', files: this.state.files, activeFile: this.state.activeFile })
                                 ),
                                 React.createElement(
                                     'div',
@@ -388,7 +467,7 @@ var MainScreen = function (_React$Component) {
                 React.createElement(
                     'div',
                     { className: 'container' },
-                    React.createElement(FileList, { files: this.state.files })
+                    React.createElement(FileList, { files: this.state.files, activeFile: this.state.activeFile, fileCallback: this.setActiveFile })
                 )
             );
         }
@@ -550,18 +629,34 @@ var Breadcrumbs = function (_React$Component3) {
 var MenuButton = function (_React$Component4) {
     _inherits(MenuButton, _React$Component4);
 
-    function MenuButton() {
+    function MenuButton(props) {
         _classCallCheck(this, MenuButton);
 
-        return _possibleConstructorReturn(this, (MenuButton.__proto__ || Object.getPrototypeOf(MenuButton)).apply(this, arguments));
+        var _this6 = _possibleConstructorReturn(this, (MenuButton.__proto__ || Object.getPrototypeOf(MenuButton)).call(this, props));
+
+        _this6.buttonClick = _this6.buttonClick.bind(_this6);
+        return _this6;
     }
 
     _createClass(MenuButton, [{
+        key: 'buttonClick',
+        value: function buttonClick() {
+            if (this.props.activeFile > -1) {
+                console.log(this.props.action + ' ' + this.props.files[this.props.activeFile]['name']);
+            }
+        }
+    }, {
         key: 'render',
         value: function render() {
+            var disabled = false;
+
+            if (this.props.activeFile && this.props.activeFile === -1) {
+                var disabled = true;
+            }
+
             return React.createElement(
                 'button',
-                { type: 'button', className: 'btn btn-default' },
+                { type: 'button', onClick: this.buttonClick, disabled: disabled, className: 'btn btn-default' },
                 React.createElement('span', { className: "glyphicon " + this.props.icon })
             );
         }

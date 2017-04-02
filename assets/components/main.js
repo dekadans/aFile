@@ -1,9 +1,13 @@
 class MainScreen extends React.Component {
     constructor(props) {
         super(props);
+        this.setActiveFile = this.setActiveFile.bind(this);
+        this.drag = this.drag.bind(this);
+        this.dropFile = this.dropFile.bind(this);
         this.state = {
             files : [],
-            path : []
+            path : [],
+            activeFile : -1
         };
 
         this.fetch();
@@ -19,9 +23,57 @@ class MainScreen extends React.Component {
         });
     }
 
+    setActiveFile(index) {
+        this.setState({
+            activeFile : index
+        });
+    }
+
+    drag(event) {
+        // Split this and do more stuff
+        event.preventDefault();
+        event.stopPropagation();
+    }
+
+    dropFile(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        var filesToUpload = event.dataTransfer.files;
+
+        var ajaxData = new FormData();
+
+        if (filesToUpload) {
+            $.each( filesToUpload, function(i, file) {
+                ajaxData.append('fileinput', file );
+            });
+        }
+
+        var path = '/' + this.state.path.join('/');
+        path = btoa(path);
+
+        $.ajax({
+            url: 'app/api.php?do=Upload&location=' + path,
+            type: 'POST',
+            data: ajaxData,
+            dataType: 'json',
+            cache: false,
+            contentType: false,
+            processData: false,
+            complete: function() {
+                console.log('complete');
+            },
+            success: function(data) {
+                console.log('success');
+            },
+            error: function() {
+                console.log('error');
+            }
+        });
+    }
+
     render () {
         return (
-            <div id="Main">
+            <div id="Main" onDragStart={this.drag} onDragEnter={this.drag} onDragOver={this.drag} onDragLeave={this.drag} onDrop={this.dropFile}>
                 <NavBar logout={this.props.logout} />
                 <div id="Menu">
                     <div className="container">
@@ -33,10 +85,10 @@ class MainScreen extends React.Component {
                         <div className="row">
                             <div className="col-md-12">
                                 <div className="btn-group">
-                                    <MenuButton icon="glyphicon-trash" />
-                                    <MenuButton icon="glyphicon-edit" />
-                                    <MenuButton icon="glyphicon-share" />
-                                    <MenuButton icon="glyphicon-download-alt" />
+                                    <MenuButton icon="glyphicon-trash" action="DELETE" files={this.state.files} activeFile={this.state.activeFile} />
+                                    <MenuButton icon="glyphicon-edit" action="EDIT" files={this.state.files} activeFile={this.state.activeFile} />
+                                    <MenuButton icon="glyphicon-share" action="SHARE" files={this.state.files} activeFile={this.state.activeFile} />
+                                    <MenuButton icon="glyphicon-download-alt" action="DOWNLOAD" files={this.state.files} activeFile={this.state.activeFile} />
                                 </div>
                                 <div className="btn-group pull-right">
                                     <MenuButton icon="glyphicon-folder-open" />
@@ -48,7 +100,7 @@ class MainScreen extends React.Component {
                     </div>
                 </div>
                 <div className="container">
-                    <FileList files={this.state.files} />
+                    <FileList files={this.state.files} activeFile={this.state.activeFile} fileCallback={this.setActiveFile} />
                 </div>
             </div>
         );
@@ -113,9 +165,26 @@ class Breadcrumbs extends React.Component {
 }
 
 class MenuButton extends React.Component {
+    constructor(props) {
+        super(props);
+        this.buttonClick = this.buttonClick.bind(this);
+    }
+
+    buttonClick() {
+        if (this.props.activeFile > -1) {
+            console.log(this.props.action + ' ' + this.props.files[this.props.activeFile]['name']);
+        }
+    }
+
     render() {
+        var disabled = false;
+
+        if (this.props.activeFile && this.props.activeFile === -1) {
+            var disabled = true;
+        }
+
         return (
-            <button type="button" className="btn btn-default"><span className={"glyphicon " + this.props.icon}></span></button>
+            <button type="button" onClick={this.buttonClick} disabled={disabled} className="btn btn-default"><span className={"glyphicon " + this.props.icon}></span></button>
         );
     }
 }
