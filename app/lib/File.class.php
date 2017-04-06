@@ -45,8 +45,7 @@ class File {
       * @return boolean
       */
      public function delete() {
-         $filePath = __DIR__ . '/' . Registry::get('config')->files->path . $this->id;
-         @unlink($filePath);
+         @unlink($this->getFilePath());
          $deleteFile = Registry::get('db')->getPDO()->prepare('DELETE FROM files WHERE id = ?');
 
          if ($deleteFile->execute([$this->id])) {
@@ -63,8 +62,6 @@ class File {
      * @return blob
      */
     public function read() {
-        $filePath = __DIR__ . '/' . Registry::get('config')->files->path . $this->id;
-
         if ($this->encryption == 'PERSONAL') {
             $encryption = new Encryption(Registry::get('user')->getKey());
         }
@@ -73,8 +70,8 @@ class File {
             return false;
         }
 
-        $fh = fopen($filePath, 'rb');
-        $encContent = fread($fh, filesize($filePath));
+        $fh = fopen($this->getFilePath(), 'rb');
+        $encContent = fread($fh, filesize($this->getFilePath()));
         fclose($fh);
 
         if ($encContent) {
@@ -106,8 +103,6 @@ class File {
      * @return boolean
      */
     public function write($content) {
-        $filePath = __DIR__ . '/' . Registry::get('config')->files->path . $this->id;
-
         if ($this->encryption == 'PERSONAL') {
             $encryption = new Encryption(Registry::get('user')->getKey());
         }
@@ -118,7 +113,7 @@ class File {
 
         $encContent = $encryption->encrypt($content);
 
-        $fh = fopen($filePath, 'wb');
+        $fh = fopen($this->getFilePath(), 'wb');
         $result = fwrite($fh, $encContent);
         fclose($fh);
 
@@ -135,6 +130,10 @@ class File {
     /**
      * PRIVATE
      */
+
+     private function getFilePath() {
+         return __DIR__ . '/' . Registry::get('config')->files->path . $this->id;
+     }
 
      /**
       * Updates columns in files database

@@ -4,6 +4,8 @@
     "USERNAME" : "Username",
     "PASSWORD" : "Password",
     "LOGIN_FAILED" : "Wrong username or password.",
+    "UPLOAD_FAILED" : "One or more files failed to upload.",
+    "DELETE_FAILED" : "Could not delete file or directory.",
 
     "BRAND" : "aFile",
     "SEARCH" : "Search",

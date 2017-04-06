@@ -30,6 +30,7 @@ html, body, #AppContainer {
 
 #Main {
     padding-top: 174px;
+    min-height: 100%;
 }
 
 #Login {

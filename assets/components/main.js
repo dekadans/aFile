@@ -2,6 +2,7 @@ class MainScreen extends React.Component {
     constructor(props) {
         super(props);
         this.setActiveFile = this.setActiveFile.bind(this);
+        this.fetch = this.fetch.bind(this);
         this.drag = this.drag.bind(this);
         this.dropFile = this.dropFile.bind(this);
         this.state = {
@@ -14,13 +15,18 @@ class MainScreen extends React.Component {
     }
 
     fetch() {
-        var path = '/' + this.state.path.join('/');
-        path = btoa(path);
-        $.getJSON('app/api.php',{do : 'ListFiles', location : path}, data => {
+        $.getJSON('app/api.php',{do : 'ListFiles', location : this.getPath()}, data => {
             this.setState({
-                files : data
+                files : data,
+                activeFile : -1
             });
         });
+    }
+
+    getPath() {
+        var path = '/' + this.state.path.join('/');
+        path = btoa(path);
+        return path;
     }
 
     setActiveFile(index) {
@@ -44,15 +50,14 @@ class MainScreen extends React.Component {
 
         if (filesToUpload) {
             $.each( filesToUpload, function(i, file) {
-                ajaxData.append('fileinput', file );
+                ajaxData.append('fileinput'+i, file );
             });
         }
 
-        var path = '/' + this.state.path.join('/');
-        path = btoa(path);
+        var mainReact = this;
 
         $.ajax({
-            url: 'app/api.php?do=Upload&location=' + path,
+            url: 'app/api.php?do=Upload&location=' + this.getPath(),
             type: 'POST',
             data: ajaxData,
             dataType: 'json',
@@ -63,10 +68,15 @@ class MainScreen extends React.Component {
                 console.log('complete');
             },
             success: function(data) {
-                console.log('success');
+                if (data.error) {
+                    alert(APP.l[data.error]);
+                }
+
+                mainReact.fetch();
             },
             error: function() {
-                console.log('error');
+                alert(APP.l.UPLOAD_FAILED);
+                mainReact.fetch();
             }
         });
     }
@@ -85,7 +95,7 @@ class MainScreen extends React.Component {
                         <div className="row">
                             <div className="col-md-12">
                                 <div className="btn-group">
-                                    <MenuButton icon="glyphicon-trash" action="DELETE" files={this.state.files} activeFile={this.state.activeFile} />
+                                    <MenuButton icon="glyphicon-trash" action="DELETE" files={this.state.files} activeFile={this.state.activeFile} fetchCallback={this.fetch} />
                                     <MenuButton icon="glyphicon-edit" action="EDIT" files={this.state.files} activeFile={this.state.activeFile} />
                                     <MenuButton icon="glyphicon-share" action="SHARE" files={this.state.files} activeFile={this.state.activeFile} />
                                     <MenuButton icon="glyphicon-download-alt" action="DOWNLOAD" files={this.state.files} activeFile={this.state.activeFile} />
@@ -160,31 +170,6 @@ class Breadcrumbs extends React.Component {
             <ol className="breadcrumb">
                 <li>{APP.l.HOME}</li>
             </ol>
-        );
-    }
-}
-
-class MenuButton extends React.Component {
-    constructor(props) {
-        super(props);
-        this.buttonClick = this.buttonClick.bind(this);
-    }
-
-    buttonClick() {
-        if (this.props.activeFile > -1) {
-            console.log(this.props.action + ' ' + this.props.files[this.props.activeFile]['name']);
-        }
-    }
-
-    render() {
-        var disabled = false;
-
-        if (this.props.activeFile && this.props.activeFile === -1) {
-            var disabled = true;
-        }
-
-        return (
-            <button type="button" onClick={this.buttonClick} disabled={disabled} className="btn btn-default"><span className={"glyphicon " + this.props.icon}></span></button>
         );
     }
 }

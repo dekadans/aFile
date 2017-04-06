@@ -1,3 +1,72 @@
+"use strict";
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var MenuButton = function (_React$Component) {
+    _inherits(MenuButton, _React$Component);
+
+    function MenuButton(props) {
+        _classCallCheck(this, MenuButton);
+
+        var _this = _possibleConstructorReturn(this, (MenuButton.__proto__ || Object.getPrototypeOf(MenuButton)).call(this, props));
+
+        _this.buttonClick = _this.buttonClick.bind(_this);
+        return _this;
+    }
+
+    _createClass(MenuButton, [{
+        key: "buttonClick",
+        value: function buttonClick() {
+            var file = this.props.files[this.props.activeFile];
+
+            if (this.props.activeFile > -1) {
+                switch (this.props.action) {
+                    case 'DELETE':
+                        this.deleteFile(file);
+                        break;
+                }
+            }
+        }
+    }, {
+        key: "render",
+        value: function render() {
+            var disabled = false;
+
+            if (this.props.activeFile && this.props.activeFile === -1) {
+                var disabled = true;
+            }
+
+            return React.createElement(
+                "button",
+                { type: "button", onClick: this.buttonClick, disabled: disabled, className: "btn btn-default" },
+                React.createElement("span", { className: "glyphicon " + this.props.icon })
+            );
+        }
+
+        // Actions
+
+    }, {
+        key: "deleteFile",
+        value: function deleteFile(file) {
+            var buttonReact = this;
+            $.getJSON('app/api.php?do=Delete&id=' + file.id, function (data) {
+                if (data.error) {
+                    alert(APP.l[data.error]);
+                }
+
+                buttonReact.props.fetchCallback();
+            });
+        }
+    }]);
+
+    return MenuButton;
+}(React.Component);
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -341,6 +410,7 @@ var MainScreen = function (_React$Component) {
         var _this = _possibleConstructorReturn(this, (MainScreen.__proto__ || Object.getPrototypeOf(MainScreen)).call(this, props));
 
         _this.setActiveFile = _this.setActiveFile.bind(_this);
+        _this.fetch = _this.fetch.bind(_this);
         _this.drag = _this.drag.bind(_this);
         _this.dropFile = _this.dropFile.bind(_this);
         _this.state = {
@@ -358,13 +428,19 @@ var MainScreen = function (_React$Component) {
         value: function fetch() {
             var _this2 = this;
 
-            var path = '/' + this.state.path.join('/');
-            path = btoa(path);
-            $.getJSON('app/api.php', { do: 'ListFiles', location: path }, function (data) {
+            $.getJSON('app/api.php', { do: 'ListFiles', location: this.getPath() }, function (data) {
                 _this2.setState({
-                    files: data
+                    files: data,
+                    activeFile: -1
                 });
             });
+        }
+    }, {
+        key: 'getPath',
+        value: function getPath() {
+            var path = '/' + this.state.path.join('/');
+            path = btoa(path);
+            return path;
         }
     }, {
         key: 'setActiveFile',
@@ -391,15 +467,14 @@ var MainScreen = function (_React$Component) {
 
             if (filesToUpload) {
                 $.each(filesToUpload, function (i, file) {
-                    ajaxData.append('fileinput', file);
+                    ajaxData.append('fileinput' + i, file);
                 });
             }
 
-            var path = '/' + this.state.path.join('/');
-            path = btoa(path);
+            var mainReact = this;
 
             $.ajax({
-                url: 'app/api.php?do=Upload&location=' + path,
+                url: 'app/api.php?do=Upload&location=' + this.getPath(),
                 type: 'POST',
                 data: ajaxData,
                 dataType: 'json',
@@ -410,10 +485,15 @@ var MainScreen = function (_React$Component) {
                     console.log('complete');
                 },
                 success: function success(data) {
-                    console.log('success');
+                    if (data.error) {
+                        alert(APP.l[data.error]);
+                    }
+
+                    mainReact.fetch();
                 },
                 error: function error() {
-                    console.log('error');
+                    alert(APP.l.UPLOAD_FAILED);
+                    mainReact.fetch();
                 }
             });
         }
@@ -448,7 +528,7 @@ var MainScreen = function (_React$Component) {
                                 React.createElement(
                                     'div',
                                     { className: 'btn-group' },
-                                    React.createElement(MenuButton, { icon: 'glyphicon-trash', action: 'DELETE', files: this.state.files, activeFile: this.state.activeFile }),
+                                    React.createElement(MenuButton, { icon: 'glyphicon-trash', action: 'DELETE', files: this.state.files, activeFile: this.state.activeFile, fetchCallback: this.fetch }),
                                     React.createElement(MenuButton, { icon: 'glyphicon-edit', action: 'EDIT', files: this.state.files, activeFile: this.state.activeFile }),
                                     React.createElement(MenuButton, { icon: 'glyphicon-share', action: 'SHARE', files: this.state.files, activeFile: this.state.activeFile }),
                                     React.createElement(MenuButton, { icon: 'glyphicon-download-alt', action: 'DOWNLOAD', files: this.state.files, activeFile: this.state.activeFile })
@@ -624,45 +704,6 @@ var Breadcrumbs = function (_React$Component3) {
     }]);
 
     return Breadcrumbs;
-}(React.Component);
-
-var MenuButton = function (_React$Component4) {
-    _inherits(MenuButton, _React$Component4);
-
-    function MenuButton(props) {
-        _classCallCheck(this, MenuButton);
-
-        var _this6 = _possibleConstructorReturn(this, (MenuButton.__proto__ || Object.getPrototypeOf(MenuButton)).call(this, props));
-
-        _this6.buttonClick = _this6.buttonClick.bind(_this6);
-        return _this6;
-    }
-
-    _createClass(MenuButton, [{
-        key: 'buttonClick',
-        value: function buttonClick() {
-            if (this.props.activeFile > -1) {
-                console.log(this.props.action + ' ' + this.props.files[this.props.activeFile]['name']);
-            }
-        }
-    }, {
-        key: 'render',
-        value: function render() {
-            var disabled = false;
-
-            if (this.props.activeFile && this.props.activeFile === -1) {
-                var disabled = true;
-            }
-
-            return React.createElement(
-                'button',
-                { type: 'button', onClick: this.buttonClick, disabled: disabled, className: 'btn btn-default' },
-                React.createElement('span', { className: "glyphicon " + this.props.icon })
-            );
-        }
-    }]);
-
-    return MenuButton;
 }(React.Component);
 'use strict';
 
