@@ -21,9 +21,8 @@ class Upload extends AbstractController {
         foreach ($_FILES as $file) {
             $name = $this->getUniqueName($file['name']);
             $mime = mime_content_type($file['tmp_name']);
-            $content = file_get_contents($file['tmp_name']);
 
-            $results[] = File::createFile($this->user, $name, $this->location, $mime, $content);
+            $results[] = File::createFile($this->user, $name, $this->location, $mime, $file['tmp_name']);
         }
 
         if (in_array(false, $results)) {

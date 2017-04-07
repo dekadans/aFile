@@ -12,6 +12,7 @@ class File {
     protected $encryption;
     protected $last_edit;
     protected $created;
+    protected $tmpPath;
 
     // WORK IN PROGRESS
 
@@ -39,6 +40,10 @@ class File {
     /**
      * PUBLIC
      */
+
+     public function isset() {
+         return $this->id == '0' ? false : true;
+     }
 
      /**
       * Deletes the File
@@ -99,10 +104,14 @@ class File {
 
     /**
      * Writes data to the file
-     * @param  blob $content
+     * @param  string $pathToContent
      * @return boolean
      */
-    public function write($content) {
+    public function write($pathToContent = null) {
+        if (!is_null($pathToContent)) {
+            $this->tmpPath = $pathToContent;
+        }
+
         if ($this->encryption == 'PERSONAL') {
             $encryption = new Encryption(Registry::get('user')->getKey());
         }
@@ -111,15 +120,11 @@ class File {
             return false;
         }
 
-        $encContent = $encryption->encrypt($content);
+        $result = $encryption->encryptFile($this);
 
-        $fh = fopen($this->getFilePath(), 'wb');
-        $result = fwrite($fh, $encContent);
-        fclose($fh);
-
-        if ($result) {
+        if ($result && is_file($this->getFilePath())) {
             $this->update([
-                'size' => $result,
+                'size' => filesize($this->getFilePath()),
                 'last_edit' => date('Y-m-d H:i:s')
             ]);
         }
@@ -130,10 +135,6 @@ class File {
     /**
      * PRIVATE
      */
-
-     private function getFilePath() {
-         return __DIR__ . '/' . Registry::get('config')->files->path . $this->id;
-     }
 
      /**
       * Updates columns in files database
@@ -172,17 +173,18 @@ class File {
      * @param  string $name
      * @param  string $location
      * @param  string $mime
-     * @param  blob $content
+     * @param  string $tmpPath
      * @return File | boolean
      */
-    public static function createFile(User $user, $name, $location, $mime, $content) {
+    public static function createFile(User $user, $name, $location, $mime, $tmpPath) {
         if (!self::exists($user, $name, $location)) {
             $addFile = Registry::get('db')->getPDO()->prepare('INSERT INTO files (user_id, name, location, mime, type) VALUES (?,?,?,?,?)');
 
             try {
                 if ($addFile->execute([$user->getId(), $name, $location, $mime, 'FILE'])) {
                     $file = new self(Registry::get('db')->getPDO()->lastInsertId());
-                    $file->write($content);
+                    $file->setTmpPath($tmpPath);
+                    $file->write();
                     return $file;
                 }
                 else {
@@ -218,6 +220,10 @@ class File {
     /**
      * GETTERS AND SETTERS
      */
+
+      public function getFilePath() {
+          return __DIR__ . '/' . Registry::get('config')->files->path . $this->id;
+      }
 
     /**
      * Get the value of Id
@@ -309,4 +315,21 @@ class File {
         return $this->created;
     }
 
+    /**
+     * Get the value of tmpPath
+     *
+     * @return mixed
+     */
+    public function getTmpPath()
+    {
+        return $this->tmpPath;
+    }
+
+    /**
+     * Set the value of tmpPath
+     */
+    public function setTmpPath($path)
+    {
+        $this->tmpPath = $path;
+    }
 }

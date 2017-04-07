@@ -17,9 +17,9 @@ class User {
             $this->account_type = $user['account_type'];
 
             if ($password) {
-                $enckey = base64_decode($user['encryption_key']);
-                $encrypt = new Encryption($password);
-                $this->encryption_key = $encrypt->decrypt($enckey);
+                $protectedKey = \Defuse\Crypto\KeyProtectedByPassword::loadFromAsciiSafeString($user['encryption_key']);
+                $key = $protectedKey->unlockKey($password);
+                $this->encryption_key = $key->saveToAsciiSafeString();
             }
         }
         else {
@@ -46,6 +46,7 @@ class User {
     public function setKey($key) {
         $this->encryption_key = $key;
     }
+
     /**
      * Retrieve the user's info from the database.
      * @param int $id
@@ -98,14 +99,13 @@ class User {
         if (!$checkName->fetch()) {
             $pwhash = password_hash($password, PASSWORD_DEFAULT);
 
-            $key = self::generateEncryptionKey();
-            $encrypt = new Encryption($password);
-            $keyenc = base64_encode($encrypt->encrypt($key));
+            $key = \Defuse\Crypto\KeyProtectedByPassword::createRandomPasswordProtectedKey($password);
+            $keyAscii = $key->saveToAsciiSafeString();
 
             $addUser = Registry::get('db')->getPDO()->prepare('INSERT INTO users (username, password, encryption_key) VALUES (?,?,?)');
 
             try {
-                if ($addUser->execute([$username, $pwhash, $keyenc])) {
+                if ($addUser->execute([$username, $pwhash, $keyAscii])) {
                     return new self(Registry::get('db')->getPDO()->lastInsertId());
                 }
                 else {
@@ -119,20 +119,5 @@ class User {
         else {
             return false;
         }
-    }
-
-    /**
-     * Creates a new 32 characters long encryption key.
-     * @return string
-     */
-    protected static function generateEncryptionKey() {
-        $letters = array_merge(range('A','Z'),range('a','z'),range(0,9));
-        $key = '';
-        while (strlen($key) < 32)
-        {
-            $key .= $letters[rand(0,count($letters)-1)];
-        }
-
-        return $key;
     }
 }

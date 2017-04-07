@@ -10,15 +10,52 @@ class Encryption
 {
     private $key;
 
+    function __construct($key)
+    {
+        $this->key = \Defuse\Crypto\Key::loadFromAsciiSafeString($key);
+    }
+
+    public function encryptFile(File $file) {
+        if ($file->isset()) {
+            try {
+                \Defuse\Crypto\File::encryptFile($file->getTmpPath(), $file->getFilePath(), $this->key);
+                return true;
+            }
+            catch (\Defuse\Crypto\Exception\IOException $ex) {
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
+    }
+
+    public function decryptFile(File $file) {
+        $tempFile = tempnam(sys_get_temp_dir(), 'afile');
+
+        if ($file->isset()) {
+            try {
+                \Defuse\Crypto\File::decryptFile($file->getFilePath(), $tempFile, $this->key);
+                return $tempFile;
+            }
+            catch (\Defuse\Crypto\Exception\IOException $ex) {
+                return false;
+            }
+            catch (\Defuse\Crypto\Exception\WrongKeyOrModifiedCiphertextException $ex) {
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
+    }
+
+    /* OLD CODE BELOW */
+
     const CYPHER = MCRYPT_RIJNDAEL_256;
     const MODE   = MCRYPT_MODE_CBC;
 
-    function __construct($key = 'defaultkeythatwillnotbeusedatall')
-    {
-        $this->key = $key;
-    }
-
-    public function encrypt($plaintext)
+    public function encryptOld($plaintext)
     {
         $plaintext = gzcompress($plaintext);
 
@@ -30,7 +67,7 @@ class Encryption
         return $iv.$crypttext;
     }
 
-    public function decrypt($crypttext)
+    public function decryptOld($crypttext)
     {
         $plaintext = '';
         $td        = mcrypt_module_open(self::CYPHER, '', self::MODE, '');
