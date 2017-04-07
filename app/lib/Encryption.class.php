@@ -1,6 +1,11 @@
 <?php
 namespace lib;
 
+/*
+https://paragonie.com/white-paper/2015-secure-php-data-encryption
+https://paragonie.com/blog/2015/05/if-you-re-typing-word-mcrypt-into-your-code-you-re-doing-it-wrong
+https://github.com/defuse/php-encryption
+*/
 class Encryption
 {
     private $key;
