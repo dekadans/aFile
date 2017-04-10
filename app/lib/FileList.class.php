@@ -20,7 +20,7 @@ class FileList {
      */
     public function run() {
         $sql = "SELECT
-                    id, name, size, mime, type, last_edit
+                    id, name, size, mime, type, last_edit, string_id
                 FROM files
                 WHERE location = ?
                 AND user_id = ?
@@ -43,7 +43,9 @@ class FileList {
      */
 
      private function filter() {
-         // Do filter stuff here
+         for ($i = 0; $i < count($this->files); $i++) {
+             $this->files[$i]['open_in_new_window'] = in_array($this->files[$i]['mime'], Registry::get('config')->files->inline_download);
+         }
      }
 
     /**

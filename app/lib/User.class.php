@@ -120,4 +120,21 @@ class User {
             return false;
         }
     }
+
+    /**
+     * Return instance of User by unique username
+     * @param  string $username
+     * @return User
+     */
+    public static function getByUsername($username) {
+        $checkName = Registry::get('db')->getPDO()->prepare('SELECT id FROM users WHERE username = ?');
+        $checkName->execute([$username]);
+        $userRow = $checkName->fetch();
+
+        if ($userRow) {
+            return new self($userRow['id']);
+        }
+
+        return false;
+    }
 }

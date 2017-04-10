@@ -19,11 +19,14 @@ class Test extends AbstractController {
         var_dump($protected_key_encoded);
         var_dump($protected_key->unlockKey('aabbcc')->saveToAsciiSafeString());*/
 
-        $file = new \lib\File('23');
+        /*$file = new \lib\File('23');
         $enc = new \lib\Encryption(\lib\Registry::get('user')->getKey());
         $tempFile = $enc->decryptFile($file);
         $content = file_get_contents($tempFile);
         unlink($tempFile);
-        echo($content);
+        echo($content);*/
+
+        $str = strtr(base64_encode('tomas:Lw==:temp.txt'), '+=/', '-_~');
+        echo $str;
     }
 }

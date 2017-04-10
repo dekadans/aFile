@@ -2,6 +2,8 @@
 
 namespace lib;
 
+use \controllers\AbstractController;
+
 class Acl {
 
     /**
@@ -10,18 +12,18 @@ class Acl {
      * @param  AbstractController $controller
      * @return boolean
      */
-    public static function checkAccess(\controllers\AbstractController $controller) {
+    public static function checkAccess(AbstractController $controller) {
         switch ($controller->getAccessLevel()) {
-            case \controllers\AbstractController::ACCESS_OPEN:
+            case AbstractController::ACCESS_OPEN:
                 return true;
-            case \controllers\AbstractController::ACCESS_LOGIN:
+            case AbstractController::ACCESS_LOGIN:
                 if (Registry::get('user')) {
                     return true;
                 }
                 else {
                     return false;
                 }
-            case \controllers\AbstractController::ACCESS_ADMIN:
+            case AbstractController::ACCESS_ADMIN:
                 if (Registry::get('user') && Registry::get('user')->getType() == 'ADMIN') {
                     return true;
                 }
@@ -31,5 +33,20 @@ class Acl {
             default:
                 return false;
         }
+    }
+
+    /**
+     * Checks access to a requested download
+     * @param  Download $download
+     * @return boolean
+     */
+    public static function checkDownloadAccess(Download $download) {
+        if (Registry::get('user') && Registry::get('user')->getId() == $download->getFile()->getUser()->getId()) {
+            return true;
+        }
+
+        // Sharing logic should be here
+
+        return false;
     }
 }

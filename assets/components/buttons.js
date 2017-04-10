@@ -13,6 +13,9 @@ class MenuButton extends React.Component {
                 case 'DELETE':
                     this.deleteFile(file);
                     break;
+                case 'DOWNLOAD':
+                    this.download(file);
+                    break;
             }
         }
     }
@@ -40,5 +43,18 @@ class MenuButton extends React.Component {
 
             buttonReact.props.fetchCallback();
         });
+    }
+
+    download(file) {
+        if (file.type === 'FILE') {
+            var url = 'dl.php/' + file.string_id;
+
+            if (file.open_in_new_window) {
+                window.open(url);
+            }
+            else {
+                window.document.location = url;
+            }
+        }
     }
 }

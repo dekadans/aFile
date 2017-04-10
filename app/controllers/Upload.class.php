@@ -19,6 +19,11 @@ class Upload extends AbstractController {
         $results = [];
 
         foreach ($_FILES as $file) {
+            if ($file['error']) {
+                $results[] = false;
+                continue;
+            }
+            
             $name = $this->getUniqueName($file['name']);
             $mime = mime_content_type($file['tmp_name']);
 

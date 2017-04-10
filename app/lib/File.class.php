@@ -5,6 +5,7 @@ namespace lib;
 class File {
     protected $id;
     protected $user;
+    protected $user_id;
     protected $name;
     protected $location;
     protected $mime;
@@ -12,18 +13,39 @@ class File {
     protected $encryption;
     protected $last_edit;
     protected $created;
+    protected $string_id;
     protected $tmpPath;
 
-    // WORK IN PROGRESS
+    public function __construct($id = null) {
+        $this->id = '0';
 
-    public function __construct($id) {
+        if ($id) {
+            $this->setById($id);
+        }
+    }
+
+    /**
+     * Object setup
+     */
+
+    public function setById($id) {
         $checkFile = Registry::get('db')->getPDO()->prepare('SELECT * FROM files WHERE id = ?');
         $checkFile->execute([$id]);
         $fileData = $checkFile->fetch();
+        $this->setup($fileData);
+    }
 
+    public function setByUniqueString($string_id) {
+        $checkFile = Registry::get('db')->getPDO()->prepare('SELECT * FROM files WHERE string_id = ?');
+        $checkFile->execute([$string_id]);
+        $fileData = $checkFile->fetch();
+        $this->setup($fileData);
+    }
+
+    protected function setup($fileData) {
         if ($fileData) {
             $this->id = $fileData['id'];
-            $this->user = new User($fileData['user_id']);
+            $this->user_id = $fileData['user_id'];
             $this->name = $fileData['name'];
             $this->location = $fileData['location'];
             $this->mime = $fileData['mime'];
@@ -31,57 +53,73 @@ class File {
             $this->encryption = $fileData['encryption'];
             $this->last_edit = $fileData['last_edit'];
             $this->created = $fileData['created'];
+            $this->string_id = $fileData['string_id'];
         }
         else {
             $this->id = '0';
         }
     }
 
-    /**
-     * PUBLIC
-     */
+    public function isset() {
+        return $this->id == '0' ? false : true;
+    }
 
-     public function isset() {
-         return $this->id == '0' ? false : true;
-     }
-
-     /**
-      * Deletes the File
-      * @return boolean
-      */
-     public function delete() {
-         @unlink($this->getFilePath());
-         $deleteFile = Registry::get('db')->getPDO()->prepare('DELETE FROM files WHERE id = ?');
-
-         if ($deleteFile->execute([$this->id])) {
-             $this->id = null;
-             return true;
-         }
-         else {
-             return false;
-         }
-     }
-
-    /**
-     * Reads and returns the contents of the File
-     * @return blob
-     */
-    public function read() {
+    public function getEncryptionKey() {
         if ($this->encryption == 'PERSONAL') {
-            $encryption = new Encryption(Registry::get('user')->getKey());
+            if (Registry::get('user')) {
+                return Registry::get('user')->getKey();
+            }
+        }
+
+        // Token keys to be implemented
+
+        return false;
+    }
+
+    /**
+     * FILE OPERATIONS
+     */
+
+    /**
+    * Deletes the File
+    * @return boolean
+    */
+    public function delete() {
+        @unlink($this->getFilePath());
+        $deleteFile = Registry::get('db')->getPDO()->prepare('DELETE FROM files WHERE id = ?');
+
+        if ($deleteFile->execute([$this->id])) {
+            $this->id = null;
+            return true;
         }
         else {
-            // Should be expanded so that it decrypts with token keys.
             return false;
         }
+    }
 
-        $fh = fopen($this->getFilePath(), 'rb');
-        $encContent = fread($fh, filesize($this->getFilePath()));
-        fclose($fh);
+    /**
+    * Reads and returns the contents of the File
+    * @return blob
+    */
+    public function read() {
+        $encryptionKey = $this->getEncryptionKey();
 
-        if ($encContent) {
-            $content = $encryption->decrypt($encContent);
-            return $content;
+        if ($encryptionKey) {
+            $encryption = new Encryption($encryptionKey);
+
+            // !!!!! OLD CODE !!!!
+
+            $fh = fopen($this->getFilePath(), 'rb');
+            $encContent = fread($fh, filesize($this->getFilePath()));
+            fclose($fh);
+
+            if ($encContent) {
+                $content = $encryption->decrypt($encContent);
+                return $content;
+            }
+            else {
+                return false;
+            }
         }
         else {
             return false;
@@ -112,13 +150,13 @@ class File {
             $this->tmpPath = $pathToContent;
         }
 
-        if ($this->encryption == 'PERSONAL') {
-            $encryption = new Encryption(Registry::get('user')->getKey());
-        }
-        else {
-            // Should be expanded so that it encrypts with token keys.
+        $encryptionKey = $this->getEncryptionKey();
+
+        if (empty($encryptionKey)) {
             return false;
         }
+
+        $encryption = new Encryption($encryptionKey);
 
         $result = $encryption->encryptFile($this);
 
@@ -136,36 +174,34 @@ class File {
      * PRIVATE
      */
 
-     /**
-      * Updates columns in files database
-      * @param  array $data
-      * @return boolean
-      */
-     private function update($data) {
-         $sets = [];
+    /**
+     * Updates columns in files database
+     * @param  array $data
+     * @return boolean
+     */
+    private function update($data) {
+        $sets = [];
+        foreach ($data as $column => $value) {
+            if (!is_int($value)) {
+                $value = "'" . $value . "'";
+            }
+            $sets[] = $column . '=' . $value;
+        }
+        $sets = implode(', ',$sets);
 
-         foreach ($data as $column => $value) {
-             if (!is_int($value)) {
-                 $value = "'" . $value . "'";
-             }
-
-             $sets[] = $column . '=' . $value;
-         }
-         $sets = implode(', ',$sets);
-
-         $sql = 'UPDATE files SET ' . $sets . ' WHERE id = ?';
-         $updateFile = Registry::get('db')->getPDO()->prepare($sql);
-         try {
-             return $updateFile->execute([$this->id]);
-         }
-         catch (PDOException $e) {
-             return false;
-         }
-     }
+        $sql = 'UPDATE files SET ' . $sets . ' WHERE id = ?';
+        $updateFile = Registry::get('db')->getPDO()->prepare($sql);
+        try {
+            return $updateFile->execute([$this->id]);
+        }
+        catch (PDOException $e) {
+            return false;
+        }
+    }
 
     /**
-     *  STATIC
-     */
+    *  STATIC
+    */
 
     /**
      * Creates a new file in the database and returns File object for it
@@ -178,10 +214,12 @@ class File {
      */
     public static function createFile(User $user, $name, $location, $mime, $tmpPath) {
         if (!self::exists($user, $name, $location)) {
-            $addFile = Registry::get('db')->getPDO()->prepare('INSERT INTO files (user_id, name, location, mime, type) VALUES (?,?,?,?,?)');
+            $string_id = self::getUniqueStringId();
+
+            $addFile = Registry::get('db')->getPDO()->prepare('INSERT INTO files (user_id, name, location, mime, type, string_id) VALUES (?,?,?,?,?,?)');
 
             try {
-                if ($addFile->execute([$user->getId(), $name, $location, $mime, 'FILE'])) {
+                if ($addFile->execute([$user->getId(), $name, $location, $mime, 'FILE', $string_id])) {
                     $file = new self(Registry::get('db')->getPDO()->lastInsertId());
                     $file->setTmpPath($tmpPath);
                     $file->write();
@@ -218,12 +256,36 @@ class File {
     }
 
     /**
-     * GETTERS AND SETTERS
+     * Generates a unique identifyer string for a files
+     * @return string
      */
+    private static function getUniqueStringId() {
+        $fileQuery = Registry::get('db')->getPDO()->prepare('SELECT id FROM files WHERE string_id = ?');
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $length = Registry::get('config')->files->id_string_length;
 
-      public function getFilePath() {
-          return __DIR__ . '/' . Registry::get('config')->files->path . $this->id;
-      }
+        while (true) {
+            $randomString = '';
+
+            for ($i = 0; $i < $length; $i++) {
+                $randomString .= $characters[rand(0, strlen($characters) - 1)];
+            }
+
+            $fileQuery->execute([$randomString]);
+
+            if (!$fileQuery->fetch()) {
+                return $randomString;
+            }
+        }
+    }
+
+    /**
+    * GETTERS AND SETTERS
+    */
+
+    public function getFilePath() {
+        return __DIR__ . '/' . Registry::get('config')->files->path . $this->id;
+    }
 
     /**
      * Get the value of Id
@@ -242,6 +304,10 @@ class File {
      */
     public function getUser()
     {
+        if (is_null($this->user)) {
+            $this->user = new User($this->user_id);
+        }
+
         return $this->user;
     }
 

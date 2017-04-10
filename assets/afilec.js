@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -21,7 +21,7 @@ var MenuButton = function (_React$Component) {
     }
 
     _createClass(MenuButton, [{
-        key: "buttonClick",
+        key: 'buttonClick',
         value: function buttonClick() {
             var file = this.props.files[this.props.activeFile];
 
@@ -30,11 +30,14 @@ var MenuButton = function (_React$Component) {
                     case 'DELETE':
                         this.deleteFile(file);
                         break;
+                    case 'DOWNLOAD':
+                        this.download(file);
+                        break;
                 }
             }
         }
     }, {
-        key: "render",
+        key: 'render',
         value: function render() {
             var disabled = false;
 
@@ -43,16 +46,16 @@ var MenuButton = function (_React$Component) {
             }
 
             return React.createElement(
-                "button",
-                { type: "button", onClick: this.buttonClick, disabled: disabled, className: "btn btn-default" },
-                React.createElement("span", { className: "glyphicon " + this.props.icon })
+                'button',
+                { type: 'button', onClick: this.buttonClick, disabled: disabled, className: 'btn btn-default' },
+                React.createElement('span', { className: "glyphicon " + this.props.icon })
             );
         }
 
         // Actions
 
     }, {
-        key: "deleteFile",
+        key: 'deleteFile',
         value: function deleteFile(file) {
             var buttonReact = this;
             $.getJSON('app/api.php?do=Delete&id=' + file.id, function (data) {
@@ -62,6 +65,19 @@ var MenuButton = function (_React$Component) {
 
                 buttonReact.props.fetchCallback();
             });
+        }
+    }, {
+        key: 'download',
+        value: function download(file) {
+            if (file.type === 'FILE') {
+                var url = 'dl.php/' + file.string_id;
+
+                if (file.open_in_new_window) {
+                    window.open(url);
+                } else {
+                    window.document.location = url;
+                }
+            }
         }
     }]);
 
