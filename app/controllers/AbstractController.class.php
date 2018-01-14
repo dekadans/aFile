@@ -38,5 +38,6 @@ abstract class AbstractController {
         header("Cache-Control: no-cache, must-revalidate");
 
         echo json_encode($data);
+        die;
     }
 }

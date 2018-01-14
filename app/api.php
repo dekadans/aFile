@@ -10,7 +10,27 @@ if (isset($_GET['do']) && !empty($_GET['do'])) {
         $controller = new $do();
 
         if (\lib\Acl::checkAccess($controller)) {
-            $controller->index();
+            if (method_exists($controller, 'init')) {
+                $controller->init();
+            }
+
+            $action = $controller->param('action');
+
+            if ($action) {
+                $action = 'action' . ucfirst($action);
+            }
+            else {
+                $action = 'index';
+            }
+
+            if (method_exists($controller, $action)) {
+                $controller->$action();
+            }
+            else {
+                echo \controllers\AbstractController::outputJSON([
+                    'error' => 'NOT_FOUND'
+                ]);
+            }
         }
         else {
             echo \controllers\AbstractController::outputJSON([

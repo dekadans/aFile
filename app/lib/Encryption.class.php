@@ -12,7 +12,7 @@ class Encryption
 
     function __construct($key)
     {
-        $this->key = \Defuse\Crypto\Key::loadFromAsciiSafeString($key);
+        $this->setKey($key);
     }
 
     public function encryptFile(File $file) {
@@ -32,6 +32,7 @@ class Encryption
 
     public function decryptFile(File $file) {
         $tempFile = tempnam(sys_get_temp_dir(), 'afile');
+        $file->setTmpPath($tempFile);
 
         if ($file->isset()) {
             try {
@@ -48,6 +49,10 @@ class Encryption
         else {
             return false;
         }
+    }
+
+    public function setKey($key) {
+        $this->key = \Defuse\Crypto\Key::loadFromAsciiSafeString($key);
     }
 
     /* OLD CODE BELOW */

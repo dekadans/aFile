@@ -70,10 +70,22 @@ class File {
                 return Registry::get('user')->getKey();
             }
         }
+        else {
+            $sharingData = $this->getSharingInfo();
+            return $sharingData['encryption_key'] ?? false;
+        }
 
         // Token keys to be implemented
 
         return false;
+    }
+
+    public function getSharingInfo() {
+        $shareQuery = Registry::get('db')->getPDO()->prepare('SELECT * FROM share WHERE file_id = ?');
+        $shareQuery->execute([$this->id]);
+        $shareData = $shareQuery->fetch();
+
+        return $shareData;
     }
 
     /**
@@ -359,6 +371,11 @@ class File {
     public function getEncryption()
     {
         return $this->encryption;
+    }
+
+    public function setEncryption($encryptionType)
+    {
+        $this->update(['encryption' => $encryptionType]);
     }
 
     /**
