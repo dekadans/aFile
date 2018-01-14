@@ -1,19 +1,9 @@
-class Test {
-    constructor(t) {
-        this.prop = t;
-    }
-
-    print() {
-        console.log(this.prop);
-    }
-}
-
 class aFile {
     constructor() {
         this.info = null; // Data fetched from the server
         this.path = [];
 
-        this.findDefinedFiletypes();
+        //this.findDefinedFiletypes();
         this.check();
     }
 
@@ -21,7 +11,7 @@ class aFile {
      * Fetches config and session info from the server.
      */
     check() {
-        $.getJSON('app/api.php?do=Check', data => {
+        this.get('Check', '', data => {
             this.info = data;
 
             if (this.info.login) {
@@ -39,6 +29,9 @@ class aFile {
         });
     }
 
+    /**
+     * Eventbindings for the login view
+     */
     loginView() {
         $('#LoginUsername').focus();
 
@@ -68,7 +61,12 @@ class aFile {
         });
     }
 
+    /**
+     * Eventbindings for the main view
+     */
     mainView() {
+        this.list();
+
         $('#Logout').click(e => {
             e.preventDefault();
             this.showLoading(true);
@@ -76,6 +74,41 @@ class aFile {
                 this.check();
             });
         });
+    }
+
+    /**
+     * Retrieves the list of files and displayes them
+     */
+    list() {
+        this.showLoading(true);
+
+        var path = '/' + this.path.join('/');
+        path = btoa(path);
+
+        this.get('ListFiles', 'list', html => {
+            this.showLoading(false);
+            $('#List').html(html);
+        }, {location : path});
+
+        /*
+        $.getJSON('app/api.php',{do : 'ListFiles', location : path}, data => {
+            this.showLoading(false);
+            $('#List').html();
+            for (var i = 0; i < data.length; i++) {
+                var ext = data[i].name.split('.').pop();
+                if (this.exts.indexOf(ext) == -1) {
+                    ext = 'blank';
+                }
+
+                var listItem = $('<tr>');
+                listItem.addClass('listItem');
+                listItem.append('<td><span class="flaticon-'+ ext +'"></td>');
+                listItem.append('<td>'+ data[i].name +'</td>');
+                listItem.append('<td>'+ this.humanFileSize(data[i].size, this.info.siprefix == '1' ? true : false) +'</td>');
+                listItem.append('<td>'+ data[i].last_edit +'</td>');
+                $('#List').append(listItem);
+            }
+        });*/
     }
 
     get(controller, action = '', callback = null, data = {}) {
@@ -87,6 +120,21 @@ class aFile {
         var url = 'app/api?do=' + controller + '&action=' + action;
         $.post(url, data, callback);
     }
+
+    /**
+     * Shows/hides a "Loading" message
+     */
+    showLoading(show) {
+        if (show) {
+            $('#Loading').show();
+        }
+        else {
+            $('#Loading').hide();
+        }
+    }
+
+
+    /*************  OLD STUFF *******************''*/
 
     /**
      * Find which file extentions that has icons defined for them
@@ -107,98 +155,5 @@ class aFile {
                 }
             }
         }
-    }
-
-    /**
-     * Takes an integer of bytes and returns it more readable, either in kB or KiB
-     */
-    humanFileSize(bytes, si) {
-        var thresh = si ? 1000 : 1024;
-        if(Math.abs(bytes) < thresh) {
-            return bytes + ' B';
-        }
-        var units = si
-            ? ['kB','MB','GB','TB','PB','EB','ZB','YB']
-            : ['KiB','MiB','GiB','TiB','PiB','EiB','ZiB','YiB'];
-        var u = -1;
-        do {
-            bytes /= thresh;
-            ++u;
-        } while(Math.abs(bytes) >= thresh && u < units.length - 1);
-        return bytes.toFixed(1)+' '+units[u];
-    }
-
-    /**
-     * Initiates various events
-     */
-    initEvents() {
-        var self = this;
-
-        // MAIN
-
-    }
-
-    /**
-     * Returns a string defined by a language code
-     */
-    l(code) {
-        if (this.info.language[code]) {
-            return this.info.language[code];
-        }
-        else {
-            return code;
-        }
-    }
-
-    /**
-     * Retrieves the list of files and displayes them
-     */
-    list() {
-        this.showLoading(true);
-
-        var path = '/' + this.path.join('/');
-        path = btoa(path);
-        $.getJSON('app/api.php',{do : 'ListFiles', location : path}, data => {
-            this.showLoading(false);
-            $('#List').html();
-            for (var i = 0; i < data.length; i++) {
-                var ext = data[i].name.split('.').pop();
-                if (this.exts.indexOf(ext) == -1) {
-                    ext = 'blank';
-                }
-
-                var listItem = $('<tr>');
-                listItem.addClass('listItem');
-                listItem.append('<td><span class="flaticon-'+ ext +'"></td>');
-                listItem.append('<td>'+ data[i].name +'</td>');
-                listItem.append('<td>'+ this.humanFileSize(data[i].size, this.info.siprefix == '1' ? true : false) +'</td>');
-                listItem.append('<td>'+ data[i].last_edit +'</td>');
-                $('#List').append(listItem);
-            }
-        });
-    }
-
-    /**
-     * Shows/hides a "Loading" message
-     */
-    showLoading(show) {
-        if (show) {
-            $('#Loading').show();
-        }
-        else {
-            $('#Loading').hide();
-        }
-    }
-
-    /**
-     * Replaces mustache tags with texts from the language file
-     */
-    translate() {
-        for (var i = 0; i < this.views.length; i++) {
-            var template = $('#'+this.views[i]).html();
-            var rendered = Mustache.render(template, this.info.language);
-            $('#'+this.views[i]).html(rendered);
-        }
-        this.translated = true;
     }
 }

@@ -23,11 +23,11 @@ class Upload extends AbstractController {
                 $results[] = false;
                 continue;
             }
-            
+
             $name = $this->getUniqueName($file['name']);
             $mime = mime_content_type($file['tmp_name']);
 
-            $results[] = File::createFile($this->user, $name, $this->location, $mime, $file['tmp_name']);
+            $results[] = File::create($this->user, $name, $this->location, $mime, $file['tmp_name']);
         }
 
         if (in_array(false, $results)) {

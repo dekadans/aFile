@@ -2,6 +2,8 @@
 
 namespace controllers;
 
+use lib\FileList;
+
 class ListFiles extends AbstractController {
     public function getAccessLevel() {
         return self::ACCESS_LOGIN;
@@ -18,7 +20,7 @@ class ListFiles extends AbstractController {
             $location = base64_encode('/');
         }
 
-        $list = new \lib\FileList(\lib\Registry::get('user'), $location);
-        $this->outputJSON($list->run());
+        $fileList = new FileList(\lib\Registry::get('user'), $location);
+        $this->parseView('partials/filelist', ['list' => $fileList]);
     }
 }
