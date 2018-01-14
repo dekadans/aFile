@@ -24,7 +24,7 @@ class Check extends AbstractController {
             $info['login'] = false;
         }
 
-        $info['siprefix'] = Registry::get('config')->presentation->siprefix;
+        //$info['siprefix'] = Registry::get('config')->presentation->siprefix;
 
         //$info['language'] = \lib\Translation::getLanguageData();
 
