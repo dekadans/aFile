@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>aFile 6</title>
+
+    <script src="https://unpkg.com/react@15.3.2/dist/react.js"></script>
+    <script src="https://unpkg.com/react-dom@15.3.2/dist/react-dom.js"></script>
+
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script type="text/javascript" src="assets/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="assets/mustache.min.js"></script>
+
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/filetypes/flaticon.css">
+    <link rel="stylesheet" href="assets/general.css">
+
+    <script type="text/javascript">
+        $(function(){
+            /**
+             * https://facebook.github.io/react/docs/thinking-in-react.html
+             * https://medium.freecodecamp.com/javascript-modules-a-beginner-s-guide-783f7d7a5fcc#.fzqmxo6bt
+             * https://camjackson.net/post/9-things-every-reactjs-beginner-should-know
+             * https://facebook.github.io/react/docs/tutorial.html
+             * http://redux.js.org/
+             * https://github.com/mzabriskie/axios
+             */
+            var f = new aFile();
+        });
+    </script>
+</head>
+<body>
+    <div id="AppContainer"></div>
+
+    <script type="text/javascript" src="assets/afile.js"></script>
+</body>
+</html>
