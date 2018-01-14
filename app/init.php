@@ -52,6 +52,11 @@ $db = new \lib\Database();
 \lib\Registry::set('db',$db);
 
 /**
+ * Loads language data
+ */
+\lib\Translation::loadLanguage($config->language);
+
+/**
  * If there is a user id in session, we add a User object to registry.
  */
 if (isset($_SESSION['aFile_User'])) {

@@ -26,11 +26,7 @@ class Check extends AbstractController {
 
         $info['siprefix'] = Registry::get('config')->presentation->siprefix;
 
-        $languagePath = __DIR__ . '/../../config/' . Registry::get('config')->language . '.json';
-        $languageFile = file_get_contents($languagePath);
-        $languageFile = json_decode($languageFile, true);
-
-        $info['language'] = $languageFile;
+        //$info['language'] = \lib\Translation::getLanguageData();
 
         $this->outputJSON($info);
     }

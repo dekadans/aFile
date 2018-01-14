@@ -12,12 +12,6 @@ class aFile {
     constructor() {
         this.info = null; // Data fetched from the server
         this.path = [];
-        this.translated = false;
-        this.views = [
-            'Loading',
-            'Login',
-            'Main'
-        ];
 
         this.findDefinedFiletypes();
         this.check();
@@ -29,30 +23,69 @@ class aFile {
     check() {
         $.getJSON('app/api.php?do=Check', data => {
             this.info = data;
-            console.log(this.info.login);
-            return;
-
-            if (!this.translated) {
-                this.translate();
-                this.initEvents();
-            }
 
             if (this.info.login) {
-                this.displayView('Main');
-                this.list();
+                this.get('ListFiles', '', html => {
+                    $('body').html(html);
+                    this.mainView();
+                });
             }
             else {
-                this.displayView('Login');
-                $('#LoginUsername').focus();
+                this.get('Login', 'form', html => {
+                    $('body').html(html);
+                    this.loginView();
+                });
             }
         });
     }
 
-    displayView(view) {
-        if (this.views.indexOf(view) > -1) {
-            $('.view').hide();
-            $('#'+view).show();
-        }
+    loginView() {
+        $('#LoginUsername').focus();
+
+        $('#LoginButton').click(event => {
+            var username = $('#LoginUsername').val();
+            var password = $('#LoginPassword').val();
+
+            if (username.length && password.length) {
+                this.showLoading(true);
+                this.post('Login', '', data => {
+                    if (data.error) {
+                        this.showLoading(false);
+                        $('#LoginMessage > .alert').html(data.error);
+                        $('#LoginMessage').slideDown();
+                    }
+                    else if (data.status == 'ok') {
+                        this.check();
+                    }
+                }, {username : username, password : password});
+            }
+        });
+
+        $('#LoginPassword').keyup(e => {
+            if (e.which == 13) {
+                $('#LoginButton').click();
+            }
+        });
+    }
+
+    mainView() {
+        $('#Logout').click(e => {
+            e.preventDefault();
+            this.showLoading(true);
+            this.get('Logout', '', data => {
+                this.check();
+            });
+        });
+    }
+
+    get(controller, action = '', callback = null, data = {}) {
+        var url = 'app/api?do=' + controller + '&action=' + action;
+        $.get(url, data, callback);
+    }
+
+    post(controller, action = '', callback = null, data = {}) {
+        var url = 'app/api?do=' + controller + '&action=' + action;
+        $.post(url, data, callback);
     }
 
     /**
@@ -101,42 +134,8 @@ class aFile {
     initEvents() {
         var self = this;
 
-        // LOGIN
-        $('#LoginButton').click(function(){
-            var username = $('#LoginUsername').val();
-            var password = $('#LoginPassword').val();
-
-            if (username.length && password.length) {
-                self.showLoading(true);
-                $.post('app/api.php?do=Login', {username : username, password : password}, data => {
-                    if (data.error) {
-                        self.showLoading(false);
-                        $('#LoginMessage > .alert').html(self.l(data.error));
-                        $('#LoginMessage').slideDown();
-                    }
-                    else if (data.status == 'ok') {
-                        $('#LoginUsername, #LoginPassword').val('');
-                        $('#LoginMessage').slideUp();
-                        self.check();
-                    }
-                });
-            }
-        });
-
-        $('#LoginPassword').keyup(e => {
-            if (e.which == 13) {
-                $('#LoginButton').click();
-            }
-        });
-
         // MAIN
-        $('#Logout').click(e => {
-            e.preventDefault();
-            self.showLoading(true);
-            $.getJSON('app/api.php?do=Logout', data => {
-                self.check();
-            });
-        });
+
     }
 
     /**

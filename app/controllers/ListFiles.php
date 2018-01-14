@@ -8,6 +8,10 @@ class ListFiles extends AbstractController {
     }
 
     public function index() {
+        $this->parseView('main');
+    }
+
+    public function actionList() {
         $location = $this->param('location');
 
         if (!$location) {

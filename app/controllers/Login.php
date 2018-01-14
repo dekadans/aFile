@@ -2,6 +2,8 @@
 
 namespace controllers;
 
+use lib\Translation;
+
 class Login extends AbstractController {
     public function getAccessLevel() {
         return self::ACCESS_OPEN;
@@ -26,25 +28,24 @@ class Login extends AbstractController {
                 }
                 else {
                     $this->outputJSON([
-                        'error' => 'LOGIN_FAILED'
+                        'error' => Translation::translate('LOGIN_FAILED')
                     ]);
                 }
             }
             else {
                 $this->outputJSON([
-                    'error' => 'LOGIN_MISSING_PARAMETERS'
+                    'error' => Translation::translate('LOGIN_MISSING_PARAMETERS')
                 ]);
             }
         }
         else {
             $this->outputJSON([
-                'error' => 'ALREADY_SIGNED_IN'
+                'error' => Translation::translate('ALREADY_SIGNED_IN')
             ]);
         }
     }
 
-    public function actionView() {
-        $hello = 'Världen';
-        $this->parseView('login', ['hello' => $hello]);
+    public function actionForm() {
+        $this->parseView('loginForm');
     }
 }

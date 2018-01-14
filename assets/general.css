@@ -26,6 +26,7 @@ html, body, #AppContainer {
     font-size: 18px;
     line-height: 51px;
     background-color: #f8f8f8;
+    display: none;
 }
 
 #Main {
@@ -59,6 +60,7 @@ html, body, #AppContainer {
 }
 
 #LoginMessage {
+    display: none;
     border-bottom: 1px solid #dddddd;
 }
 
