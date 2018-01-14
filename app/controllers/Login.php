@@ -42,4 +42,9 @@ class Login extends AbstractController {
             ]);
         }
     }
+
+    public function actionView() {
+        $hello = 'Världen';
+        $this->parseView('login', ['hello' => $hello]);
+    }
 }

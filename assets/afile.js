@@ -29,6 +29,8 @@ class aFile {
     check() {
         $.getJSON('app/api.php?do=Check', data => {
             this.info = data;
+            console.log(this.info.login);
+            return;
 
             if (!this.translated) {
                 this.translate();

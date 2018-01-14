@@ -29,6 +29,11 @@ abstract class AbstractController {
         }
     }
 
+    public function parseView($viewName, $params = []) {
+        extract($params);
+        require('views/' . $viewName . '.php');
+    }
+
     /**
      * Converts an array to JSON and prints the result.
      * @param  array $data
