@@ -2,11 +2,12 @@
 
 namespace lib;
 
-class FileList implements \ArrayAccess, \Countable {
+class FileList implements \Iterator, \Countable {
 
-    protected $files;
-    protected $user;
-    protected $location;
+    private $files;
+    private $user;
+    private $location;
+    private $position = 0;
 
     public function __construct(User $user, $location) {
         $this->files = [];
@@ -17,7 +18,6 @@ class FileList implements \ArrayAccess, \Countable {
 
     /**
      * Creates the file list
-     * @return [type] [description]
      */
     private function run() {
         $sql = "SELECT
@@ -57,32 +57,28 @@ class FileList implements \ArrayAccess, \Countable {
     }
 
     /**
-     * Array interface implementation
+     * Iterator interface implementation
      */
 
-    public function offsetSet($offset, $value) {
-        if (is_null($offset)) {
-            $this->files[] = $value;
-        } else {
-            $this->files[$offset] = $value;
-        }
-    }
+     public function rewind() {
+         $this->position = 0;
+     }
 
-    public function offsetExists($offset) {
-        return isset($this->files[$offset]);
-    }
+     public function current() {
+         return $this->files[$this->position];
+     }
 
-    public function offsetUnset($offset) {
-        unset($this->files[$offset]);
-    }
+     public function key() {
+         return $this->position;
+     }
 
-    public function offsetGet($offset) {
-        if (isset($this->files[$offset])) {
-            return $this->files[$offset];
-        }
+     public function next() {
+         ++$this->position;
+     }
 
-        return null;
-    }
+     public function valid() {
+         return isset($this->files[$this->position]);
+     }
 
     public function count() {
         return count($this->files);
@@ -95,7 +91,7 @@ class FileList implements \ArrayAccess, \Countable {
     /**
      * Set the value of Location
      *
-     * @param mixed location
+     * @param string location
      *
      * @return self
      */
@@ -109,7 +105,7 @@ class FileList implements \ArrayAccess, \Countable {
     /**
      * Get the value of Location
      *
-     * @return mixed
+     * @return string
      */
     public function getLocation()
     {
@@ -119,7 +115,7 @@ class FileList implements \ArrayAccess, \Countable {
     /**
      * Set the value of User
      *
-     * @param mixed user
+     * @param User user
      *
      * @return self
      */
@@ -133,7 +129,7 @@ class FileList implements \ArrayAccess, \Countable {
     /**
      * Get the value of User
      *
-     * @return mixed
+     * @return User
      */
     public function getUser()
     {
