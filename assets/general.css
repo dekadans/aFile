@@ -111,7 +111,16 @@ html, body, #AppContainer {
 }
 
 .listItemActive {
-    background-color: #dddddd;
+    background-color: #dddddd5c;
+}
+
+.fileName {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+       -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome and Opera */
 }
 
 /* MISC */

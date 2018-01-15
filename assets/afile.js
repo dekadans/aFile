@@ -103,6 +103,8 @@ class aFile {
                     this.selected.addClass('listItemActive');
                     $('#FileButtons button').prop('disabled', false);
                 }
+            }).dblclick(e => {
+                console.log('hej');
             });
         }, {location : path});
     }
