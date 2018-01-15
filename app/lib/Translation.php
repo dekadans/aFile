@@ -3,27 +3,27 @@
 namespace lib;
 
 class Translation {
-    private static $language;
-    private static $languageData;
+    private $language;
+    private $languageData;
 
-    public static function loadLanguage($language = 'en') {
+    public function __construct($language = 'en') {
         $languagePath = __DIR__ . '/../../config/' . $language . '.json';
         $languageFile = file_get_contents($languagePath);
         $languageFile = json_decode($languageFile, true);
-        self::$languageData = $languageFile;
+        $this->languageData = $languageFile;
     }
 
-    public static function getLanguage() {
-        return self::$language;
+    public function getLanguage() {
+        return $this->language;
     }
 
-    public static function getLanguageData() {
-        return self::$languageData;
+    public function getLanguageData() {
+        return $this->languageData;
     }
 
-    public static function translate($code) {
-        if (isset(self::$languageData[$code])) {
-            return self::$languageData[$code];
+    public function t($code) {
+        if (isset($this->languageData[$code])) {
+            return $this->languageData[$code];
         }
         else {
             return $code;

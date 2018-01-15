@@ -2,8 +2,6 @@
 
 namespace controllers;
 
-use \lib\Translation as L;
-
 abstract class AbstractController {
     const ACCESS_OPEN = 0;
     const ACCESS_LOGIN = 1;
@@ -32,7 +30,7 @@ abstract class AbstractController {
     }
 
     public function parseView($viewName, $params = []) {
-        $params['L'] = L::getLanguageData();
+        $params['L'] = \lib\Registry::get('translation')->getLanguageData();
         extract($params);
         require('views/' . $viewName . '.php');
     }

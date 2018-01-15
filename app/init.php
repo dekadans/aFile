@@ -42,19 +42,20 @@ require_once(__DIR__ . '/defuse-crypto.phar');
 /**
  * Parse config file and add it to registry.
  */
-$config = new \lib\Config(__DIR__ . '/../config/config.ini');
-\lib\Registry::set('config',$config);
+$config = new lib\Config(__DIR__ . '/../config/config.ini');
+lib\Registry::set('config',$config);
 
 /**
  * Connect to database and add handler to registry.
  */
 $db = new \lib\Database();
-\lib\Registry::set('db',$db);
+lib\Registry::set('db',$db);
 
 /**
  * Loads language data
  */
-\lib\Translation::loadLanguage($config->language);
+$translation = new lib\Translation($config->language);
+lib\Registry::set('translation', $translation);
 
 /**
  * If there is a user id in session, we add a User object to registry.
@@ -63,6 +64,6 @@ if (isset($_SESSION['aFile_User'])) {
     $user = new \lib\User($_SESSION['aFile_User']);
     if ($user->getId() !== '0') {
         $user->setKey($_SESSION['aFile_User_Key']);
-        \lib\Registry::set('user', $user);
+        lib\Registry::set('user', $user);
     }
 }

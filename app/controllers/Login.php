@@ -2,7 +2,7 @@
 
 namespace controllers;
 
-use lib\Translation;
+use lib\Registry;
 
 class Login extends AbstractController {
     public function getAccessLevel() {
@@ -28,19 +28,19 @@ class Login extends AbstractController {
                 }
                 else {
                     $this->outputJSON([
-                        'error' => Translation::translate('LOGIN_FAILED')
+                        'error' => Registry::get('translation')->t('LOGIN_FAILED')
                     ]);
                 }
             }
             else {
                 $this->outputJSON([
-                    'error' => Translation::translate('LOGIN_MISSING_PARAMETERS')
+                    'error' => Registry::get('translation')->t('LOGIN_MISSING_PARAMETERS')
                 ]);
             }
         }
         else {
             $this->outputJSON([
-                'error' => Translation::translate('ALREADY_SIGNED_IN')
+                'error' => Registry::get('translation')->t('ALREADY_SIGNED_IN')
             ]);
         }
     }
