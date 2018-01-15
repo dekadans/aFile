@@ -282,4 +282,8 @@ abstract class AbstractFile {
     {
         return $this->created;
     }
+
+    public function getStringId() {
+        return $this->string_id;
+    }
 }

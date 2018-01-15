@@ -2,6 +2,7 @@ class aFile {
     constructor() {
         this.info = null; // Data fetched from the server
         this.path = [];
+        this.selected = null;
 
         //this.findDefinedFiletypes();
         this.check();
@@ -88,27 +89,39 @@ class aFile {
         this.get('ListFiles', 'list', html => {
             this.showLoading(false);
             $('#List').html(html);
-        }, {location : path});
+            this.fileButtons();
 
-        /*
-        $.getJSON('app/api.php',{do : 'ListFiles', location : path}, data => {
-            this.showLoading(false);
-            $('#List').html();
-            for (var i = 0; i < data.length; i++) {
-                var ext = data[i].name.split('.').pop();
-                if (this.exts.indexOf(ext) == -1) {
-                    ext = 'blank';
+            $('.listItem').click(e => {
+                $('.listItem').removeClass('listItemActive');
+
+                if (this.selected !== null && this.selected[0] == $(e.target).closest('.listItem')[0]) {
+                    this.selected = null;
+                    $('#FileButtons button').prop('disabled', true);
                 }
+                else {
+                    this.selected = $(e.target).closest('.listItem');
+                    this.selected.addClass('listItemActive');
+                    $('#FileButtons button').prop('disabled', false);
+                }
+            });
+        }, {location : path});
+    }
 
-                var listItem = $('<tr>');
-                listItem.addClass('listItem');
-                listItem.append('<td><span class="flaticon-'+ ext +'"></td>');
-                listItem.append('<td>'+ data[i].name +'</td>');
-                listItem.append('<td>'+ this.humanFileSize(data[i].size, this.info.siprefix == '1' ? true : false) +'</td>');
-                listItem.append('<td>'+ data[i].last_edit +'</td>');
-                $('#List').append(listItem);
+    fileButtons() {
+        $('#FileButtons button').prop('disabled', true);
+
+        $('#Download').click(e => {
+            if (this.selected) {
+                var url = 'dl.php/' + this.selected.data('stringid');
+
+                if (this.selected.data('newtab')) {
+                    window.open(url);
+                }
+                else {
+                    window.document.location = url;
+                }
             }
-        });*/
+        });
     }
 
     get(controller, action = '', callback = null, data = {}) {

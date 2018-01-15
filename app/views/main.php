@@ -42,11 +42,11 @@
             </div>
             <div class="row">
                 <div class="col-md-12">
-                    <div class="btn-group" role="group" aria-label="...">
-                        <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-trash"></span></button>
+                    <div id="FileButtons" class="btn-group" role="group" aria-label="...">
+                        <button id="Delete" type="button" class="btn btn-default"><span class="glyphicon glyphicon-trash"></span></button>
                         <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-edit"></span></button>
                         <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-share"></span></button>
-                        <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-download-alt"></span></button>
+                        <button id="Download" type="button" class="btn btn-default"><span class="glyphicon glyphicon-download-alt"></span></button>
                     </div>
 
                     <div class="btn-group" role="group" aria-label="..." style="float:right;">

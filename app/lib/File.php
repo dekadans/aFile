@@ -96,6 +96,10 @@ class File extends AbstractFile {
         return $shareData;
     }
 
+    public function openFileInNewTab() {
+        return in_array($this->getMime(), Registry::get('config')->files->inline_download);
+    }
+
     /**
     *  STATIC
     */
@@ -160,5 +164,11 @@ class File extends AbstractFile {
     public function setTmpPath($path)
     {
         $this->tmpPath = $path;
+    }
+
+    public function getFileExtension() {
+        $fileNameParts = explode('.', $this->name);
+        $extension = array_pop($fileNameParts);
+        return $extension;
     }
 }
