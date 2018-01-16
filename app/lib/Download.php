@@ -31,7 +31,7 @@ class Download {
     /**
      * Get the value of File
      *
-     * @return mixed
+     * @return AbstractFile
      */
     public function getFile()
     {

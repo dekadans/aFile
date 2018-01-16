@@ -11,7 +11,7 @@ class File extends AbstractFile {
 
     /**
     * Reads and returns the contents of the File
-    * @return blob
+    * @return string|bool
     */
     public function read() {
         $encryptionKey = $this->getEncryptionKey();
@@ -26,7 +26,7 @@ class File extends AbstractFile {
             fclose($fh);
 
             if ($encContent) {
-                $content = $encryption->decrypt($encContent);
+                $content = $encryption->decryptOld($encContent);
                 return $content;
             }
             else {

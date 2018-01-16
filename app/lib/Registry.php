@@ -12,6 +12,10 @@ class Registry {
         self::$storage[$key] = $value;
     }
 
+    /**
+     * @param $key
+     * @return mixed
+     */
     public static function get($key) {
         if (is_array(self::$storage) && isset(self::$storage[$key])) {
             return self::$storage[$key];

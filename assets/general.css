@@ -123,6 +123,13 @@ html, body, #AppContainer {
                                   supported by Chrome and Opera */
 }
 
+.directoryIcon {
+    width: 30px;
+    margin-left: 5px;
+    margin-bottom: 14px;
+    margin-top: 14px;
+}
+
 /* MISC */
 .right {
     float: right;

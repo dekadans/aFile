@@ -4,6 +4,8 @@ class aFile {
         this.path = [];
         this.selected = null;
 
+        this.clickLock = false;
+
         //this.findDefinedFiletypes();
         this.check();
     }
@@ -37,8 +39,8 @@ class aFile {
         $('#LoginUsername').focus();
 
         $('#LoginButton').click(event => {
-            var username = $('#LoginUsername').val();
-            var password = $('#LoginPassword').val();
+            let username = $('#LoginUsername').val();
+            let password = $('#LoginPassword').val();
 
             if (username.length && password.length) {
                 this.showLoading(true);
@@ -48,7 +50,7 @@ class aFile {
                         $('#LoginMessage > .alert').html(data.error);
                         $('#LoginMessage').slideDown();
                     }
-                    else if (data.status == 'ok') {
+                    else if (data.status === 'ok') {
                         this.check();
                     }
                 }, {username : username, password : password});
@@ -56,7 +58,7 @@ class aFile {
         });
 
         $('#LoginPassword').keyup(e => {
-            if (e.which == 13) {
+            if (e.which === 13) {
                 $('#LoginButton').click();
             }
         });
@@ -67,6 +69,13 @@ class aFile {
      */
     mainView() {
         this.list();
+
+        $('#PathHome').click(e => {
+            e.preventDefault();
+            this.path = [];
+            this.drawPath();
+            this.list();
+        });
 
         $('#Logout').click(e => {
             e.preventDefault();
@@ -83,7 +92,7 @@ class aFile {
     list() {
         this.showLoading(true);
 
-        var path = '/' + this.path.join('/');
+        let path = '/' + this.path.join('/');
         path = btoa(path);
 
         this.get('ListFiles', 'list', html => {
@@ -92,29 +101,57 @@ class aFile {
             this.fileButtons();
 
             $('.listItem').click(e => {
-                $('.listItem').removeClass('listItemActive');
+                if (!this.clickLock) {
+                    let clickedItem = $(e.target).closest('.listItem');
 
-                if (this.selected !== null && this.selected[0] == $(e.target).closest('.listItem')[0]) {
-                    this.selected = null;
-                    $('#FileButtons button').prop('disabled', true);
-                }
-                else {
-                    this.selected = $(e.target).closest('.listItem');
-                    this.selected.addClass('listItemActive');
-                    $('#FileButtons button').prop('disabled', false);
+                    this.clickLock = true;
+
+                    if (this.selected !== null && this.selected[0] === clickedItem[0]) {
+                        this.selectItem(null);
+                    }
+                    else {
+                        this.selectItem(clickedItem);
+                    }
+                    setTimeout(() => {
+                        this.clickLock = false;
+                    }, 100);
                 }
             }).dblclick(e => {
-                console.log('hej');
+                let clickedItem = $(e.target).closest('.listItem');
+
+                if (this.selected === null) {
+                    this.selectItem(clickedItem);
+                }
+
+                if (this.selected.hasClass('directory')) {
+                    this.path.push(this.selected.find('.fileName').text());
+                    this.drawPath();
+                    this.list();
+                }
             });
         }, {location : path});
     }
 
+    selectItem(item) {
+        $('.listItem').removeClass('listItemActive');
+
+        if (item === null) {
+            this.selected = null;
+            $('#FileButtons').find('button').prop('disabled', true);
+        }
+        else {
+            this.selected = item;
+            this.selected.addClass('listItemActive');
+            $('#FileButtons').find('button').prop('disabled', false);
+        }
+    }
+
     fileButtons() {
-        $('#FileButtons button').prop('disabled', true);
+        $('#FileButtons').find('button').prop('disabled', true);
 
         $('#Download').click(e => {
             if (this.selected) {
-                var url = 'dl.php/' + this.selected.data('stringid');
+                let url = 'dl.php/' + this.selected.data('stringid');
 
                 if (this.selected.data('newtab')) {
                     window.open(url);
@@ -127,13 +164,23 @@ class aFile {
     }
 
     get(controller, action = '', callback = null, data = {}) {
-        var url = 'app/api?do=' + controller + '&action=' + action;
+        let url = 'app/api?do=' + controller + '&action=' + action;
         $.get(url, data, callback);
     }
 
     post(controller, action = '', callback = null, data = {}) {
-        var url = 'app/api?do=' + controller + '&action=' + action;
+        let url = 'app/api?do=' + controller + '&action=' + action;
         $.post(url, data, callback);
+    }
+
+    drawPath() {
+        $('#Path').find('.directory').remove();
+
+        for (let directoryName of this.path) {
+            let directory = $('<li>');
+            directory.addClass('directory').text(directoryName);
+            $('#Path').append(directory);
+        }
     }
 
     /**
@@ -156,14 +203,14 @@ class aFile {
      */
     findDefinedFiletypes() {
         this.exts = [];
-        for (var i = 0; i < document.styleSheets.length; i++) {
-            var name = document.styleSheets[i].href.split('/').pop();
+        for (let i = 0; i < document.styleSheets.length; i++) {
+            let name = document.styleSheets[i].href.split('/').pop();
             if (name == 'flaticon.css') {
-                for (var j = 0; j < document.styleSheets[i].rules.length; j++) {
-                    var definition = document.styleSheets[i].rules[j].selectorText;
+                for (let j = 0; j < document.styleSheets[i].rules.length; j++) {
+                    let definition = document.styleSheets[i].rules[j].selectorText;
                     if (typeof definition != 'undefined') {
                         if (definition.substring(0,10) == '.flaticon-') {
-                            var ext = definition.substring(10, definition.search(':'));
+                            let ext = definition.substring(10, definition.search(':'));
                             this.exts.push(ext);
                         }
                     }

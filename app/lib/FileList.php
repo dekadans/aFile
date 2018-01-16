@@ -40,6 +40,9 @@ class FileList implements \Iterator, \Countable {
             if ($file['type'] === 'FILE') {
                 $fileObject = new File();
             }
+            else if ($file['type'] === 'DIRECTORY') {
+                $fileObject = new Directory();
+            }
 
             $fileObject->setByDatabaseRow($file);
             $this->files[] = $fileObject;

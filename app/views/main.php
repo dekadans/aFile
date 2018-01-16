@@ -35,8 +35,8 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <ol class="breadcrumb">
-                        <li><?= $L['HOME'] ?></li>
+                    <ol class="breadcrumb" id="Path">
+                        <li><a href="#" id="PathHome"><?= $L['HOME'] ?></a></li>
                     </ol>
                 </div>
             </div>

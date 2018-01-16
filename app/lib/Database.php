@@ -3,6 +3,9 @@
 namespace lib;
 
 class Database {
+    /**
+     * @var \PDO
+     */
     protected $pdo;
 
     public function __construct() {

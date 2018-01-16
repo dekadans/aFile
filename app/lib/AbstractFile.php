@@ -172,7 +172,7 @@ abstract class AbstractFile {
     /**
      * Get the value of User
      *
-     * @return mixed
+     * @return User
      */
     public function getUser()
     {
@@ -285,5 +285,13 @@ abstract class AbstractFile {
 
     public function getStringId() {
         return $this->string_id;
+    }
+
+    public function isFile() {
+        return ($this->type === 'FILE');
+    }
+
+    public function isDirectory() {
+        return ($this->type === 'DIRECTORY');
     }
 }
