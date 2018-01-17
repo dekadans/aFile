@@ -129,6 +129,9 @@ class aFile {
                     this.drawPath();
                     this.list();
                 }
+                else if (this.selected.hasClass('file')) {
+                    $('#Download').click();
+                }
             });
         }, {location : path});
     }
