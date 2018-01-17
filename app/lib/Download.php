@@ -13,7 +13,7 @@ class Download {
     public function download() {
         $encryptionKey = $this->file->getEncryptionKey();
 
-        if ($encryptionKey) {
+        if ($this->file->isFile() && file_exists($this->file->getFilePath()) && $encryptionKey) {
             $encryption = new Encryption($encryptionKey);
             $tempFile = $encryption->decryptFile($this->file);
 
@@ -26,6 +26,10 @@ class Download {
             unlink($tempFile);
             die;
         }
+        else {
+            die('Could not download file.');
+        }
+
     }
 
     /**

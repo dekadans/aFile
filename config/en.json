@@ -13,5 +13,7 @@
     "SEARCH" : "Search",
     "SETTINGS" : "Settings",
     "LOGOUT" : "Sign out",
-    "HOME" : "Home"
+    "HOME" : "Home",
+
+    "ARE_YOU_SURE" : "Are you sure?"
 }

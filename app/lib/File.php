@@ -106,7 +106,7 @@ class File extends AbstractFile {
 
     /**
      * Creates a new file in the database and returns File object for it
-     * @param  user $user
+     * @param  User $user
      * @param  string $name
      * @param  string $location
      * @param  string $mime
@@ -151,7 +151,7 @@ class File extends AbstractFile {
     /**
      * Get the value of tmpPath
      *
-     * @return mixed
+     * @return string
      */
     public function getTmpPath()
     {

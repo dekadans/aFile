@@ -19,14 +19,13 @@ class Check extends AbstractController {
                 'username' => Registry::get('user')->getUsername(),
                 'type' => Registry::get('user')->getType()
             ];
+            $info['language'] = Registry::$language->getLanguageData();
         }
         else {
             $info['login'] = false;
         }
 
         //$info['siprefix'] = Registry::get('config')->presentation->siprefix;
-
-        //$info['language'] = \lib\Translation::getLanguageData();
 
         $this->outputJSON($info);
     }

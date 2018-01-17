@@ -28,19 +28,19 @@ class Login extends AbstractController {
                 }
                 else {
                     $this->outputJSON([
-                        'error' => Registry::get('translation')->t('LOGIN_FAILED')
+                        'error' => Registry::$language->translate('LOGIN_FAILED')
                     ]);
                 }
             }
             else {
                 $this->outputJSON([
-                    'error' => Registry::get('translation')->t('LOGIN_MISSING_PARAMETERS')
+                    'error' => Registry::$language->translate('LOGIN_MISSING_PARAMETERS')
                 ]);
             }
         }
         else {
             $this->outputJSON([
-                'error' => Registry::get('translation')->t('ALREADY_SIGNED_IN')
+                'error' => Registry::$language->translate('ALREADY_SIGNED_IN')
             ]);
         }
     }

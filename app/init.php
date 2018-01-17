@@ -55,7 +55,7 @@ lib\Registry::set('db',$db);
  * Loads language data
  */
 $translation = new lib\Translation($config->language);
-lib\Registry::set('translation', $translation);
+lib\Registry::$language = $translation;
 
 /**
  * If there is a user id in session, we add a User object to registry.

@@ -3,7 +3,12 @@
 namespace lib;
 
 class Registry {
-    public static $storage;
+    private static $storage;
+
+    /**
+     * @var Translation
+     */
+    public static $language;
 
     public static function set($key, $value) {
         if (!is_array(self::$storage)) {

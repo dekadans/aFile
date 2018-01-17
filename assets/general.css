@@ -92,6 +92,10 @@ html, body, #AppContainer {
     border-bottom: 1px solid #dddddd;
 }
 
+#FileButtons button:disabled {
+    cursor: default;
+}
+
 #List {
     width: 100%;
 }

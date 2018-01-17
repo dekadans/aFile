@@ -21,7 +21,7 @@ class Translation {
         return $this->languageData;
     }
 
-    public function t($code) {
+    public function translate($code) {
         if (isset($this->languageData[$code])) {
             return $this->languageData[$code];
         }

@@ -3,10 +3,11 @@
 namespace controllers;
 
 use \lib\File;
+use lib\Registry;
 
 class Upload extends AbstractController {
-    protected $location;
-    protected $user;
+    private $location;
+    private $user;
 
     public function getAccessLevel() {
         return self::ACCESS_LOGIN;
@@ -14,7 +15,7 @@ class Upload extends AbstractController {
 
     public function index() {
         $this->location = $this->param('location');
-        $this->user = \lib\Registry::get('user');
+        $this->user = Registry::get('user');
 
         $results = [];
 
@@ -32,7 +33,7 @@ class Upload extends AbstractController {
 
         if (in_array(false, $results)) {
             $this->outputJSON([
-                'error' => 'UPLOAD_FAILED'
+                'error' => Registry::$language->translate('UPLOAD_FAILED')
             ]);
         }
         else {

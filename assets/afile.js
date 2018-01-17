@@ -84,6 +84,8 @@ class aFile {
                 this.check();
             });
         });
+
+        this.initiateDropZone();
     }
 
     /**
@@ -92,8 +94,7 @@ class aFile {
     list() {
         this.showLoading(true);
 
-        let path = '/' + this.path.join('/');
-        path = btoa(path);
+        let path = this.getPath();
 
         this.get('ListFiles', 'list', html => {
             this.showLoading(false);
@@ -161,6 +162,70 @@ class aFile {
                 }
             }
         });
+
+        $('#Delete').click(e => {
+            if (this.selected && confirm(this.info.language.ARE_YOU_SURE)) {
+                let id = this.selected.data('id');
+
+                this.get('Delete', '', data => {
+                    if (data.error) {
+                        alert(data.error);
+                    }
+                    else {
+                        this.selected.remove();
+                        this.selected = null;
+                    }
+                }, {id : id});
+            }
+        });
+    }
+
+    initiateDropZone() {
+        $('#Main').on('drag dragstart dragend dragover dragenter dragleave drop', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        })
+        .on('dragover dragenter', function() {
+            //$form.addClass('is-dragover');
+        })
+        .on('dragleave dragend drop', function() {
+            //$form.removeClass('is-dragover');
+        })
+        .on('drop', e => {
+            let filesToUpload = e.originalEvent.dataTransfer.files;
+
+            let ajaxData = new FormData();
+
+            if (filesToUpload) {
+                $.each( filesToUpload, function(i, file) {
+                    ajaxData.append('fileinput'+i, file );
+                });
+            }
+
+            $.ajax({
+                url: 'app/api.php?do=Upload&location=' + this.getPath(),
+                type: 'POST',
+                data: ajaxData,
+                dataType: 'json',
+                cache: false,
+                contentType: false,
+                processData: false,
+                complete: () => {
+                    console.log('complete');
+                },
+                success: data => {
+                    if (data.error) {
+                        alert(data.error);
+                    }
+
+                    this.list();
+                },
+                error: () => {
+                    alert('Upload Error');
+                    this.list();
+                }
+            });
+        });
     }
 
     get(controller, action = '', callback = null, data = {}) {
@@ -171,6 +236,12 @@ class aFile {
     post(controller, action = '', callback = null, data = {}) {
         let url = 'app/api?do=' + controller + '&action=' + action;
         $.post(url, data, callback);
+    }
+
+    getPath() {
+        let path = '/' + this.path.join('/');
+        path = btoa(path);
+        return path;
     }
 
     drawPath() {
