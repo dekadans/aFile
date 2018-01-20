@@ -3,6 +3,7 @@
 namespace controllers;
 
 use \lib\File;
+use lib\FileRepository;
 use lib\Registry;
 use lib\User;
 
@@ -22,7 +23,7 @@ class Delete extends AbstractController {
         $result = false;
 
         if (is_numeric($id)) {
-            $file = new File($id);
+            $file = FileRepository::find($id);
             if ($file->getId() !== '0' && $file->getUser()->getId() === $this->user->getId()) {
                 $result = $file->delete();
             }

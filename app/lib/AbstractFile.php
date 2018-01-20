@@ -16,33 +16,33 @@ abstract class AbstractFile {
     protected $created;
     protected $string_id;
 
-    public function __construct($id = null) {
+    public function __construct()
+    {
         $this->id = '0';
-
-        if ($id) {
-            $this->setById($id);
-        }
     }
 
     /**
      * Object setup
      */
 
-    public function setById($id) {
+    /*public function setById($id)
+    {
         $checkFile = Registry::get('db')->getPDO()->prepare('SELECT * FROM files WHERE id = ?');
         $checkFile->execute([$id]);
         $fileData = $checkFile->fetch();
         $this->setByDatabaseRow($fileData);
     }
 
-    public function setByUniqueString($string_id) {
+    public function setByUniqueString($string_id)
+    {
         $checkFile = Registry::get('db')->getPDO()->prepare('SELECT * FROM files WHERE string_id = ?');
         $checkFile->execute([$string_id]);
         $fileData = $checkFile->fetch();
         $this->setByDatabaseRow($fileData);
-    }
+    }*/
 
-    public function setByDatabaseRow($fileData) {
+    public function setByDatabaseRow($fileData)
+    {
         if ($fileData) {
             $this->id = $fileData['id'];
             $this->user_id = $fileData['user_id'];
@@ -61,16 +61,19 @@ abstract class AbstractFile {
         }
     }
 
-    public function isset() {
+    public function isset() : bool
+    {
         return $this->id == '0' ? false : true;
     }
+
+    abstract public function delete() : bool;
 
     /**
     * Deletes the File
     * @return boolean
     */
-    public function delete() {
-        @unlink($this->getFilePath());
+    protected function deleteFileFromDatabase() : bool
+    {
         $deleteFile = Registry::get('db')->getPDO()->prepare('DELETE FROM files WHERE id = ?');
 
         if ($deleteFile->execute([$this->id])) {
@@ -87,7 +90,8 @@ abstract class AbstractFile {
      * @param  string $newName
      * @return boolean
      */
-    public function rename($newName) {
+    public function rename($newName) : bool
+    {
         if (!$this->exists($this->user, $newName, $this->location)) {
             return $this->update(['name' => $newName]);
         }
@@ -102,7 +106,8 @@ abstract class AbstractFile {
      * @param  array $data
      * @return boolean
      */
-    protected function update($data) {
+    protected function update($data) : bool
+    {
         $sets = [];
         foreach ($data as $column => $value) {
             if (!is_int($value)) {
@@ -127,9 +132,10 @@ abstract class AbstractFile {
      * @param  user $user
      * @param  string $name
      * @param  string $location
-     * @return booelan
+     * @return boolean
      */
-    public static function exists(User $user, $name, $location) {
+    public static function exists(User $user, $name, $location) : bool
+    {
         $checkFile = Registry::get('db')->getPDO()->prepare('SELECT * FROM files WHERE user_id = ? AND name = ? AND location = ?');
         $checkFile->execute([$user->getId(), $name, $location]);
         return $checkFile->fetch() ? true : false;
@@ -139,7 +145,8 @@ abstract class AbstractFile {
      * Generates a unique identifyer string for a files
      * @return string
      */
-    protected static function getUniqueStringId() {
+    protected static function getUniqueStringId() : string
+    {
         $fileQuery = Registry::get('db')->getPDO()->prepare('SELECT id FROM files WHERE string_id = ?');
         $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $length = Registry::get('config')->files->id_string_length;
@@ -203,11 +210,16 @@ abstract class AbstractFile {
         return $this->location;
     }
 
-    public function getSize() {
+    public function getSize()
+    {
         return $this->size;
     }
 
-    public function getSizeReadable() {
+    /**
+     * @return string
+     */
+    public function getSizeReadable() : string
+    {
         $siPrefix = Registry::get('config')->presentation->siprefix;
         $thresh = $siPrefix ? 1000 : 1024;
         $bytes = (int)$this->size;
@@ -283,15 +295,18 @@ abstract class AbstractFile {
         return $this->created;
     }
 
-    public function getStringId() {
+    public function getStringId()
+    {
         return $this->string_id;
     }
 
-    public function isFile() {
+    public function isFile() : bool
+    {
         return ($this->type === 'FILE');
     }
 
-    public function isDirectory() {
+    public function isDirectory() : bool
+    {
         return ($this->type === 'DIRECTORY');
     }
 }

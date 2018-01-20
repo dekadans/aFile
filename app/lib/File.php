@@ -13,7 +13,8 @@ class File extends AbstractFile {
     * Reads and returns the contents of the File
     * @return string|bool
     */
-    public function read() {
+    public function read()
+    {
         $encryptionKey = $this->getEncryptionKey();
 
         if ($encryptionKey) {
@@ -43,7 +44,8 @@ class File extends AbstractFile {
      * @param  string $pathToContent
      * @return boolean
      */
-    public function write($pathToContent = null) {
+    public function write($pathToContent = null)
+    {
         if (!is_null($pathToContent)) {
             $this->tmpPath = $pathToContent;
         }
@@ -72,7 +74,8 @@ class File extends AbstractFile {
     Encryption and sharing
      */
 
-    public function getEncryptionKey() {
+    public function getEncryptionKey()
+    {
         if ($this->encryption == 'PERSONAL') {
             if (Registry::get('user')) {
                 return Registry::get('user')->getKey();
@@ -88,7 +91,8 @@ class File extends AbstractFile {
         return false;
     }
 
-    public function getSharingInfo() {
+    public function getSharingInfo()
+    {
         $shareQuery = Registry::get('db')->getPDO()->prepare('SELECT * FROM share WHERE file_id = ?');
         $shareQuery->execute([$this->id]);
         $shareData = $shareQuery->fetch();
@@ -96,8 +100,15 @@ class File extends AbstractFile {
         return $shareData;
     }
 
-    public function openFileInNewTab() {
+    public function openFileInNewTab()
+    {
         return in_array($this->getMime(), Registry::get('config')->files->inline_download);
+    }
+
+    public function delete() : bool
+    {
+        @unlink($this->getFilePath());
+        return $this->deleteFileFromDatabase();
     }
 
     /**
@@ -113,7 +124,8 @@ class File extends AbstractFile {
      * @param  string $tmpPath
      * @return File | boolean
      */
-    public static function create(User $user, $name, $location, $mime, $tmpPath) {
+    public static function create(User $user, $name, $location, $mime, $tmpPath)
+    {
         if (!self::exists($user, $name, $location)) {
             $string_id = self::getUniqueStringId();
 
@@ -144,7 +156,8 @@ class File extends AbstractFile {
     * GETTERS AND SETTERS
     */
 
-    public function getFilePath() {
+    public function getFilePath() : string
+    {
         return __DIR__ . '/' . Registry::get('config')->files->path . $this->id;
     }
 
@@ -153,7 +166,7 @@ class File extends AbstractFile {
      *
      * @return string
      */
-    public function getTmpPath()
+    public function getTmpPath() : string
     {
         return $this->tmpPath;
     }
@@ -166,7 +179,8 @@ class File extends AbstractFile {
         $this->tmpPath = $path;
     }
 
-    public function getFileExtension() {
+    public function getFileExtension() : string
+    {
         $fileNameParts = explode('.', $this->name);
         $extension = array_pop($fileNameParts);
         return $extension;

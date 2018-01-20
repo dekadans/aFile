@@ -6,8 +6,7 @@ class Download {
     protected $file;
 
     public function __construct($id) {
-        $this->file = new File();
-        $this->file->setByUniqueString($id);
+        $this->file = FileRepository::findByUniqueString($id);
     }
 
     public function download() {

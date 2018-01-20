@@ -15,5 +15,8 @@
     "LOGOUT" : "Sign out",
     "HOME" : "Home",
 
-    "ARE_YOU_SURE" : "Are you sure?"
+    "ARE_YOU_SURE" : "Are you sure?",
+    "CONFIRM_DELETE" : "Delete",
+    "OK" : "Okay",
+    "CANCEL" : "Cancel"
 }

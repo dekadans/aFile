@@ -87,6 +87,10 @@ class aFile {
             });
         });
 
+        $('#Modal').on('shown.bs.modal', e => {
+            $('#ModalOk').focus();
+        });
+
         this.initiateDropZone();
     }
 
@@ -168,18 +172,21 @@ class aFile {
         });
 
         $('#Delete').click(e => {
-            if (this.selected && confirm(this.info.language.ARE_YOU_SURE)) {
-                let id = this.selected.data('id');
+            if (this.selected) {
+                let message = this.info.language.CONFIRM_DELETE + ' ' + this.selected.find('.fileName').text() + '?';
+                this.confirm(message, e => {
+                    let id = this.selected.data('id');
 
-                this.get('Delete', '', data => {
-                    if (data.error) {
-                        alert(data.error);
-                    }
-                    else {
-                        this.selected.remove();
-                        this.selected = null;
-                    }
-                }, {id : id});
+                    this.get('Delete', '', data => {
+                        if (data.error) {
+                            alert(data.error);
+                        }
+                        else {
+                            this.selected.remove();
+                            this.selected = null;
+                        }
+                    }, {id : id});
+                });
             }
         });
     }
@@ -216,7 +223,7 @@ class aFile {
                 contentType: false,
                 processData: false,
                 complete: () => {
-                    console.log('complete');
+                    //console.log('complete');
                 },
                 success: data => {
                     if (data.error) {
@@ -233,11 +240,10 @@ class aFile {
                     this.list();
                 },
                 xhr: () => {
-                    var xhr = new window.XMLHttpRequest();
+                    let xhr = new window.XMLHttpRequest();
                     xhr.upload.addEventListener("progress", evt => {
                         if (evt.lengthComputable) {
-                            var percentComplete = Math.ceil(evt.loaded / evt.total * 100);
-                            this.currentUploads[uploadId] = percentComplete;
+                            this.currentUploads[uploadId] = Math.ceil(evt.loaded / evt.total * 100);
                             this.updateProgress();
                         }
                     }, false);
@@ -256,6 +262,16 @@ class aFile {
     post(controller, action = '', callback = null, data = {}) {
         let url = 'app/api?do=' + controller + '&action=' + action;
         $.post(url, data, callback);
+    }
+
+    confirm(message, callback) {
+        $('#ModalTitle').text(this.info.language.ARE_YOU_SURE);
+        $('#ModalBody').text(message);
+        $('#ModalOk').off('click').on('click', e => {
+            callback(e);
+            $('#Modal').modal('hide');
+        });
+        $('#Modal').modal('show');
     }
 
     getPath() {
@@ -290,7 +306,6 @@ class aFile {
         for (let percent in this.currentUploads) {
             uploads++;
             combinedProgress += this.currentUploads[percent];
-            console.log(percent);
         }
 
         if (uploads > 0) {
