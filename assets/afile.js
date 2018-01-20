@@ -3,7 +3,7 @@ class aFile {
         this.info = null; // Data fetched from the server
         this.path = [];
         this.selected = null;
-
+        this.currentUploads = [];
         this.clickLock = false;
 
         //this.findDefinedFiletypes();
@@ -68,6 +68,8 @@ class aFile {
      * Eventbindings for the main view
      */
     mainView() {
+        this.fileButtons();
+
         this.list();
 
         $('#PathHome').click(e => {
@@ -99,7 +101,6 @@ class aFile {
         this.get('ListFiles', 'list', html => {
             this.showLoading(false);
             $('#List').html(html);
-            this.fileButtons();
 
             $('.listItem').click(e => {
                 if (!this.clickLock) {
@@ -196,6 +197,7 @@ class aFile {
         })
         .on('drop', e => {
             let filesToUpload = e.originalEvent.dataTransfer.files;
+            let uploadId = Math.random();
 
             let ajaxData = new FormData();
 
@@ -220,12 +222,27 @@ class aFile {
                     if (data.error) {
                         alert(data.error);
                     }
-
+                    delete this.currentUploads[uploadId];
+                    this.updateProgress();
                     this.list();
                 },
                 error: () => {
                     alert('Upload Error');
+                    delete this.currentUploads[uploadId];
+                    this.updateProgress();
                     this.list();
+                },
+                xhr: () => {
+                    var xhr = new window.XMLHttpRequest();
+                    xhr.upload.addEventListener("progress", evt => {
+                        if (evt.lengthComputable) {
+                            var percentComplete = Math.ceil(evt.loaded / evt.total * 100);
+                            this.currentUploads[uploadId] = percentComplete;
+                            this.updateProgress();
+                        }
+                    }, false);
+
+                    return xhr;
                 }
             });
         });
@@ -257,9 +274,6 @@ class aFile {
         }
     }
 
-    /**
-     * Shows/hides a "Loading" message
-     */
     showLoading(show) {
         if (show) {
             $('#Loading').show();
@@ -269,6 +283,22 @@ class aFile {
         }
     }
 
+    updateProgress() {
+        let combinedProgress = 0;
+        let uploads = 0;
+
+        for (let percent in this.currentUploads) {
+            uploads++;
+            combinedProgress += this.currentUploads[percent];
+            console.log(percent);
+        }
+
+        if (uploads > 0) {
+            combinedProgress /= uploads;
+        }
+        console.log(this.currentUploads, combinedProgress);
+        $('#Progress').css('width', combinedProgress + '%');
+    }
 
     /*************  OLD STUFF *******************''*/
 

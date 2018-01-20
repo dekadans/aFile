@@ -1,5 +1,7 @@
 <div id="Loading" class="view"><?= $L['LOADING'] ?></div>
 
+<div id="Progress"></div>
+
 <div id="Main" class="view">
     <nav class="navbar navbar-default navbar-fixed-top">
         <div class="container">
