@@ -31,4 +31,35 @@ class Directory extends AbstractFile
             return false;
         }
     }
+
+    /**
+     * @param User $user
+     * @param string $name
+     * @param string $location
+     * @return bool|AbstractFile
+     */
+    public static function create(User $user, $name, $location)
+    {
+        if (!self::exists($user, $name, $location)) {
+            $string_id = self::getUniqueStringId();
+
+            $addFile = Registry::get('db')->getPDO()->prepare('INSERT INTO files (user_id, name, location, type, encryption, string_id) VALUES (?,?,?,?,?,?)');
+
+            try {
+                if ($addFile->execute([$user->getId(), $name, $location, 'DIRECTORY', 'NONE', $string_id])) {
+                    $directory = FileRepository::find(Registry::get('db')->getPDO()->lastInsertId());
+                    return $directory;
+                }
+                else {
+                    return false;
+                }
+            }
+            catch (\PDOException $e) {
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
+    }
 }

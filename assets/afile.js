@@ -132,6 +132,7 @@ class aFile {
                 if (this.selected.hasClass('directory')) {
                     this.path.push(this.selected.find('.fileName').text());
                     this.drawPath();
+                    this.selectItem(null);
                     this.list();
                 }
                 else if (this.selected.hasClass('file')) {
@@ -183,7 +184,7 @@ class aFile {
                         }
                         else {
                             this.selected.remove();
-                            this.selected = null;
+                            this.selectItem(null);
                         }
                     }, {id : id});
                 });

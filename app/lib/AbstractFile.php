@@ -16,32 +16,17 @@ abstract class AbstractFile {
     protected $created;
     protected $string_id;
 
-    public function __construct()
+    public function __construct($data = null)
     {
-        $this->id = '0';
+        if ($data) {
+            $this->setData($data);
+        }
+        else {
+            $this->id = '0';
+        }
     }
 
-    /**
-     * Object setup
-     */
-
-    /*public function setById($id)
-    {
-        $checkFile = Registry::get('db')->getPDO()->prepare('SELECT * FROM files WHERE id = ?');
-        $checkFile->execute([$id]);
-        $fileData = $checkFile->fetch();
-        $this->setByDatabaseRow($fileData);
-    }
-
-    public function setByUniqueString($string_id)
-    {
-        $checkFile = Registry::get('db')->getPDO()->prepare('SELECT * FROM files WHERE string_id = ?');
-        $checkFile->execute([$string_id]);
-        $fileData = $checkFile->fetch();
-        $this->setByDatabaseRow($fileData);
-    }*/
-
-    public function setByDatabaseRow($fileData)
+    protected function setData($fileData)
     {
         if ($fileData) {
             $this->id = $fileData['id'];

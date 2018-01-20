@@ -38,13 +38,12 @@ class FileList implements \Iterator, \Countable {
 
         foreach ($filesResult as $file) {
             if ($file['type'] === 'FILE') {
-                $fileObject = new File();
+                $fileObject = new File($file);
             }
             else if ($file['type'] === 'DIRECTORY') {
-                $fileObject = new Directory();
+                $fileObject = new Directory($file);
             }
 
-            $fileObject->setByDatabaseRow($file);
             $this->files[] = $fileObject;
         }
     }

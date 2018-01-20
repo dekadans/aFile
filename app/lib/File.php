@@ -122,7 +122,7 @@ class File extends AbstractFile {
      * @param  string $location
      * @param  string $mime
      * @param  string $tmpPath
-     * @return File | boolean
+     * @return AbstractFile | boolean
      */
     public static function create(User $user, $name, $location, $mime, $tmpPath)
     {
@@ -133,7 +133,7 @@ class File extends AbstractFile {
 
             try {
                 if ($addFile->execute([$user->getId(), $name, $location, $mime, 'FILE', $string_id])) {
-                    $file = new self(Registry::get('db')->getPDO()->lastInsertId());
+                    $file = FileRepository::find(Registry::get('db')->getPDO()->lastInsertId());
                     $file->setTmpPath($tmpPath);
                     $file->write();
                     return $file;

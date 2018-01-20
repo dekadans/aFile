@@ -3,6 +3,9 @@
 namespace lib;
 
 class Download {
+    /**
+     * @var File
+     */
     protected $file;
 
     public function __construct($id) {

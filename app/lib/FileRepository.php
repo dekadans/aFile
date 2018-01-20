@@ -38,13 +38,11 @@ class FileRepository
     {
         if ($fileData) {
             if ($fileData['type'] === 'FILE') {
-                $file = new File();
+                $file = new File($fileData);
             }
             else if ($fileData['type'] === 'DIRECTORY') {
-                $file = new Directory();
+                $file = new Directory($fileData);
             }
-
-            $file->setByDatabaseRow($fileData);
         }
         else {
             $file = new File();

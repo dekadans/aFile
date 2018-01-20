@@ -6,6 +6,7 @@
     "LOGIN_FAILED" : "Wrong username or password.",
     "UPLOAD_FAILED" : "One or more files failed to upload.",
     "DELETE_FAILED" : "Could not delete file or directory.",
+    "CREATE_DIRECTORY_FAILED" : "Could not create directory.",
     "NO_FILE" : "No file found",
     "FAILED" : "Operation failed",
 
