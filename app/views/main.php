@@ -46,13 +46,13 @@
                 <div class="col-md-12">
                     <div id="FileButtons" class="btn-group" role="group" aria-label="...">
                         <button id="Delete" type="button" class="btn btn-default"><span class="glyphicon glyphicon-trash"></span></button>
-                        <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-edit"></span></button>
+                        <button id="Rename" type="button" class="btn btn-default"><span class="glyphicon glyphicon-edit"></span></button>
                         <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-share"></span></button>
                         <button id="Download" type="button" class="btn btn-default"><span class="glyphicon glyphicon-download-alt"></span></button>
                     </div>
 
                     <div class="btn-group" role="group" aria-label="..." style="float:right;">
-                        <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-folder-open"></span></button>
+                        <button id="CreateDirectory" type="button" class="btn btn-default"><span class="glyphicon glyphicon-folder-open"></span></button>
                         <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-link"></span></button>
                         <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-font"></span></button>
                     </div>

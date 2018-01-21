@@ -6,7 +6,6 @@ class aFile {
         this.currentUploads = [];
         this.clickLock = false;
 
-        //this.findDefinedFiletypes();
         this.check();
     }
 
@@ -88,7 +87,12 @@ class aFile {
         });
 
         $('#Modal').on('shown.bs.modal', e => {
-            $('#ModalOk').focus();
+            if ($('#Modal').find('#ModalInput').length) {
+                $('#ModalInput').focus();
+            }
+            else {
+                $('#ModalOk').focus();
+            }
         });
 
         this.initiateDropZone();
@@ -99,7 +103,7 @@ class aFile {
      */
     list() {
         this.showLoading(true);
-
+        this.selectItem(null);
         let path = this.getPath();
 
         this.get('ListFiles', 'list', html => {
@@ -159,19 +163,6 @@ class aFile {
     fileButtons() {
         $('#FileButtons').find('button').prop('disabled', true);
 
-        $('#Download').click(e => {
-            if (this.selected) {
-                let url = 'dl.php/' + this.selected.data('stringid');
-
-                if (this.selected.data('newtab')) {
-                    window.open(url);
-                }
-                else {
-                    window.document.location = url;
-                }
-            }
-        });
-
         $('#Delete').click(e => {
             if (this.selected) {
                 let message = this.info.language.CONFIRM_DELETE + ' ' + this.selected.find('.fileName').text() + '?';
@@ -189,6 +180,48 @@ class aFile {
                     }, {id : id});
                 });
             }
+        });
+
+        $('#Rename').click(e => {
+            if (this.selected) {
+                let currentNameElement = this.selected.find('.fileName');
+
+                this.input(this.info.language.RENAME, value => {
+                    this.post('Rename', '', data => {
+                        if (data.error) {
+                            alert(data.error);
+                        }
+                        else {
+                            currentNameElement.text(value);
+                        }
+                    }, {id : this.selected.data('id'), name : value});
+                }, currentNameElement.text());
+            }
+        });
+
+        $('#Download').click(e => {
+            if (this.selected) {
+                let url = 'dl.php/' + this.selected.data('stringid');
+
+                if (this.selected.data('newtab')) {
+                    window.open(url);
+                }
+                else {
+                    window.document.location = url;
+                }
+            }
+        });
+
+
+        $('#CreateDirectory').click(e => {
+            this.input(this.info.language.CREATE_DIRECTORY, value => {
+                this.post('Create','directory', data => {
+                    if (data.error) {
+                        alert(data.error);
+                    }
+                    this.list();
+                }, {location : this.getPath(), name : value});
+            });
         });
     }
 
@@ -275,6 +308,24 @@ class aFile {
         $('#Modal').modal('show');
     }
 
+    input(title, callback, defaultValue = '') {
+        $('#ModalTitle').text(title);
+        $('#ModalBody').html('<input type="text" class="form-control" id="ModalInput">');
+        $('#ModalInput').val(defaultValue).keyup(e => {
+            if (e.which === 13) {
+                $('#ModalOk').click();
+            }
+        });
+        $('#ModalOk').off('click').on('click', e => {
+            let value = $('#ModalInput').val();
+            if (value !== '') {
+                callback(value);
+                $('#Modal').modal('hide');
+            }
+        });
+        $('#Modal').modal('show');
+    }
+
     getPath() {
         let path = '/' + this.path.join('/');
         path = btoa(path);
@@ -312,30 +363,7 @@ class aFile {
         if (uploads > 0) {
             combinedProgress /= uploads;
         }
-        console.log(this.currentUploads, combinedProgress);
+
         $('#Progress').css('width', combinedProgress + '%');
-    }
-
-    /*************  OLD STUFF *******************''*/
-
-    /**
-     * Find which file extentions that has icons defined for them
-     */
-    findDefinedFiletypes() {
-        this.exts = [];
-        for (let i = 0; i < document.styleSheets.length; i++) {
-            let name = document.styleSheets[i].href.split('/').pop();
-            if (name == 'flaticon.css') {
-                for (let j = 0; j < document.styleSheets[i].rules.length; j++) {
-                    let definition = document.styleSheets[i].rules[j].selectorText;
-                    if (typeof definition != 'undefined') {
-                        if (definition.substring(0,10) == '.flaticon-') {
-                            let ext = definition.substring(10, definition.search(':'));
-                            this.exts.push(ext);
-                        }
-                    }
-                }
-            }
-        }
     }
 }

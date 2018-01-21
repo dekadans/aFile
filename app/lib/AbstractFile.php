@@ -77,7 +77,7 @@ abstract class AbstractFile {
      */
     public function rename($newName) : bool
     {
-        if (!$this->exists($this->user, $newName, $this->location)) {
+        if (!$this->exists($this->getUser(), $newName, $this->location)) {
             return $this->update(['name' => $newName]);
         }
         else {

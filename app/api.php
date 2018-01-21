@@ -27,20 +27,20 @@ if (isset($_GET['do']) && !empty($_GET['do'])) {
                 $controller->$action();
             }
             else {
-                echo \controllers\AbstractController::outputJSON([
-                    'error' => 'NOT_FOUND'
+                \controllers\AbstractController::outputJSON([
+                    'error' => lib\Registry::$language->translate('NOT_FOUND')
                 ]);
             }
         }
         else {
-            echo \controllers\AbstractController::outputJSON([
-                'error' => 'ACCESS_DENIED'
+            \controllers\AbstractController::outputJSON([
+                'error' => lib\Registry::$language->translate('ACCESS_DENIED')
             ]);
         }
     }
     else {
-        echo \controllers\AbstractController::outputJSON([
-            'error' => 'NOT_FOUND'
+        \controllers\AbstractController::outputJSON([
+            'error' => lib\Registry::$language->translate('NOT_FOUND')
         ]);
     }
 }
