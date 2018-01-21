@@ -42,10 +42,8 @@ class aFile {
             let password = $('#LoginPassword').val();
 
             if (username.length && password.length) {
-                this.showLoading(true);
                 this.post('Login', '', data => {
                     if (data.error) {
-                        this.showLoading(false);
                         $('#LoginMessage > .alert').html(data.error);
                         $('#LoginMessage').slideDown();
                     }
@@ -80,7 +78,6 @@ class aFile {
 
         $('#Logout').click(e => {
             e.preventDefault();
-            this.showLoading(true);
             this.get('Logout', '', data => {
                 this.check();
             });
@@ -102,12 +99,10 @@ class aFile {
      * Retrieves the list of files and displayes them
      */
     list() {
-        this.showLoading(true);
         this.selectItem(null);
         let path = this.getPath();
 
         this.get('ListFiles', 'list', html => {
-            this.showLoading(false);
             $('#List').html(html);
 
             $('.listItem').click(e => {
@@ -289,13 +284,23 @@ class aFile {
     }
 
     get(controller, action = '', callback = null, data = {}) {
+        this.showLoading(true);
+
         let url = 'app/api?do=' + controller + '&action=' + action;
-        $.get(url, data, callback);
+        $.get(url, data, returnData => {
+            this.showLoading(false);
+            callback(returnData);
+        });
     }
 
     post(controller, action = '', callback = null, data = {}) {
+        this.showLoading(true);
+
         let url = 'app/api?do=' + controller + '&action=' + action;
-        $.post(url, data, callback);
+        $.post(url, data, returnData => {
+            this.showLoading(false);
+            callback(returnData);
+        });
     }
 
     confirm(message, callback) {
