@@ -6,6 +6,7 @@ class aFile {
         this.currentUploads = [];
         this.clickLock = false;
 
+        this.keybindings();
         this.check();
     }
 
@@ -27,6 +28,56 @@ class aFile {
                     $('body').html(html);
                     this.loginView();
                 });
+            }
+        });
+    }
+
+    keybindings() {
+        $(document).keyup(e => {
+            if (!$('#Modal').is(':visible')) {
+                if (this.selected) {
+                    if (e.which === 46) { // Delete
+                        $('#Delete').click();
+                    }
+                    else if (e.which === 82) { // R
+                        $('#Rename').click();
+                    }
+                    else if (e.which === 13) { // Enter
+                        this.selected.dblclick();
+                    }
+                    else if (e.which === 27) { // Escape
+                        this.selectItem(null);
+                    }
+                }
+
+                if (e.which === 38) { // Up
+                    if (this.selected) {
+                        let prevInList = this.selected.prev();
+                        if (prevInList.length) {
+                            this.selectItem(prevInList);
+                        }
+                    }
+                    else {
+                        let lastInList = $('.listItem:last');
+                        if (lastInList.length) {
+                            this.selectItem(lastInList);
+                        }
+                    }
+                }
+                else if (e.which === 40) { // Down
+                    if (this.selected) {
+                        let nextInList = this.selected.next();
+                        if (nextInList.length) {
+                            this.selectItem(nextInList);
+                        }
+                    }
+                    else {
+                        let firstInList = $('.listItem:first');
+                        if (firstInList.length) {
+                            this.selectItem(firstInList);
+                        }
+                    }
+                }
             }
         });
     }
@@ -69,7 +120,7 @@ class aFile {
 
         this.list();
 
-        $('#PathHome').click(e => {
+        $('#PathHome, #BrandHome').click(e => {
             e.preventDefault();
             this.path = [];
             this.drawPath();
@@ -152,6 +203,10 @@ class aFile {
             this.selected = item;
             this.selected.addClass('listItemActive');
             $('#FileButtons').find('button').prop('disabled', false);
+
+            if (this.selected.hasClass('directory')) {
+                $('#Download, #Share').prop('disabled', true);
+            }
         }
     }
 
@@ -315,14 +370,14 @@ class aFile {
 
     input(title, callback, defaultValue = '') {
         $('#ModalTitle').text(title);
-        $('#ModalBody').html('<input type="text" class="form-control" id="ModalInput">');
+        $('#ModalBody').html('<input type="text" class="form-control" spellcheck="false" id="ModalInput">');
         $('#ModalInput').val(defaultValue).keyup(e => {
             if (e.which === 13) {
                 $('#ModalOk').click();
             }
         });
         $('#ModalOk').off('click').on('click', e => {
-            let value = $('#ModalInput').val();
+            let value = $('#ModalInput').val().trim();
             if (value !== '') {
                 callback(value);
                 $('#Modal').modal('hide');

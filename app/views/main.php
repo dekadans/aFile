@@ -12,7 +12,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a href="#" class="navbar-brand"><?= $L['BRAND'] ?></a>
+                <a href="#" class="navbar-brand" id="BrandHome"><?= $L['BRAND'] ?></a>
             </div>
             <div class="navbar-collapse collapse" id="test" aria-expanded="true">
                 <ul class="nav navbar-nav navbar-right">
@@ -47,7 +47,7 @@
                     <div id="FileButtons" class="btn-group" role="group" aria-label="...">
                         <button id="Delete" type="button" class="btn btn-default"><span class="glyphicon glyphicon-trash"></span></button>
                         <button id="Rename" type="button" class="btn btn-default"><span class="glyphicon glyphicon-edit"></span></button>
-                        <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-share"></span></button>
+                        <button id="Share" type="button" class="btn btn-default"><span class="glyphicon glyphicon-share"></span></button>
                         <button id="Download" type="button" class="btn btn-default"><span class="glyphicon glyphicon-download-alt"></span></button>
                     </div>
 
