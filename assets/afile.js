@@ -32,8 +32,11 @@ class aFile {
         });
     }
 
+    /**
+     * Bind various keyboard shortcuts
+     */
     keybindings() {
-        $(document).keyup(e => {
+        $(document).keydown(e => {
             if (!$('#Modal').is(':visible')) {
                 if (this.selected) {
                     if (e.which === 46) { // Delete
@@ -51,24 +54,17 @@ class aFile {
                 }
 
                 if (e.which === 38) { // Up
+                    e.preventDefault();
                     if (this.selected) {
                         let prevInList = this.selected.prev();
                         if (prevInList.length) {
                             this.selectItem(prevInList);
                         }
-                    }
-                    else {
-                        let lastInList = $('.listItem:last');
-                        if (lastInList.length) {
-                            this.selectItem(lastInList);
-                        }
-                    }
-                }
-                else if (e.which === 40) { // Down
-                    if (this.selected) {
-                        let nextInList = this.selected.next();
-                        if (nextInList.length) {
-                            this.selectItem(nextInList);
+                        let menuHeight = $('.navbar').outerHeight() + $('#Menu').outerHeight();
+
+                        if (this.selected.position().top - $(window).scrollTop() - menuHeight < 0)
+                        {
+                            $(window).scrollTop($(window).scrollTop() - this.selected.outerHeight());
                         }
                     }
                     else {
@@ -76,6 +72,34 @@ class aFile {
                         if (firstInList.length) {
                             this.selectItem(firstInList);
                         }
+                        $(window).scrollTop(0);
+                    }
+                }
+                else if (e.which === 40) { // Down
+                    e.preventDefault();
+                    if (this.selected) {
+                        let nextInList = this.selected.next();
+                        if (nextInList.length) {
+                            this.selectItem(nextInList);
+                        }
+
+                        if ($(window).scrollTop() + $(window).height() < $(window).scrollTop() + this.selected.position().top + this.selected.outerHeight()) {
+                            $(window).scrollTop($(window).scrollTop() + this.selected.outerHeight());
+                        }
+                    }
+                    else {
+                        let firstInList = $('.listItem:first');
+                        if (firstInList.length) {
+                            this.selectItem(firstInList);
+                        }
+                        $(window).scrollTop(0);
+                    }
+                }
+                else if (e.which === 8) {
+                    if (this.path.length > 0) {
+                        this.path.pop();
+                        this.drawPath();
+                        this.list();
                     }
                 }
             }
@@ -83,7 +107,7 @@ class aFile {
     }
 
     /**
-     * Eventbindings for the login view
+     * Setup the login view
      */
     loginView() {
         $('#LoginUsername').focus();
@@ -113,7 +137,7 @@ class aFile {
     }
 
     /**
-     * Eventbindings for the main view
+     * Setup for the main file list view
      */
     mainView() {
         this.fileButtons();
@@ -147,7 +171,7 @@ class aFile {
     }
 
     /**
-     * Retrieves the list of files and displayes them
+     * Retrieves the list of files
      */
     list() {
         this.selectItem(null);
@@ -192,6 +216,10 @@ class aFile {
         }, {location : path});
     }
 
+    /**
+     * Sets the Jquery representation of a file in the list as selected
+     * @param item
+     */
     selectItem(item) {
         $('.listItem').removeClass('listItemActive');
 
@@ -210,6 +238,9 @@ class aFile {
         }
     }
 
+    /**
+     * Binds events for the menu buttons
+     */
     fileButtons() {
         $('#FileButtons').find('button').prop('disabled', true);
 
@@ -219,13 +250,21 @@ class aFile {
                 this.confirm(message, e => {
                     let id = this.selected.data('id');
 
+                    let selectNextInList = this.selected.next();
+                    if (selectNextInList.length === 0) {
+                        selectNextInList = this.selected.prev();
+                    }
+                    if (selectNextInList.length === 0) {
+                        selectNextInList = null;
+                    }
+
                     this.get('Delete', '', data => {
                         if (data.error) {
                             alert(data.error);
                         }
                         else {
                             this.selected.remove();
-                            this.selectItem(null);
+                            this.selectItem(selectNextInList);
                         }
                     }, {id : id});
                 });
@@ -275,6 +314,9 @@ class aFile {
         });
     }
 
+    /**
+     * Setup of the upload functionality
+     */
     initiateDropZone() {
         $('#Main').on('drag dragstart dragend dragover dragenter dragleave drop', function(e) {
             e.preventDefault();
@@ -338,6 +380,13 @@ class aFile {
         });
     }
 
+    /**
+     * Sends a GET request to the server
+     * @param controller
+     * @param action
+     * @param callback
+     * @param data
+     */
     get(controller, action = '', callback = null, data = {}) {
         this.showLoading(true);
 
@@ -348,6 +397,13 @@ class aFile {
         });
     }
 
+    /**
+     * Sends a POST request to the server
+     * @param controller
+     * @param action
+     * @param callback
+     * @param data
+     */
     post(controller, action = '', callback = null, data = {}) {
         this.showLoading(true);
 
@@ -358,6 +414,11 @@ class aFile {
         });
     }
 
+    /**
+     * Displays a confirm modal
+     * @param message
+     * @param callback
+     */
     confirm(message, callback) {
         $('#ModalTitle').text(this.info.language.ARE_YOU_SURE);
         $('#ModalBody').text(message);
@@ -368,6 +429,12 @@ class aFile {
         $('#Modal').modal('show');
     }
 
+    /**
+     * Displays a text input modal
+     * @param title
+     * @param callback
+     * @param defaultValue
+     */
     input(title, callback, defaultValue = '') {
         $('#ModalTitle').text(title);
         $('#ModalBody').html('<input type="text" class="form-control" spellcheck="false" id="ModalInput">');
@@ -386,12 +453,19 @@ class aFile {
         $('#Modal').modal('show');
     }
 
+    /**
+     * Returns the current base64-encoded path
+     * @returns {string}
+     */
     getPath() {
         let path = '/' + this.path.join('/');
         path = btoa(path);
         return path;
     }
 
+    /**
+     * Draws breadcrumbs of the current path
+     */
     drawPath() {
         $('#Path').find('.directory').remove();
 
@@ -402,6 +476,10 @@ class aFile {
         }
     }
 
+    /**
+     * Displays the loading message
+     * @param show
+     */
     showLoading(show) {
         if (show) {
             $('#Loading').show();
@@ -411,6 +489,9 @@ class aFile {
         }
     }
 
+    /**
+     * Updates the upload progress bar
+     */
     updateProgress() {
         let combinedProgress = 0;
         let uploads = 0;
