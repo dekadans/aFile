@@ -5,6 +5,9 @@ namespace lib;
 class File extends AbstractFile {
     protected $tmpPath;
 
+    const ENCRYPTION_PERSONAL = 'PERSONAL';
+    const ENCRYPTION_TOKEN = 'TOKEN';
+
     /**
      * FILE OPERATIONS
      */
@@ -76,7 +79,7 @@ class File extends AbstractFile {
 
     public function getEncryptionKey()
     {
-        if ($this->encryption == 'PERSONAL') {
+        if ($this->encryption == self::ENCRYPTION_PERSONAL) {
             if (Registry::get('user')) {
                 return Registry::get('user')->getKey();
             }
@@ -98,6 +101,27 @@ class File extends AbstractFile {
         $shareData = $shareQuery->fetch();
 
         return $shareData;
+    }
+
+    /**
+     * @param string $encryptionKey Key in ASCII format
+     * @param string $type
+     */
+    public function changeEncryptionKey($encryptionKey, $type)
+    {
+        $encryption = new Encryption($this->getEncryptionKey());
+        $unencryptedFile = $encryption->decryptFile($this);
+
+        if ($unencryptedFile) {
+            $encryption->setKey($encryptionKey);
+
+            if ($encryption->encryptFile($this)) {
+                @unlink($this->getTmpPath());
+                $this->update([
+                    'encryption' => $type
+                ]);
+            }
+        }
     }
 
     public function openFileInNewTab()

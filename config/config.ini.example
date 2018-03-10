@@ -14,7 +14,7 @@ database = DATABASE
 ; Must include a trailing /
 path = "../../storage/"
 maxsize = 20971520
-id_string_length = 4
+id_string_length = 5
 
 inline_download[] = application/pdf
 inline_download[] = image/jpeg

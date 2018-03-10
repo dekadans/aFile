@@ -38,14 +38,20 @@ class Acl {
     /**
      * Checks access to a requested download
      * @param  Download $download
+     * @param string $token
      * @return boolean
      */
-    public static function checkDownloadAccess(Download $download) {
+    public static function checkDownloadAccess(Download $download, $token) {
         if (Registry::get('user') && Registry::get('user')->getId() == $download->getFile()->getUser()->getId()) {
             return true;
         }
+        else {
+            $sharingInfo = $download->getFile()->getSharingInfo();
 
-        // Sharing logic should be here
+            if (is_array($sharingInfo) && in_array($sharingInfo['active'], [Sharing::STATE_OPEN, Sharing::STATE_BOTH]) && $sharingInfo['open_token'] === $token) {
+                return true;
+            }
+        }
 
         return false;
     }

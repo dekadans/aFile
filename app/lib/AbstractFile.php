@@ -133,7 +133,7 @@ abstract class AbstractFile {
     protected static function getUniqueStringId() : string
     {
         $fileQuery = Registry::get('db')->getPDO()->prepare('SELECT id FROM files WHERE string_id = ?');
-        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyz';
         $length = Registry::get('config')->files->id_string_length;
 
         while (true) {
