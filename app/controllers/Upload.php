@@ -17,10 +17,12 @@ class Upload extends AbstractController {
         $this->location = $this->param('location');
         $this->user = Registry::get('user');
 
+        $maxsize = Registry::get('config')->files->maxsize;
+
         $results = [];
 
         foreach ($_FILES as $file) {
-            if ($file['error']) {
+            if ($file['error'] || $file['size'] > $maxsize) {
                 $results[] = false;
                 continue;
             }
