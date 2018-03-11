@@ -85,27 +85,34 @@ class File extends AbstractFile {
             }
         }
         else {
-            $sharingData = $this->getSharingInfo();
-            return $sharingData['encryption_key'] ?? false;
+            $token = $this->getToken();
+            return $token->getEncryptionKey() ?? false;
         }
-
-        // Token keys to be implemented
 
         return false;
     }
 
-    public function getSharingInfo()
+    /**
+     * @return FileToken|null
+     */
+    public function getToken()
     {
         $shareQuery = Registry::get('db')->getPDO()->prepare('SELECT * FROM share WHERE file_id = ?');
         $shareQuery->execute([$this->id]);
         $shareData = $shareQuery->fetch();
 
-        return $shareData;
+        if ($shareData) {
+            return FileToken::createFromArray($shareData);
+        }
+        else {
+            return FileToken::createFromArray(['id' => null, 'file_id' => $this->id]);
+        }
     }
 
     /**
      * @param string $encryptionKey Key in ASCII format
      * @param string $type
+     * @return bool
      */
     public function changeEncryptionKey($encryptionKey, $type)
     {
@@ -120,8 +127,10 @@ class File extends AbstractFile {
                 $this->update([
                     'encryption' => $type
                 ]);
+                return true;
             }
         }
+        return false;
     }
 
     public function openFileInNewTab()

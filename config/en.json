@@ -13,6 +13,9 @@
     "RENAME_FAILED" : "Could not rename file or directory",
     "NO_FILE" : "No file found",
     "FAILED" : "Operation failed",
+    "SHARE" : "Share",
+    "SHARE_CREATE" : "Create a shareable link",
+    "SHARE_DESTROY" : "Destroy link",
 
     "BRAND" : "aFile",
     "SEARCH" : "Search",

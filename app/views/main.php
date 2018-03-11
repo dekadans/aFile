@@ -75,7 +75,7 @@
                 </div>
                 <div class="modal-body" id="ModalBody"></div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal"><?= $L['CANCEL'] ?></button>
+                    <button type="button" class="btn btn-default" id="ModalCancel" data-dismiss="modal"><?= $L['CANCEL'] ?></button>
                     <button type="button" class="btn btn-primary" id="ModalOk"><?= $L['OK'] ?></button>
                 </div>
             </div>

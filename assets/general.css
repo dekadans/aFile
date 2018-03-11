@@ -105,6 +105,9 @@ html, body, #AppContainer {
     cursor:pointer;
 }
 
+.listItem > td:first-child {
+    position: relative;
+}
 .listItem > td:nth-child(2) {
     width: 70%;
 }
@@ -132,6 +135,13 @@ html, body, #AppContainer {
     margin-left: 5px;
     margin-bottom: 14px;
     margin-top: 14px;
+}
+
+.hasToken {
+    position: absolute;
+    left: -20px;
+    top: 20px;
+    cursor: default;
 }
 
 #Progress {

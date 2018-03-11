@@ -19,11 +19,13 @@ class Share extends AbstractController {
      */
     protected $user;
 
-    public function getAccessLevel() {
+    public function getAccessLevel()
+    {
         return self::ACCESS_LOGIN;
     }
 
-    public function init() {
+    public function init()
+    {
         $fileId = $this->param('id');
         $this->file = FileRepository::find($fileId);
         $this->user = Registry::get('user');
@@ -41,19 +43,21 @@ class Share extends AbstractController {
         }
     }
 
-    public function index() {
+    public function index()
+    {
     }
 
-    public function actionCreate() {
+    public function actionCreate()
+    {
         $password = $this->param('password');
         $validUntil = $this->param('valid');
-        $sharing = new Sharing($this->file);
+        $token = $this->file->getToken();
 
         if (isset($password)) {
-            $result = $sharing->enablePassword($password, $validUntil);
+            $result = $token->enablePassword($password, $validUntil);
         }
         else {
-            $result = $sharing->enableOpen($validUntil);
+            $result = $token->enableOpen($validUntil);
         }
 
         if ($result) {
@@ -66,5 +70,27 @@ class Share extends AbstractController {
                 'error' => 'SHARING_ERROR'
             ]);
         }
+    }
+
+    public function actionDestroy()
+    {
+        $token = $this->file->getToken();
+        if ($token->exists()) {
+            if ($token->destroy()) {
+                $this->outputJSON([
+                    'status' => 'ok'
+                ]);
+            }
+        }
+
+        $this->outputJSON([
+            'error' => 'COULD_NOT_DESTROY_TOKEN'
+        ]);
+    }
+
+    public function actionPanel()
+    {
+        $token = $this->file->getToken();
+        $this->parseView('partials/sharepanel', ['token' => $token, 'file' => $this->file]);
     }
 }

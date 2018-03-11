@@ -167,6 +167,10 @@ class aFile {
             }
         });
 
+        $('#Modal').on('hidden.bs.modal', e => {
+            $('#ModalCancel').show();
+        });
+
         this.initiateDropZone();
     }
 
@@ -285,6 +289,51 @@ class aFile {
                         }
                     }, {id : this.selected.data('id'), name : value});
                 }, currentNameElement.text());
+            }
+        });
+
+        $('#Share').click(e => {
+            if (this.selected) {
+                let fileId = this.selected.data('id');
+
+                $('#ModalTitle').text(this.info.language.SHARE);
+                $('#ModalCancel').hide();
+                $('#ModalOk').off('click').on('click', e => {
+                    $('#Modal').modal('hide');
+                });
+
+                let loadShareDialog = () => {
+                    this.get('Share', 'panel', html => {
+                        $('#ModalBody').html(html);
+                        $('#Modal').modal('show');
+
+                        $('#CreateToken').click(e => {
+                            this.get('Share', 'create', result => {
+                                if (result.error) {
+                                    alert(data.error);
+                                }
+                                else {
+                                    loadShareDialog();
+                                    this.list();
+                                }
+                            }, {id : fileId});
+                        });
+
+                        $('#DestroyToken').click(e => {
+                            this.get('Share', 'destroy', result => {
+                                if (result.error) {
+                                    alert(data.error);
+                                }
+                                else {
+                                    loadShareDialog();
+                                    this.list();
+                                }
+                            }, {id : fileId});
+                        });
+                    }, {id : fileId});
+                };
+
+                loadShareDialog();
             }
         });
 

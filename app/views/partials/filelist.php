@@ -1,11 +1,17 @@
-<?php foreach ($fileList as $file): ?>
+<?php /** @var \lib\AbstractFile $file */
+foreach ($fileList as $file): ?>
     <?php if ($file->isFile()): ?>
 
         <tr class="listItem file"
             data-id="<?= $file->getId() ?>"
             data-newtab="<?= $file->openFileInNewTab() ?>"
             data-stringid="<?= $file->getStringId() ?>">
-            <td><span class="flaticon-<?= $file->getFileExtension() ?> flaticon-blank"></span></td>
+            <td>
+                <?php if ($file->getEncryption() === \lib\File::ENCRYPTION_TOKEN): ?>
+                <span class="glyphicon glyphicon-link hasToken"></span>
+                <?php endif; ?>
+                <span class="flaticon-<?= $file->getFileExtension() ?> flaticon-blank"></span>
+            </td>
             <td class="fileName"><?= $file->getName() ?></td>
             <td><?= $file->getSizeReadable() ?></td>
             <td><?= $file->getLastEdit() // TODO: Readable version eg. Idag kl 12:00 ?></td>

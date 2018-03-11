@@ -46,9 +46,9 @@ class Acl {
             return true;
         }
         else {
-            $sharingInfo = $download->getFile()->getSharingInfo();
+            $fileToken = $download->getFile()->getToken();
 
-            if (is_array($sharingInfo) && in_array($sharingInfo['active'], [Sharing::STATE_OPEN, Sharing::STATE_BOTH]) && $sharingInfo['open_token'] === $token) {
+            if ($fileToken->exists() && in_array($fileToken->getActiveState(), [FileToken::STATE_OPEN, FileToken::STATE_BOTH]) && $fileToken->getOpenToken() === $token) {
                 return true;
             }
         }
