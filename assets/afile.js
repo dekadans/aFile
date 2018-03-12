@@ -37,7 +37,7 @@ class aFile {
      */
     keybindings() {
         $(document).keydown(e => {
-            if (!$('#Modal').is(':visible')) {
+            if (!$('#Modal, #ModalEditor').is(':visible')) {
                 if (this.selected) {
                     if (e.which === 46) { // Delete
                         $('#Delete').click();
@@ -103,6 +103,13 @@ class aFile {
                     }
                 }
             }
+            else if ($('#ModalEditor').is(':visible')) {
+                // Ctrl/Cmd + s
+                if (e.which === 83 && (e.ctrlKey || e.metaKey)) {
+                    e.preventDefault();
+                    $('#ModalEditorSave').click();
+                }
+            }
         });
     }
 
@@ -165,13 +172,22 @@ class aFile {
             else {
                 $('#ModalOk').focus();
             }
-        });
-
-        $('#Modal').on('hidden.bs.modal', e => {
+        }).on('hidden.bs.modal', e => {
             $('#ModalCancel').show();
         });
 
+        $('#ModalEditor').on('shown.bs.modal', e => {
+            if ($('#EditorName').val().length === 0) {
+                $('#EditorName').focus();
+            }
+            else {
+                $('#Editor').focus();
+            }
+        });
+
         this.initiateDropZone();
+
+        this.initiateEditor();
     }
 
     /**
@@ -360,6 +376,27 @@ class aFile {
                     this.list();
                 }, {location : this.getPath(), name : value});
             });
+        });
+
+        $('#OpenEditor').click(e => {
+            if (this.selected) {
+                $('#EditorFileId').val(this.selected.data('id'));
+
+                this.get('Editor', 'read', data => {
+                    if (data.error) {
+                        alert(data.error);
+                    }
+                    else {
+                        $('#Editor').val(data.content);
+                        $('#EditorName').val(data.filename);
+                        $('#ModalEditor').modal('show');
+                    }
+                }, {id : this.selected.data('id')});
+            }
+            else {
+                $('#EditorName, #Editor, #EditorFileId').val('');
+                $('#ModalEditor').modal('show');
+            }
         });
     }
 
@@ -555,5 +592,37 @@ class aFile {
         }
 
         $('#Progress').css('width', combinedProgress + '%');
+    }
+
+    initiateEditor() {
+        $('#ModalEditorSave').click(e => {
+            let filename = $('#EditorName').val();
+            let content = $('#Editor').val();
+            let fileId = $('#EditorFileId').val();
+
+            if (filename.length > 0 && content.length > 0) {
+                if (fileId !== '') {
+                    this.post('Editor', 'write', data => {
+                        if (data.error) {
+                            alert(data.error);
+                        }
+                        else {
+                            this.list();
+                        }
+                    }, {filename : filename, content : content, id : fileId});
+                }
+                else {
+                    this.post('Editor', 'create', data => {
+                        if (data.error) {
+                            alert(data.error);
+                        }
+                        else {
+                            $('#ModalEditor').modal('hide');
+                            this.list();
+                        }
+                    }, {filename : filename, content : content, location : this.getPath()});
+                }
+            }
+        });
     }
 }

@@ -54,7 +54,7 @@
                     <div class="btn-group" role="group" aria-label="..." style="float:right;">
                         <button id="CreateDirectory" type="button" class="btn btn-default"><span class="glyphicon glyphicon-folder-open"></span></button>
                         <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-link"></span></button>
-                        <button type="button" class="btn btn-default"><span class="glyphicon glyphicon-font"></span></button>
+                        <button id="OpenEditor" type="button" class="btn btn-default"><span class="glyphicon glyphicon-font"></span></button>
                     </div>
                 </div>
             </div>
@@ -77,6 +77,26 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" id="ModalCancel" data-dismiss="modal"><?= $L['CANCEL'] ?></button>
                     <button type="button" class="btn btn-primary" id="ModalOk"><?= $L['OK'] ?></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="ModalEditor" tabindex="-1" role="dialog" data-backdrop="static">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="ModalEditorTitle"><?= $L['EDITOR'] ?></h4>
+                </div>
+                <div class="modal-body" id="ModalEditorBody">
+                    <p><input id="EditorName" type="text" placeholder="<?= $L['EDITOR_NAME'] ?>" class="form-control"></p>
+                    <p><textarea id="Editor" class="form-control"></textarea></p>
+                    <input type="hidden" id="EditorFileId" value="">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" id="ModalEditorClose" data-dismiss="modal"><?= $L['EDITOR_CLOSE'] ?></button>
+                    <button type="button" class="btn btn-primary" id="ModalEditorSave"><?= $L['EDITOR_SAVE'] ?></button>
                 </div>
             </div>
         </div>

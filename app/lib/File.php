@@ -23,14 +23,11 @@ class File extends AbstractFile {
         if ($encryptionKey) {
             $encryption = new Encryption($encryptionKey);
 
-            // !!!!! OLD CODE !!!!
+            $tempFile = $encryption->decryptFile($this);
 
-            $fh = fopen($this->getFilePath(), 'rb');
-            $encContent = fread($fh, filesize($this->getFilePath()));
-            fclose($fh);
-
-            if ($encContent) {
-                $content = $encryption->decryptOld($encContent);
+            if ($tempFile) {
+                $content = file_get_contents($tempFile);
+                @unlink($tempFile);
                 return $content;
             }
             else {

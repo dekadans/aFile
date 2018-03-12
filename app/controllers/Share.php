@@ -5,7 +5,6 @@ namespace controllers;
 use lib\File;
 use lib\FileRepository;
 use lib\Registry;
-use lib\Sharing;
 use lib\User;
 
 class Share extends AbstractController {

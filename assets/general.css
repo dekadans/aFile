@@ -154,6 +154,12 @@ html, body, #AppContainer {
     z-index: 2000;
 }
 
+#Editor {
+    width: 100%;
+    min-height: 400px;
+    outline: none;
+}
+
 /* MISC */
 .right {
     float: right;
