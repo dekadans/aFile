@@ -6,15 +6,20 @@ Dev branch. The project is very much in progress and not very functional.
 
 ## Todo
 
-Ladda upp fil
-    Progressbar
+sök
 
-Alerts
+klickbart i breadcrumbs
 
-Delete file
+sortera fillista
 
-Download file
+snyggare timestamps
 
-Window Events
-    Piltangenter
-    Enter / Delete / Ctrl+C etc
+länkar
+
+hjälp-popup med kortkomandon
+
+markdown?
+
+galleri?
+
+totalstorleksgräns/räknare??
