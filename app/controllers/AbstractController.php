@@ -16,6 +16,7 @@ abstract class AbstractController {
      */
     public function param($name) {
         $post = filter_input(INPUT_POST, $name);
+        $postArray = filter_input(INPUT_POST, $name, FILTER_DEFAULT , FILTER_REQUIRE_ARRAY);
         $get = filter_input(INPUT_GET, $name);
 
         if (!empty($post)) {
@@ -23,6 +24,9 @@ abstract class AbstractController {
         }
         else if (!empty($get)) {
             return $get;
+        }
+        else if (!empty($postArray)) {
+            return $postArray;
         }
         else {
             return null;

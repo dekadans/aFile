@@ -3,6 +3,7 @@
 namespace controllers;
 
 use lib\Registry;
+use lib\User;
 
 class Login extends AbstractController {
     public function getAccessLevel() {
@@ -10,12 +11,12 @@ class Login extends AbstractController {
     }
 
     public function index() {
-        if (!\lib\Registry::get('user')) {
+        if (!Registry::get('user')) {
             $username = $this->param('username');
             $password = $this->param('password');
 
             if ($username && $password) {
-                $user = \lib\User::authenticate($username, $password);
+                $user = User::authenticate($username, $password);
 
                 if ($user) {
                     $_SESSION['aFile_User'] = $user->getId();

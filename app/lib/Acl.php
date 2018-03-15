@@ -55,4 +55,21 @@ class Acl {
 
         return false;
     }
+
+    /**
+     * @param AbstractFile $file
+     * @return bool
+     */
+    public static function checkFileAccess(AbstractFile $file)
+    {
+        /** @var User $user */
+        $user = Registry::get('user');
+
+        if ($user && $user->getId() === $file->getUser()->getId()) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
 }

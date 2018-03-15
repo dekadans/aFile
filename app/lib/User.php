@@ -65,7 +65,7 @@ class User {
      * @param string $username
      * @param string $password
      *
-     * @return \app\lib\User | boolean
+     * @return User | boolean
      */
     public static function authenticate($username, $password) {
         $checkName = Registry::get('db')->getPDO()->prepare('SELECT * FROM users WHERE username = ?');

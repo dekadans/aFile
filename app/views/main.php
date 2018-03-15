@@ -61,6 +61,13 @@
         </div>
     </div>
     <div class="container">
+        <div class="alert alert-info" id="Clipboard">
+            <button id="ClipboardDismiss" type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <span id="ClipboardText"><?= $L['CLIPBOARD'] ?></span>
+            <button id="ClipboardPaste" class="btn btn-xs btn-success"><?= $L['CLIPBOARD_PASTE'] ?></button>
+            <button id="ClipboardDelete" class="btn btn-xs btn-danger"><?= $L['CLIPBOARD_DELETE'] ?></button>
+        </div>
+
         <table id="List">
         </table>
     </div>
@@ -91,7 +98,7 @@
                 </div>
                 <div class="modal-body" id="ModalEditorBody">
                     <p><input id="EditorName" type="text" placeholder="<?= $L['EDITOR_NAME'] ?>" class="form-control"></p>
-                    <p><textarea id="Editor" class="form-control"></textarea></p>
+                    <p><textarea id="Editor" class="form-control" spellcheck="false"></textarea></p>
                     <input type="hidden" id="EditorFileId" value="">
                 </div>
                 <div class="modal-footer">

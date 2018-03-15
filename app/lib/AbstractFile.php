@@ -77,7 +77,7 @@ abstract class AbstractFile {
      */
     public function rename($newName) : bool
     {
-        if (!$this->exists($this->getUser(), $newName, $this->location)) {
+        if (!FileRepository::exists($this->getUser(), $newName, $this->location)) {
             return $this->update(['name' => $newName]);
         }
         else {
@@ -85,6 +85,20 @@ abstract class AbstractFile {
         }
     }
 
+    /**
+     * Moves a file to a new location
+     * @param string $newLocation
+     * @return bool
+     */
+    public function move($newLocation) : bool
+    {
+        if (!FileRepository::exists($this->getUser(), $this->name, $newLocation)) {
+            return $this->update(['location' => $newLocation]);
+        }
+        else {
+            return false;
+        }
+    }
 
     /**
      * Updates columns in files database
@@ -110,20 +124,6 @@ abstract class AbstractFile {
         catch (PDOException $e) {
             return false;
         }
-    }
-
-    /**
-     * Checks if a file exists in the database
-     * @param  user $user
-     * @param  string $name
-     * @param  string $location
-     * @return boolean
-     */
-    public static function exists(User $user, $name, $location) : bool
-    {
-        $checkFile = Registry::get('db')->getPDO()->prepare('SELECT * FROM files WHERE user_id = ? AND name = ? AND location = ?');
-        $checkFile->execute([$user->getId(), $name, $location]);
-        return $checkFile->fetch() ? true : false;
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace controllers;
 
 use \lib\File;
+use lib\FileRepository;
 use lib\Registry;
 
 class Upload extends AbstractController {
@@ -46,7 +47,7 @@ class Upload extends AbstractController {
     }
 
     private function getUniqueName($name) {
-        if (!File::exists($this->user, $name, $this->location)) {
+        if (!FileRepository::exists($this->user, $name, $this->location)) {
             return $name;
         }
 

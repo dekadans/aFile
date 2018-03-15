@@ -25,8 +25,6 @@ class Check extends AbstractController {
             $info['login'] = false;
         }
 
-        //$info['siprefix'] = Registry::get('config')->presentation->siprefix;
-
         $this->outputJSON($info);
     }
 }

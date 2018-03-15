@@ -2,6 +2,7 @@
 
 namespace controllers;
 
+use lib\Acl;
 use lib\File;
 use lib\FileRepository;
 use lib\Registry;
@@ -35,7 +36,7 @@ class Share extends AbstractController {
             ]);
         }
 
-        if ($this->file->getUser()->getId() !== $this->user->getId()) {
+        if (!Acl::checkFileAccess($this->file)) {
             $this->outputJSON([
                 'error' => 'NO_ACCESS'
             ]);

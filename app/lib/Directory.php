@@ -40,7 +40,7 @@ class Directory extends AbstractFile
      */
     public static function create(User $user, $name, $location)
     {
-        if (!self::exists($user, $name, $location)) {
+        if (!FileRepository::exists($user, $name, $location)) {
             $string_id = self::getUniqueStringId();
 
             $addFile = Registry::get('db')->getPDO()->prepare('INSERT INTO files (user_id, name, location, type, encryption, string_id) VALUES (?,?,?,?,?,?)');

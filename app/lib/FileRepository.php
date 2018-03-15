@@ -5,6 +5,20 @@ namespace lib;
 class FileRepository
 {
     /**
+     * Checks if a file exists in the database
+     * @param  user $user
+     * @param  string $name
+     * @param  string $location
+     * @return boolean
+     */
+    public static function exists(User $user, $name, $location) : bool
+    {
+        $checkFile = Registry::get('db')->getPDO()->prepare('SELECT * FROM files WHERE user_id = ? AND name = ? AND location = ?');
+        $checkFile->execute([$user->getId(), $name, $location]);
+        return $checkFile->fetch() ? true : false;
+    }
+
+    /**
      * @param integer $id
      * @return AbstractFile
      */

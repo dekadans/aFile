@@ -2,6 +2,7 @@
 namespace controllers;
 
 
+use lib\Acl;
 use lib\File;
 use lib\FileRepository;
 use lib\Registry;
@@ -34,6 +35,12 @@ class Editor extends AbstractController
         $fileId = $this->param('id');
         if ($fileId) {
             $this->file = FileRepository::find($fileId);
+
+            if ($this->file->isset() && !Acl::checkFileAccess($this->file)) {
+                $this->outputJSON([
+                    'error' => Registry::$language->translate('ACCESS_DENIED')
+                ]);
+            }
         }
     }
 
@@ -61,7 +68,7 @@ class Editor extends AbstractController
     public function actionRead()
     {
         if ($this->file->isset() && $this->file->isFile()) {
-            if (in_array($this->file->getMime(), Registry::get('config')->files->editor_enabled)) {
+            if (preg_match('/^text\//', $this->file->getMime())) {
                 $content = $this->file->read();
 
                 if ($content) {

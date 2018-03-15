@@ -10,7 +10,7 @@ foreach ($fileList as $file): ?>
                 <?php if ($file->getEncryption() === \lib\File::ENCRYPTION_TOKEN): ?>
                 <span class="glyphicon glyphicon-link hasToken"></span>
                 <?php endif; ?>
-                <span class="flaticon-<?= $file->getFileExtension() ?> flaticon-blank"></span>
+                <span class="flaticon-<?= $file->getFileExtension() ?> flaticon-blank fileIcon"></span>
             </td>
             <td class="fileName"><?= $file->getName() ?></td>
             <td><?= $file->getSizeReadable() ?></td>

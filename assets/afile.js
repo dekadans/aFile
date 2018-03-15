@@ -3,6 +3,7 @@ class aFile {
         this.info = null; // Data fetched from the server
         this.path = [];
         this.selected = null;
+        this.clipboard = [];
         this.currentUploads = [];
         this.clickLock = false;
 
@@ -45,11 +46,30 @@ class aFile {
                     else if (e.which === 82) { // R
                         $('#Rename').click();
                     }
+                    else if (e.which === 69) { // E
+                        $('#OpenEditor').click();
+                    }
                     else if (e.which === 13) { // Enter
                         this.selected.dblclick();
                     }
                     else if (e.which === 27) { // Escape
                         this.selectItem(null);
+                    }
+                    else if (e.which === 88 && (e.ctrlKey || e.metaKey) && this.selected.hasClass('file')) { // Ctrl/Cmd + x
+                        e.preventDefault();
+                        let fileId = this.selected.data('id');
+
+                        for (let i = 0; i < this.clipboard.length; i++) {
+                            if (this.clipboard[i].id === fileId) {
+                                return;
+                            }
+                        }
+
+                        this.clipboard.push({
+                            id : fileId,
+                            name : this.selected.find('.fileName').text()
+                        });
+                        this.displayClipboard();
                     }
                 }
 
@@ -188,6 +208,8 @@ class aFile {
         this.initiateDropZone();
 
         this.initiateEditor();
+
+        this.initiateClipboard();
     }
 
     /**
@@ -387,7 +409,10 @@ class aFile {
                         alert(data.error);
                     }
                     else {
-                        $('#Editor').val(data.content);
+                        let editor = $('#Editor')[0];
+                        $(editor).val(data.content);
+                        editor.selectionStart = editor.selectionEnd = 0;
+
                         $('#EditorName').val(data.filename);
                         $('#ModalEditor').modal('show');
                     }
@@ -464,6 +489,178 @@ class aFile {
                 }
             });
         });
+    }
+
+
+    /**
+     * Updates the upload progress bar
+     */
+    updateProgress() {
+        let combinedProgress = 0;
+        let uploads = 0;
+
+        for (let percent in this.currentUploads) {
+            uploads++;
+            combinedProgress += this.currentUploads[percent];
+        }
+
+        if (uploads > 0) {
+            combinedProgress /= uploads;
+        }
+
+        $('#Progress').css('width', combinedProgress + '%');
+    }
+
+    /**
+     * Sets up the texteditor modal
+     */
+    initiateEditor() {
+        $('#ModalEditorSave').click(e => {
+            let filename = $('#EditorName').val();
+            let content = $('#Editor').val();
+            let fileId = $('#EditorFileId').val();
+
+            if (filename.length > 0 && content.length > 0) {
+                if (fileId !== '') {
+                    this.post('Editor', 'write', data => {
+                        if (data.error) {
+                            alert(data.error);
+                        }
+                        else {
+                            this.list();
+                        }
+                    }, {filename : filename, content : content, id : fileId});
+                }
+                else {
+                    this.post('Editor', 'create', data => {
+                        if (data.error) {
+                            alert(data.error);
+                        }
+                        else {
+                            $('#ModalEditor').modal('hide');
+                            this.list();
+                        }
+                    }, {filename : filename, content : content, location : this.getPath()});
+                }
+            }
+        });
+
+        $('#Editor').keydown(e => {
+            let start = e.target.selectionStart;
+            let end = e.target.selectionEnd;
+            let value = $(e.target).val();
+
+            if (e.which === 9) {
+                $(e.target).val(value.substring(0, start)
+                    + "\t"
+                    + value.substring(end));
+
+                e.target.selectionStart = e.target.selectionEnd = start + 1;
+                e.preventDefault();
+            }
+            else if (e.which === 13) {
+                e.preventDefault();
+
+                let countTabs = 0;
+                for (let i = start-1; i>=0; i--) {
+                    if (value.charAt(i) === "\t") {
+                        countTabs++;
+                    }
+                    else if (value.charAt(i) === "\n") {
+                        break;
+                    }
+                    else {
+                        countTabs = 0;
+                    }
+                }
+
+                $(e.target).val(value.substring(0, start)
+                    + "\n"
+                    + "\t".repeat(countTabs)
+                    + value.substring(end));
+
+                e.target.selectionStart = e.target.selectionEnd = start + countTabs+1;
+                countTabs = 0;
+            }
+        });
+    }
+
+    /**
+     * Sets up the clipboard events
+     */
+    initiateClipboard() {
+        let getClipboardFileIds = () => {
+            let ids = [];
+
+            for (let i = 0; i < this.clipboard.length; i++) {
+                ids.push(this.clipboard[i].id);
+            }
+
+            return ids;
+        };
+
+        $('#ClipboardPaste').click(e => {
+            let idsToPaste = getClipboardFileIds();
+
+            this.post('Paste', '', data => {
+                if (data.error) {
+                    alert(data.error);
+                }
+                else {
+                    this.clipboard = [];
+                    this.displayClipboard();
+                    this.list();
+                }
+            }, {id : idsToPaste, location : this.getPath()});
+        });
+
+        $('#ClipboardDelete').click(e => {
+            let idsToDelete = getClipboardFileIds();
+
+            let message = this.info.language.CONFIRM_DELETE + ' '
+                        + this.clipboard.length
+                        + this.info.language.FILES
+                        + '?';
+            this.confirm(message, e => {
+                this.post('Delete','', data => {
+                    if (data.error) {
+                        alert(data.error);
+                    }
+                    else {
+                        this.clipboard = [];
+                        this.displayClipboard();
+                        this.list();
+                    }
+                }, {id : idsToDelete});
+            });
+        });
+
+        $('#ClipboardDismiss').click(e => {
+            this.clipboard = [];
+            this.displayClipboard();
+        });
+    }
+
+    /**
+     * Displays/hides the clipboard info
+     */
+    displayClipboard() {
+        if (this.clipboard.length) {
+            let infotext = this.info.language.CLIPBOARD;
+            let filelist = '';
+
+            for (let i = 0; i < this.clipboard.length; i++) {
+                filelist += this.clipboard[i].name + "<br>";
+            }
+
+            infotext = infotext.replace('%files%', this.clipboard.length);
+
+            $('#ClipboardText').html(infotext).find('strong').attr('title', filelist).tooltip({html : true});
+            $('#Clipboard').show();
+        }
+        else {
+            $('#Clipboard').hide();
+        }
     }
 
     /**
@@ -573,56 +770,5 @@ class aFile {
         else {
             $('#Loading').hide();
         }
-    }
-
-    /**
-     * Updates the upload progress bar
-     */
-    updateProgress() {
-        let combinedProgress = 0;
-        let uploads = 0;
-
-        for (let percent in this.currentUploads) {
-            uploads++;
-            combinedProgress += this.currentUploads[percent];
-        }
-
-        if (uploads > 0) {
-            combinedProgress /= uploads;
-        }
-
-        $('#Progress').css('width', combinedProgress + '%');
-    }
-
-    initiateEditor() {
-        $('#ModalEditorSave').click(e => {
-            let filename = $('#EditorName').val();
-            let content = $('#Editor').val();
-            let fileId = $('#EditorFileId').val();
-
-            if (filename.length > 0 && content.length > 0) {
-                if (fileId !== '') {
-                    this.post('Editor', 'write', data => {
-                        if (data.error) {
-                            alert(data.error);
-                        }
-                        else {
-                            this.list();
-                        }
-                    }, {filename : filename, content : content, id : fileId});
-                }
-                else {
-                    this.post('Editor', 'create', data => {
-                        if (data.error) {
-                            alert(data.error);
-                        }
-                        else {
-                            $('#ModalEditor').modal('hide');
-                            this.list();
-                        }
-                    }, {filename : filename, content : content, location : this.getPath()});
-                }
-            }
-        });
     }
 }

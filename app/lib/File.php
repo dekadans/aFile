@@ -156,7 +156,7 @@ class File extends AbstractFile {
      */
     public static function create(User $user, $name, $location, $mime, $tmpPath)
     {
-        if (!self::exists($user, $name, $location)) {
+        if (!FileRepository::exists($user, $name, $location)) {
             $string_id = self::getUniqueStringId();
 
             $addFile = Registry::get('db')->getPDO()->prepare('INSERT INTO files (user_id, name, location, mime, type, string_id) VALUES (?,?,?,?,?,?)');

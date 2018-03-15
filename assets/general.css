@@ -90,6 +90,7 @@ html, body, #AppContainer {
     padding-bottom: 15px;
     background-color: #FFFFFF;
     border-bottom: 1px solid #dddddd;
+    z-index: 100;
 }
 
 #FileButtons button:disabled {
@@ -130,6 +131,11 @@ html, body, #AppContainer {
                                   supported by Chrome and Opera */
 }
 
+.fileIcon, .directoryIcon {
+    position: relative;
+    z-index: 50;
+}
+
 .directoryIcon {
     width: 30px;
     margin-left: 5px;
@@ -158,6 +164,12 @@ html, body, #AppContainer {
     width: 100%;
     min-height: 400px;
     outline: none;
+}
+
+#Clipboard {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    display: none;
 }
 
 /* MISC */

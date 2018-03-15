@@ -21,8 +21,6 @@ inline_download[] = image/jpeg
 inline_download[] = image/png
 inline_download[] = text/plain
 
-editor_enabled[] = text/plain
-
 [presentation]
 ; If true then SI-prefixes will be used for file sizes (kB = 1000 bytes),
 ; if false, binary prefixes is used (KiB = 1024 bytes)

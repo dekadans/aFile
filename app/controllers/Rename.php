@@ -2,6 +2,7 @@
 namespace controllers;
 
 
+use lib\Acl;
 use lib\FileRepository;
 use lib\Registry;
 
@@ -18,9 +19,14 @@ class Rename extends AbstractController
         $newName = $this->param('name');
 
         $file = FileRepository::find($id);
-        $result = $file->rename($newName);
 
-        if ($result) {
+        if ($file->isset() && !Acl::checkFileAccess($file)) {
+            $this->outputJSON([
+                'error' => Registry::$language->translate('ACCESS_DENIED')
+            ]);
+        }
+
+        if ($file->getName() === $newName || $file->rename($newName)) {
             $this->outputJSON([
                 'status' => 'ok'
             ]);
