@@ -6,7 +6,7 @@ Dev branch. The project is very much in progress and not very functional.
 
 ## Todo
 
-sök
+-sök
 
 fråga om att ersätta när man laddar upp existerande fil
 
