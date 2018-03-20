@@ -19,6 +19,7 @@ id_string_length = 5
 inline_download[] = application/pdf
 inline_download[] = image/jpeg
 inline_download[] = image/png
+inline_download[] = image/gif
 inline_download[] = text/plain
 
 [presentation]

@@ -17,7 +17,7 @@
             <div class="navbar-collapse collapse" id="test" aria-expanded="true">
                 <ul class="nav navbar-nav navbar-right">
                     <li>
-                        <a href="#"><span class="glyphicon glyphicon-search" aria-hidden="true"></span> <span class="visible-xs-inline"><?= $L['SEARCH'] ?></span></a>
+                        <a href="#" id="Search"><span class="glyphicon glyphicon-search" aria-hidden="true"></span> <span class="visible-xs-inline"><?= $L['SEARCH'] ?></span></a>
                     </li>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">

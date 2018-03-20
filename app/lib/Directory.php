@@ -22,7 +22,7 @@ class Directory extends AbstractFile
         $decodedPath .= $this->name;
         $encodedPath = base64_encode($decodedPath);
 
-        $fileList = new FileList($this->user, $encodedPath);
+        $fileList = FileRepository::findByLocation($this->user, $encodedPath);
 
         if (count($fileList) === 0) {
             return $this->deleteFileFromDatabase();

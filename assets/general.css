@@ -108,6 +108,7 @@ html, body, #AppContainer {
 
 .listItem > td:first-child {
     position: relative;
+    width: 60px; /* Ugly fix for now */
 }
 .listItem > td:nth-child(2) {
     width: 70%;

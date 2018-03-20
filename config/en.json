@@ -24,7 +24,8 @@
     "EDITOR_TYPE_ERROR" : "The editor is not enabled for this file type",
 
     "BRAND" : "aFile",
-    "SEARCH" : "Search",
+    "SEARCH" : "Search for files",
+    "SEARCH_RESULT" : "Search results",
     "SETTINGS" : "Settings",
     "LOGOUT" : "Sign out",
     "HOME" : "Home",

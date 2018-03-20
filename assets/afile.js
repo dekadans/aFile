@@ -2,6 +2,7 @@ class aFile {
     constructor() {
         this.info = null; // Data fetched from the server
         this.path = [];
+        this.currentSearch = '';
         this.selected = null;
         this.clipboard = [];
         this.currentUploads = [];
@@ -116,11 +117,19 @@ class aFile {
                     }
                 }
                 else if (e.which === 8) {
-                    if (this.path.length > 0) {
+                    if (this.currentSearch.length) {
+                        this.currentSearch = '';
+                        this.drawPath();
+                        this.list();
+                    }
+                    else if (this.path.length > 0) {
                         this.path.pop();
                         this.drawPath();
                         this.list();
                     }
+                }
+                else if (e.which === 83) { // S
+                    $('#Search').click();
                 }
             }
             else if ($('#ModalEditor').is(':visible')) {
@@ -173,6 +182,7 @@ class aFile {
 
         $('#PathHome, #BrandHome').click(e => {
             e.preventDefault();
+            this.currentSearch = '';
             this.path = [];
             this.drawPath();
             this.list();
@@ -183,6 +193,17 @@ class aFile {
             this.get('Logout', '', data => {
                 this.check();
             });
+        });
+
+        $('#Search').click(e => {
+            e.preventDefault();
+            this.input(this.info.language.SEARCH, input => {
+                if (input.length) {
+                    this.currentSearch = input;
+                    this.drawPath();
+                    this.list();
+                }
+            }, this.currentSearch);
         });
 
         $('#Modal').on('shown.bs.modal', e => {
@@ -217,9 +238,18 @@ class aFile {
      */
     list() {
         this.selectItem(null);
-        let path = this.getPath();
+        let action, data;
 
-        this.get('ListFiles', 'list', html => {
+        if (this.currentSearch.length) {
+            action = 'search';
+            data = {search : this.currentSearch};
+        }
+        else {
+            action = 'list';
+            data = {location : this.getPath()};
+        }
+
+        this.post('ListFiles', action, html => {
             $('#List').html(html);
 
             $('.listItem').click(e => {
@@ -255,7 +285,7 @@ class aFile {
                     $('#Download').click();
                 }
             });
-        }, {location : path});
+        }, data);
     }
 
     /**
@@ -750,12 +780,20 @@ class aFile {
      * Draws breadcrumbs of the current path
      */
     drawPath() {
-        $('#Path').find('.directory').remove();
+        let pathElement = $('#Path');
+        pathElement.find('.directory').remove();
 
-        for (let directoryName of this.path) {
+        if (this.currentSearch.length) {
             let directory = $('<li>');
-            directory.addClass('directory').text(directoryName);
-            $('#Path').append(directory);
+            directory.addClass('directory').text(this.info.language.SEARCH_RESULT);
+            pathElement.append(directory);
+        }
+        else {
+            for (let directoryName of this.path) {
+                let directory = $('<li>');
+                directory.addClass('directory').text(directoryName);
+                pathElement.append(directory);
+            }
         }
     }
 

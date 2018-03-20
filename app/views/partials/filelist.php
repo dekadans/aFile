@@ -1,4 +1,4 @@
-<?php /** @var \lib\AbstractFile $file */
+<?php /** @var \lib\File $file */
 foreach ($fileList as $file): ?>
     <?php if ($file->isFile()): ?>
 
@@ -21,7 +21,8 @@ foreach ($fileList as $file): ?>
 
         <tr class="listItem directory" data-id="<?= $file->getId() ?>">
             <td><img class="directoryIcon" src="assets/filetypes/folder.svg" alt="Directory"></td>
-            <td class="fileName" colspan="2"><?= $file->getName() ?></td>
+            <td class="fileName"><?= $file->getName() ?></td>
+            <td>&nbsp;</td>
             <td>&nbsp;</td>
         </tr>
 
