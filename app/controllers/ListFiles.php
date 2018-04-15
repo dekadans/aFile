@@ -31,15 +31,8 @@ class ListFiles extends AbstractController {
     public function actionSearch()
     {
         $searchString = $this->param('search');
-        $type = '';
 
-        if (preg_match('/type:([A-Za-z]*)/', $searchString, $matches)) {
-            $type = $matches[1];
-
-            $searchString = trim(preg_replace('/type:[A-Za-z]*/', '', $searchString));
-        }
-
-        $fileList = FileRepository::findBySearchParameters(Registry::get('user'), $searchString, $type);
+        $fileList = FileRepository::findBySearchParameters(Registry::get('user'), $searchString);
         $this->parseView('partials/filelist', ['fileList' => $fileList, 'printPath' => true]);
     }
 }

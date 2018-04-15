@@ -3,12 +3,11 @@
 namespace lib;
 
 class Database {
-    /**
-     * @var \PDO
-     */
+    /** @var \PDO */
     protected $pdo;
 
-    public function __construct() {
+    public function __construct()
+    {
         switch (Registry::get('config')->database->driver) {
             case 'mysql':
                 $this->connectToMysql();
@@ -20,7 +19,8 @@ class Database {
         $this->pdo->setAttribute(\PDO::ATTR_DEFAULT_FETCH_MODE, \PDO::FETCH_ASSOC);
     }
 
-    private function connectToMysql() {
+    private function connectToMysql()
+    {
         $host = Registry::get('config')->database->host;
         $db = Registry::get('config')->database->database;
         $user = Registry::get('config')->database->user;
@@ -29,7 +29,8 @@ class Database {
         $this->pdo = new \PDO('mysql:host='. $host .';dbname='. $db, $user, $password);
     }
 
-    public function getPDO() {
+    public function getPDO()
+    {
         return $this->pdo;
     }
 }
