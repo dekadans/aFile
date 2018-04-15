@@ -56,6 +56,13 @@ class aFile {
                     else if (e.which === 27) { // Escape
                         this.selectItem(null);
                     }
+                    else if (e.which === 77 && this.selected.hasClass('file')) { // M
+                        this.input(this.selected.data('mime'), value => {
+                            this.get('Rename', 'changemime', data => {
+                                this.list();
+                            }, {id : this.selected.data('id'), mime : value});
+                        });
+                    }
                     else if (e.which === 88 && (e.ctrlKey || e.metaKey) && this.selected.hasClass('file')) { // Ctrl/Cmd + x
                         e.preventDefault();
                         let fileId = this.selected.data('id');

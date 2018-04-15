@@ -81,7 +81,7 @@ class FileRepository
      * @param string $searchString
      * @return FileList
      */
-    public static function findBySearchParameters(User $user, string $searchString = '')
+    public static function search(User $user, string $searchString = '')
     {
         $files = [];
         $engine = new SearchEngine(self::getPDO());

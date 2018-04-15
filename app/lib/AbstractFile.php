@@ -86,6 +86,28 @@ abstract class AbstractFile {
     }
 
     /**
+     * @param string $newMime
+     * @return bool
+     */
+    public function setMime($newMime) : bool
+    {
+        if ($this->type === 'FILE') {
+            $result = $this->update([
+                'mime' => $newMime
+            ]);
+        }
+        else {
+            $result = false;
+        }
+
+        if ($result) {
+            $this->mime = $newMime;
+        }
+
+        return $result;
+    }
+
+    /**
      * Moves a file to a new location
      * @param string $newLocation
      * @return bool

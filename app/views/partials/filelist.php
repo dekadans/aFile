@@ -1,11 +1,14 @@
-<?php /** @var \lib\File $file */
+<?php
+/** @var \lib\File $file */
+/** @var \lib\FileList $fileList */
 foreach ($fileList as $file): ?>
     <?php if ($file->isFile()): ?>
 
         <tr class="listItem file"
             data-id="<?= $file->getId() ?>"
             data-newtab="<?= $file->openFileInNewTab() ?>"
-            data-stringid="<?= $file->getStringId() ?>">
+            data-stringid="<?= $file->getStringId() ?>"
+            data-mime="<?= $file->getMime() ?>">
             <td>
                 <?php if ($file->getEncryption() === \lib\File::ENCRYPTION_TOKEN): ?>
                 <span class="glyphicon glyphicon-link hasToken"></span>

@@ -37,4 +37,24 @@ class Rename extends AbstractController
             ]);
         }
     }
+
+    public function actionChangemime()
+    {
+        $id = $this->param('id');
+        $newMime = $this->param('mime');
+
+        $file = FileRepository::find($id);
+
+        if ($file->isset() && Acl::checkFileAccess($file)) {
+            $file->setMime($newMime);
+            $this->outputJSON([
+                'status' => 'ok'
+            ]);
+        }
+        else {
+            $this->outputJSON([
+                'error' => Registry::$language->translate('ACCESS_DENIED')
+            ]);
+        }
+    }
 }

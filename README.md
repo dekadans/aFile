@@ -8,8 +8,8 @@ Dev branch. The project is very much in progress and not very functional.
 
 -sök
 
-regler för att tvinga tex SVG till rätt mime alt.  
-manuellt redigera mime genom dolt kortkommando
+-regler för att tvinga tex SVG till rätt mime alt.  
+-manuellt redigera mime genom dolt kortkommando
 
 fråga om att ersätta när man laddar upp existerande fil
 
@@ -20,6 +20,8 @@ klickbart i breadcrumbs
 sortera fillista
 
 snyggare timestamps
+
+mobilanspassa
 
 refaktorera js
 

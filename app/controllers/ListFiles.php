@@ -32,7 +32,7 @@ class ListFiles extends AbstractController {
     {
         $searchString = $this->param('search');
 
-        $fileList = FileRepository::findBySearchParameters(Registry::get('user'), $searchString);
+        $fileList = FileRepository::search(Registry::get('user'), $searchString);
         $this->parseView('partials/filelist', ['fileList' => $fileList, 'printPath' => true]);
     }
 }

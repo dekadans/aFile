@@ -29,7 +29,7 @@ class Upload extends AbstractController {
             }
 
             $name = $this->getUniqueName($file['name']);
-            $mime = mime_content_type($file['tmp_name']);
+            $mime = $this->getMimeType($file['name'], $file['tmp_name']);
 
             $results[] = File::create($this->user, $name, $this->location, $mime, $file['tmp_name']);
         }
@@ -46,7 +46,7 @@ class Upload extends AbstractController {
         }
     }
 
-    private function getUniqueName($name) {
+    private function getUniqueName(string $name) {
         if (!FileRepository::exists($this->user, $name, $this->location)) {
             return $name;
         }
@@ -56,5 +56,25 @@ class Upload extends AbstractController {
         $fileName = implode('.', $nameParts);
 
         return $fileName . '-' . uniqid() . '.' . $extension;
+    }
+
+    private function getMimeType(string $filename, string $temporaryLocation)
+    {
+        $detectedMime = mime_content_type($temporaryLocation);
+        $extension = explode('.', $filename);
+        $extension = array_pop($extension);
+
+        switch ($extension) {
+            case 'docx':
+                return 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+            case 'pptx':
+                return 'application/vnd.openxmlformats-officedocument.presentationml.presentation';
+            case 'xlsx':
+                return 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+            case 'svg':
+                return 'image/svg+xml';
+            default:
+                return $detectedMime;
+        }
     }
 }
