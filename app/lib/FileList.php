@@ -7,7 +7,7 @@ class FileList implements \Iterator, \Countable {
     /** @var int */
     private $position = 0;
 
-    /** @var array */
+    /** @var AbstractFile[] */
     private $files;
 
     /** @var bool */

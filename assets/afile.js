@@ -504,6 +504,19 @@ class aFile {
                         alert(data.error);
                     }
                     delete this.currentUploads[uploadId];
+
+                    if (data.status === 'confirm') {
+                        let message = this.info.language.CONFIRM_OVERWRITE + ' ' + data.name + '?';
+                        this.confirm(message, e => {
+                            this.post('Upload', 'confirmoverwrite', overwriteResult => {
+                                if (overwriteResult.error) {
+                                    alert(overwriteResult.error);
+                                }
+                                this.list();
+                            }, {newId : data.newId, oldId : data.oldId});
+                        });
+                    }
+
                     this.updateProgress();
                     this.list();
                 },

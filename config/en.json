@@ -6,6 +6,7 @@
     "ACCESS_DENIED" : "Access denied",
     "LOGIN_FAILED" : "Wrong username or password.",
     "UPLOAD_FAILED" : "One or more files failed to upload.",
+    "CONFIRM_OVERWRITE" : "Overwrite",
     "DELETE_FAILED" : "Could not delete file or directory.",
     "CREATE_DIRECTORY" : "Create directory",
     "CREATE_DIRECTORY_FAILED" : "Could not create directory.",

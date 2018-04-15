@@ -52,6 +52,8 @@ abstract class AbstractFile {
     }
 
     abstract public function delete() : bool;
+    abstract public function read($returnPathToContent = false);
+    abstract public function write($pathToContent = null) : bool;
 
     /**
     * Deletes the File

@@ -1,6 +1,6 @@
 <?php
-/** @var \lib\File $file */
 /** @var \lib\FileList $fileList */
+/** @var string $printPath */
 foreach ($fileList as $file): ?>
     <?php if ($file->isFile()): ?>
 
@@ -8,7 +8,8 @@ foreach ($fileList as $file): ?>
             data-id="<?= $file->getId() ?>"
             data-newtab="<?= $file->openFileInNewTab() ?>"
             data-stringid="<?= $file->getStringId() ?>"
-            data-mime="<?= $file->getMime() ?>">
+            data-mime="<?= $file->getMime() ?>"
+            title="<?= ($printPath ? base64_decode($file->getLocation()) : '') ?>">
             <td>
                 <?php if ($file->getEncryption() === \lib\File::ENCRYPTION_TOKEN): ?>
                 <span class="glyphicon glyphicon-link hasToken"></span>

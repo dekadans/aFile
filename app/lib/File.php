@@ -16,7 +16,7 @@ class File extends AbstractFile {
     * Reads and returns the contents of the File
     * @return string|bool
     */
-    public function read()
+    public function read($returnPathToContent = false)
     {
         $encryptionKey = $this->getEncryptionKey();
 
@@ -26,9 +26,14 @@ class File extends AbstractFile {
             $tempFile = $encryption->decryptFile($this);
 
             if ($tempFile) {
-                $content = file_get_contents($tempFile);
-                @unlink($tempFile);
-                return $content;
+                if ($returnPathToContent) {
+                    return $tempFile;
+                }
+                else {
+                    $content = file_get_contents($tempFile);
+                    @unlink($tempFile);
+                    return $content;
+                }
             }
             else {
                 return false;
@@ -44,7 +49,7 @@ class File extends AbstractFile {
      * @param  string $pathToContent
      * @return boolean
      */
-    public function write($pathToContent = null)
+    public function write($pathToContent = null) : bool
     {
         if (!is_null($pathToContent)) {
             $this->tmpPath = $pathToContent;

@@ -62,4 +62,14 @@ class Directory extends AbstractFile
             return false;
         }
     }
+
+    public function read($returnPathToContent = false)
+    {
+        return '';
+    }
+
+    public function write($pathToContent = null) : bool
+    {
+        return true;
+    }
 }

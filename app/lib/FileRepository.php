@@ -78,6 +78,20 @@ class FileRepository
 
     /**
      * @param User $user
+     * @param string $location
+     * @param string $name
+     * @return AbstractFile
+     */
+    public static function findByLocationAndName(User $user, string $location, string $name)
+    {
+        $fileQuery = self::getPDO()->prepare('SELECT * FROM files WHERE user_id = ? AND name = ? AND location = ?');
+        $fileQuery->execute([$user->getId(), $name, $location]);
+
+        return self::createFileObject($fileQuery->fetch());
+    }
+
+    /**
+     * @param User $user
      * @param string $searchString
      * @return FileList
      */

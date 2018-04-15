@@ -25,7 +25,7 @@ class ListFiles extends AbstractController {
         }
 
         $fileList = FileRepository::findByLocation(Registry::get('user'), $location);
-        $this->parseView('partials/filelist', ['fileList' => $fileList]);
+        $this->parseView('partials/filelist', ['fileList' => $fileList, 'printPath' => false]);
     }
 
     public function actionSearch()
