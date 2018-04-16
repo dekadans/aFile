@@ -1,5 +1,5 @@
 <?php
-require_once 'app/init.php';
+require_once '../app/init.php';
 
 $fileIdString = filter_input(INPUT_SERVER, 'PATH_INFO');
 

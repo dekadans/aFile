@@ -489,7 +489,7 @@ class aFile {
             }
 
             $.ajax({
-                url: 'app/api.php?do=Upload&location=' + this.getPath(),
+                url: 'ajax.php?do=Upload&location=' + this.getPath(),
                 type: 'POST',
                 data: ajaxData,
                 dataType: 'json',
@@ -723,7 +723,7 @@ class aFile {
     get(controller, action = '', callback = null, data = {}) {
         this.showLoading(true);
 
-        let url = 'app/api?do=' + controller + '&action=' + action;
+        let url = 'ajax.php?do=' + controller + '&action=' + action;
         $.get(url, data, returnData => {
             this.showLoading(false);
             callback(returnData);
@@ -740,7 +740,7 @@ class aFile {
     post(controller, action = '', callback = null, data = {}) {
         this.showLoading(true);
 
-        let url = 'app/api?do=' + controller + '&action=' + action;
+        let url = 'ajax.php?do=' + controller + '&action=' + action;
         $.post(url, data, returnData => {
             this.showLoading(false);
             callback(returnData);

@@ -1,5 +1,5 @@
 <?php
-require_once 'init.php';
+require_once '../app/init.php';
 
 // Dev user info: username: tomas password: aabbcc
 

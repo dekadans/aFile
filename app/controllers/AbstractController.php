@@ -36,7 +36,7 @@ abstract class AbstractController {
     public function parseView($viewName, $params = []) {
         $params['L'] = \lib\Registry::$language->getLanguageData();
         extract($params);
-        require('views/' . $viewName . '.php');
+        require(__dir__ . '/../views/' . $viewName . '.php');
     }
 
     /**
