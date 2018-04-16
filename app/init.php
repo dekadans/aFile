@@ -36,7 +36,8 @@ set_exception_handler(function (\Throwable $ex){
 /**
  * Include the Defuse cryptography library
  */
-require_once(__DIR__ . '/defuse-crypto.phar');
+//require_once(__DIR__ . '/defuse-crypto.phar');
+require_once __DIR__ . '/../vendor/autoload.php';
 
 
 /**
