@@ -3,7 +3,7 @@ html, body, #AppContainer {
 }
 
 .navbar {
-    margin-bottom: 0;
+    /*margin-bottom: 0;*/
 }
 
 /* VIEWS */
@@ -30,7 +30,6 @@ html, body, #AppContainer {
 }
 
 #Main {
-    padding-top: 174px;
     min-height: 100%;
 }
 
@@ -45,20 +44,6 @@ html, body, #AppContainer {
 
 /* Login */
 
-#LoginSplash {
-    position: relative;
-    display: table;
-    height: 100%;
-    width: 100%;
-    min-height: 100%;
-}
-
-#LoginCenter {
-    display: table-cell;
-    vertical-align: middle;
-    position: relative;
-}
-
 #LoginMessage {
     display: none;
     border-bottom: 1px solid #dddddd;
@@ -68,13 +53,16 @@ html, body, #AppContainer {
     margin-bottom: 0;
 }
 
-#LoginCenter input {
+#LoginInputs input {
     width: 100%;
     border: 0;
     border-bottom: 1px solid #dddddd;
     font-size: 16pt;
     padding: 10px 15px;
     outline: none;
+}
+#LoginInputs input:last-child {
+    border-bottom: 0;
 }
 
 #LoginCenter input:last-of-type {
@@ -95,6 +83,10 @@ html, body, #AppContainer {
 
 #FileButtons button:disabled {
     cursor: default;
+}
+
+#ListContainer {
+    padding-top: 185px;
 }
 
 #List {
@@ -156,7 +148,7 @@ html, body, #AppContainer {
     top: 0;
     left: 0;
     width: 0%;
-    height: 2px;
+    height: 5px;
     background: green;
     z-index: 2000;
 }

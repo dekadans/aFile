@@ -12,7 +12,7 @@ foreach ($fileList as $file): ?>
             title="<?= ($printPath ? base64_decode($file->getLocation()) : '') ?>">
             <td>
                 <?php if ($file->getEncryption() === \lib\File::ENCRYPTION_TOKEN): ?>
-                <span class="glyphicon glyphicon-link hasToken"></span>
+                <i class="fas fa-link hasToken"></i>
                 <?php endif; ?>
                 <span class="flaticon-<?= $file->getFileExtension() ?> flaticon-blank fileIcon"></span>
             </td>

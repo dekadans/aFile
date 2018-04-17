@@ -39,7 +39,7 @@ class aFile {
      */
     keybindings() {
         $(document).keydown(e => {
-            if (!$('#Modal, #ModalEditor').is(':visible')) {
+            if (!$('#Modal, #ModalEditor').is(':visible') && !$('#SearchInput').is(':focus')) {
                 if (this.selected) {
                     if (e.which === 46) { // Delete
                         $('#Delete').click();
@@ -136,7 +136,9 @@ class aFile {
                     }
                 }
                 else if (e.which === 83) { // S
-                    $('#Search').click();
+                    setTimeout(function(){
+                        $('#SearchInput').focus();
+                    }, 100);
                 }
             }
             else if ($('#ModalEditor').is(':visible')) {
@@ -202,15 +204,20 @@ class aFile {
             });
         });
 
+        $('#SearchInput').keyup(e => {
+            if (e.which === 13) {
+                e.preventDefault();
+                $('#Search').click();
+            }
+            else if (e.which === 27) {
+                $(e.target).blur();
+            }
+        });
+
         $('#Search').click(e => {
-            e.preventDefault();
-            this.input(this.info.language.SEARCH, input => {
-                if (input.length) {
-                    this.currentSearch = input;
-                    this.drawPath();
-                    this.list();
-                }
-            }, this.currentSearch);
+            this.currentSearch = $('#SearchInput').val();
+            this.drawPath();
+            this.list();
         });
 
         $('#Modal').on('shown.bs.modal', e => {
@@ -804,13 +811,13 @@ class aFile {
         pathElement.find('.directory').remove();
 
         if (this.currentSearch.length) {
-            let directory = $('<li>');
+            let directory = $('<li class="breadcrumb-item">');
             directory.addClass('directory').text(this.info.language.SEARCH_RESULT);
             pathElement.append(directory);
         }
         else {
             for (let directoryName of this.path) {
-                let directory = $('<li>');
+                let directory = $('<li class="breadcrumb-item">');
                 directory.addClass('directory').text(directoryName);
                 pathElement.append(directory);
             }
