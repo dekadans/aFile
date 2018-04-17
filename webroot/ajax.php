@@ -29,19 +29,19 @@ if (isset($_GET['do']) && !empty($_GET['do'])) {
             }
             else {
                 \controllers\AbstractController::outputJSON([
-                    'error' => lib\Registry::$language->translate('NOT_FOUND')
+                    'error' => lib\Singletons::$language->translate('NOT_FOUND')
                 ]);
             }
         }
         else {
             \controllers\AbstractController::outputJSON([
-                'error' => lib\Registry::$language->translate('ACCESS_DENIED')
+                'error' => lib\Singletons::$language->translate('ACCESS_DENIED')
             ]);
         }
     }
     else {
         \controllers\AbstractController::outputJSON([
-            'error' => lib\Registry::$language->translate('NOT_FOUND')
+            'error' => lib\Singletons::$language->translate('NOT_FOUND')
         ]);
     }
 }

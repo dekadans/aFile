@@ -3,6 +3,7 @@ namespace lib;
 
 
 use Defuse\Crypto\Key;
+use lib\Repositories\FileRepository;
 
 class FileToken
 {
@@ -74,12 +75,12 @@ class FileToken
 
     public function destroy()
     {
-        $newEncryptionKey = Registry::get('user')->getKey();
+        $newEncryptionKey = Singletons::$auth->getUser()->getKey();
         $result = $this->file->changeEncryptionKey($newEncryptionKey, File::ENCRYPTION_PERSONAL);
 
         if ($result) {
             $SQL = "DELETE from share WHERE id = :id";
-            $deleteStatement = Registry::get('db')->getPDO()->prepare($SQL);
+            $deleteStatement = Singletons::$db->getPDO()->prepare($SQL);
             $deleteStatement->bindParam(':id', $this->id);
             return $deleteStatement->execute();
         }
@@ -151,7 +152,7 @@ class FileToken
         $openToken = $token['open_token'] ?? null;
         $passwordToken = $token['password_token'] ?? null;
 
-        $createStatement = Registry::get('db')->getPDO()->prepare($SQL);
+        $createStatement = Singletons::$db->getPDO()->prepare($SQL);
         $createStatement->bindParam(':fileId', $id);
         $createStatement->bindParam(':openToken', $openToken);
         $createStatement->bindParam(':passwordToken', $passwordToken);
@@ -189,7 +190,7 @@ class FileToken
         $passwordToken = $token['password_token'] ?? $this->getPasswordToken();
         $password = $password ?? $this->getPassword();
 
-        $updateStatement = Registry::get('db')->getPDO()->prepare($SQL);
+        $updateStatement = Singletons::$db->getPDO()->prepare($SQL);
         $updateStatement->bindParam(':fileId', $id);
         $updateStatement->bindParam(':openToken', $openToken);
         $updateStatement->bindParam(':passwordToken', $passwordToken);

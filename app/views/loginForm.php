@@ -17,10 +17,12 @@
                         <input type="password" id="LoginPassword" placeholder="<?= $L['PASSWORD'] ?>">
                     </div>
                     <div class="card-footer">
+                        <?php if (\lib\Singletons::get('config')->login->remember_me_activated): ?>
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="checkbox" id="RememberMe" value="1">
                             <label class="form-check-label" for="RememberMe"><?= $L['REMEMBER_ME'] ?></label>
                         </div>
+                        <?php endif; ?>
 
                         <button class="btn btn-primary btn-sm right" id="LoginButton"><?= $L['LOGIN'] ?></button>
                     </div>

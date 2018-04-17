@@ -4,20 +4,13 @@ namespace controllers;
 
 use lib\Acl;
 use lib\File;
-use lib\FileRepository;
-use lib\Registry;
-use lib\User;
+use lib\Repositories\FileRepository;
 
 class Share extends AbstractController {
     /**
      * @var File
      */
-    protected $file;
-
-    /**
-     * @var User
-     */
-    protected $user;
+    private $file;
 
     public function getAccessLevel()
     {
@@ -28,7 +21,6 @@ class Share extends AbstractController {
     {
         $fileId = $this->param('id');
         $this->file = FileRepository::find($fileId);
-        $this->user = Registry::get('user');
 
         if (!$this->file->isset() && $this->file->isFile()) {
             $this->outputJSON([

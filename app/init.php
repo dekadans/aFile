@@ -43,27 +43,21 @@ require_once __DIR__ . '/../vendor/autoload.php';
  * Parse config file and add it to registry.
  */
 $config = new lib\Config(__DIR__ . '/../config/config.ini');
-lib\Registry::set('config',$config);
+lib\Singletons::set('config',$config);
 
 /**
  * Connect to database and add handler to registry.
  */
 $db = new \lib\Database();
-lib\Registry::set('db',$db);
+\lib\Singletons::$db = $db;
 
 /**
  * Loads language data
  */
 $translation = new lib\Translation($config->language);
-lib\Registry::$language = $translation;
+lib\Singletons::$language = $translation;
 
-/**
- * If there is a user id in session, we add a User object to registry.
- */
-if (isset($_SESSION['aFile_User'])) {
-    $user = new \lib\User($_SESSION['aFile_User']);
-    if ($user->getId() !== '0') {
-        $user->setKey($_SESSION['aFile_User_Key']);
-        lib\Registry::set('user', $user);
-    }
-}
+$userRepository = new \lib\Repositories\UserRepository($db);
+$authentication = new \lib\Authentication($userRepository, $config->login->remember_me_activated);
+\lib\Singletons::$auth = $authentication;
+

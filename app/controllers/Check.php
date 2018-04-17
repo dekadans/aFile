@@ -2,7 +2,7 @@
 
 namespace controllers;
 
-use \lib\Registry;
+use \lib\Singletons;
 
 class Check extends AbstractController {
     public function getAccessLevel() {
@@ -12,14 +12,16 @@ class Check extends AbstractController {
     public function index() {
         $info = [];
 
-        if (Registry::get('user')) {
+        $user = Singletons::$auth->getUser();
+
+        if ($user) {
             $info['login'] = true;
             $info['user'] = [
-                'id' => Registry::get('user')->getId(),
-                'username' => Registry::get('user')->getUsername(),
-                'type' => Registry::get('user')->getType()
+                'id' => $user->getId(),
+                'username' => $user->getUsername(),
+                'type' => $user->getType()
             ];
-            $info['language'] = Registry::$language->getLanguageData();
+            $info['language'] = Singletons::$language->getLanguageData();
         }
         else {
             $info['login'] = false;

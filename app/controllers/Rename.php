@@ -3,8 +3,8 @@ namespace controllers;
 
 
 use lib\Acl;
-use lib\FileRepository;
-use lib\Registry;
+use lib\Singletons;
+use lib\Repositories\FileRepository;
 
 class Rename extends AbstractController
 {
@@ -22,7 +22,7 @@ class Rename extends AbstractController
 
         if ($file->isset() && !Acl::checkFileAccess($file)) {
             $this->outputJSON([
-                'error' => Registry::$language->translate('ACCESS_DENIED')
+                'error' => Singletons::$language->translate('ACCESS_DENIED')
             ]);
         }
 
@@ -33,7 +33,7 @@ class Rename extends AbstractController
         }
         else {
             $this->outputJSON([
-                'error' => Registry::$language->translate('RENAME_FAILED')
+                'error' => Singletons::$language->translate('RENAME_FAILED')
             ]);
         }
     }
@@ -53,7 +53,7 @@ class Rename extends AbstractController
         }
         else {
             $this->outputJSON([
-                'error' => Registry::$language->translate('ACCESS_DENIED')
+                'error' => Singletons::$language->translate('ACCESS_DENIED')
             ]);
         }
     }

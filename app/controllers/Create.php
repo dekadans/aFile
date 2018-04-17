@@ -2,7 +2,7 @@
 namespace controllers;
 
 use lib\Directory;
-use lib\Registry;
+use lib\Singletons;
 
 class Create extends AbstractController
 {
@@ -13,7 +13,7 @@ class Create extends AbstractController
 
     public function actionDirectory()
     {
-        $user = Registry::get('user');
+        $user = Singletons::$auth->getUser();
         $name = $this->param('name');
         $location = $this->param('location');
 
@@ -28,7 +28,7 @@ class Create extends AbstractController
         }
 
         $this->outputJSON([
-            'error' => Registry::$language->translate('CREATE_DIRECTORY_FAILED')
+            'error' => Singletons::$language->translate('CREATE_DIRECTORY_FAILED')
         ]);
     }
 }

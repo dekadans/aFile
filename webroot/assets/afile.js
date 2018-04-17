@@ -160,6 +160,7 @@ class aFile {
         $('#LoginButton').click(event => {
             let username = $('#LoginUsername').val();
             let password = $('#LoginPassword').val();
+            let remember = $('#RememberMe').is(':checked');
 
             if (username.length && password.length) {
                 this.post('Login', '', data => {
@@ -170,7 +171,7 @@ class aFile {
                     else if (data.status === 'ok') {
                         this.check();
                     }
-                }, {username : username, password : password});
+                }, {username : username, password : password, remember : remember});
             }
         });
 

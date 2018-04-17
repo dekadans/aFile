@@ -4,8 +4,8 @@ namespace controllers;
 
 use lib\Acl;
 use \lib\File;
-use lib\FileRepository;
-use lib\Registry;
+use lib\Singletons;
+use lib\Repositories\FileRepository;
 
 class Upload extends AbstractController {
     private $location;
@@ -19,11 +19,11 @@ class Upload extends AbstractController {
     public function index()
     {
         $this->location = $this->param('location');
-        $this->user = Registry::get('user');
+        $this->user = Singletons::$auth->getUser();
 
         $previousFileWithSameName = null;
 
-        $maxsize = Registry::get('config')->files->maxsize;
+        $maxsize = Singletons::get('config')->files->maxsize;
 
         $results = [];
 
@@ -46,7 +46,7 @@ class Upload extends AbstractController {
 
         if (in_array(false, $results)) {
             $this->outputJSON([
-                'error' => Registry::$language->translate('UPLOAD_FAILED')
+                'error' => Singletons::$language->translate('UPLOAD_FAILED')
             ]);
         }
         else if ($previousFileWithSameName && count($results) === 1) {
@@ -85,14 +85,14 @@ class Upload extends AbstractController {
                 ]);
             } catch(\Throwable $error) {
                 $this->outputJSON([
-                    'error' => Registry::$language->translate('FAILED'),
+                    'error' => Singletons::$language->translate('FAILED'),
                     'msg' => $error->getMessage()
                 ]);
             }
         }
         else {
             $this->outputJSON([
-                'error' => Registry::$language->translate('ACCESS_DENIED')
+                'error' => Singletons::$language->translate('ACCESS_DENIED')
             ]);
         }
     }

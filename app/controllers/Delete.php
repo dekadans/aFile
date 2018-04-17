@@ -4,8 +4,8 @@ namespace controllers;
 
 use lib\Acl;
 use \lib\File;
-use lib\FileRepository;
-use lib\Registry;
+use lib\Repositories\FileRepository;
+use lib\Singletons;
 use lib\User;
 
 class Delete extends AbstractController {
@@ -33,7 +33,7 @@ class Delete extends AbstractController {
         }
         else {
             $this->outputJSON([
-                'error' => Registry::$language->translate('DELETE_FAILED')
+                'error' => Singletons::$language->translate('DELETE_FAILED')
             ]);
         }
     }

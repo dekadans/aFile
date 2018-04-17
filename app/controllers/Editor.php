@@ -4,8 +4,8 @@ namespace controllers;
 
 use lib\Acl;
 use lib\File;
-use lib\FileRepository;
-use lib\Registry;
+use lib\Singletons;
+use lib\Repositories\FileRepository;
 
 class Editor extends AbstractController
 {
@@ -38,7 +38,7 @@ class Editor extends AbstractController
 
             if ($this->file->isset() && !Acl::checkFileAccess($this->file)) {
                 $this->outputJSON([
-                    'error' => Registry::$language->translate('ACCESS_DENIED')
+                    'error' => Singletons::$language->translate('ACCESS_DENIED')
                 ]);
             }
         }
@@ -49,7 +49,7 @@ class Editor extends AbstractController
         $tempFile = tempnam(sys_get_temp_dir(), 'afile');
         file_put_contents($tempFile, $this->content);
 
-        $file = File::create(Registry::get('user'), $this->filename, $this->location, 'text/plain', $tempFile);
+        $file = File::create(Singletons::$auth->getUser(), $this->filename, $this->location, 'text/plain', $tempFile);
         @unlink($tempFile);
 
         if ($file) {
@@ -85,13 +85,13 @@ class Editor extends AbstractController
             }
             else {
                 $this->outputJSON([
-                    'error' => Registry::$language->translate('EDITOR_TYPE_ERROR')
+                    'error' => Singletons::$language->translate('EDITOR_TYPE_ERROR')
                 ]);
             }
         }
         else {
             $this->outputJSON([
-                'error' => Registry::$language->translate('NO_FILE')
+                'error' => Singletons::$language->translate('NO_FILE')
             ]);
         }
     }
@@ -123,7 +123,7 @@ class Editor extends AbstractController
         }
         else {
             $this->outputJSON([
-                'error' => Registry::$language->translate('NO_FILE')
+                'error' => Singletons::$language->translate('NO_FILE')
             ]);
         }
     }

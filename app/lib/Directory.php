@@ -9,6 +9,8 @@
 namespace lib;
 
 
+use lib\Repositories\FileRepository;
+
 class Directory extends AbstractFile
 {
     public function delete() : bool
@@ -43,11 +45,11 @@ class Directory extends AbstractFile
         if (!FileRepository::exists($user, $name, $location)) {
             $string_id = self::getUniqueStringId();
 
-            $addFile = Registry::get('db')->getPDO()->prepare('INSERT INTO files (user_id, name, location, type, encryption, string_id) VALUES (?,?,?,?,?,?)');
+            $addFile = Singletons::$db->getPDO()->prepare('INSERT INTO files (user_id, name, location, type, encryption, string_id) VALUES (?,?,?,?,?,?)');
 
             try {
                 if ($addFile->execute([$user->getId(), $name, $location, 'DIRECTORY', 'NONE', $string_id])) {
-                    $directory = FileRepository::find(Registry::get('db')->getPDO()->lastInsertId());
+                    $directory = FileRepository::find(Singletons::$db->getPDO()->lastInsertId());
                     return $directory;
                 }
                 else {

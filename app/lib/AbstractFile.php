@@ -2,6 +2,9 @@
 
 namespace lib;
 
+use lib\Repositories\FileRepository;
+use lib\Repositories\UserRepository;
+
 abstract class AbstractFile {
     protected $id;
     protected $user;
@@ -61,7 +64,7 @@ abstract class AbstractFile {
     */
     protected function deleteFileFromDatabase() : bool
     {
-        $deleteFile = Registry::get('db')->getPDO()->prepare('DELETE FROM files WHERE id = ?');
+        $deleteFile = Singletons::$db->getPDO()->prepare('DELETE FROM files WHERE id = ?');
 
         if ($deleteFile->execute([$this->id])) {
             $this->id = null;
@@ -141,7 +144,7 @@ abstract class AbstractFile {
         $sets = implode(', ',$sets);
 
         $sql = 'UPDATE files SET ' . $sets . ' WHERE id = ?';
-        $updateFile = Registry::get('db')->getPDO()->prepare($sql);
+        $updateFile = Singletons::$db->getPDO()->prepare($sql);
         try {
             return $updateFile->execute([$this->id]);
         }
@@ -156,9 +159,9 @@ abstract class AbstractFile {
      */
     protected static function getUniqueStringId() : string
     {
-        $fileQuery = Registry::get('db')->getPDO()->prepare('SELECT id FROM files WHERE string_id = ?');
+        $fileQuery = Singletons::$db->getPDO()->prepare('SELECT id FROM files WHERE string_id = ?');
         $characters = '0123456789abcdefghijklmnopqrstuvwxyz';
-        $length = Registry::get('config')->files->id_string_length;
+        $length = Singletons::get('config')->files->id_string_length;
 
         while (true) {
             $randomString = '';
@@ -193,7 +196,8 @@ abstract class AbstractFile {
     public function getUser()
     {
         if (is_null($this->user)) {
-            $this->user = new User($this->user_id);
+            $repository = new UserRepository(Singletons::$db);
+            $this->user = $repository->getUserById($this->user_id);
         }
 
         return $this->user;
@@ -229,7 +233,7 @@ abstract class AbstractFile {
      */
     public function getSizeReadable() : string
     {
-        $siPrefix = Registry::get('config')->presentation->siprefix;
+        $siPrefix = Singletons::get('config')->presentation->siprefix;
         $thresh = $siPrefix ? 1000 : 1024;
         $bytes = (int)$this->size;
 

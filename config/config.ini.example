@@ -2,6 +2,9 @@ version = 6
 
 language = en
 
+[login]
+remember_me_activated = true
+
 [database]
 driver = mysql
 host = HOST

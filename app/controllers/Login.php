@@ -2,7 +2,7 @@
 
 namespace controllers;
 
-use lib\Registry;
+use lib\Singletons;
 use lib\User;
 
 class Login extends AbstractController {
@@ -11,17 +11,18 @@ class Login extends AbstractController {
     }
 
     public function index() {
-        if (!Registry::get('user')) {
+        if (!Singletons::$auth->isSignedIn()) {
             $username = $this->param('username');
             $password = $this->param('password');
+            $remember = ($this->param('remember') === 'true');
 
             if ($username && $password) {
-                $user = User::authenticate($username, $password);
+                $result = Singletons::$auth->authenticate($username, $password);
 
-                if ($user) {
-                    $_SESSION['aFile_User'] = $user->getId();
-                    $_SESSION['aFile_User_Key'] = $user->getKey();
-                    session_regenerate_id();
+                if ($result) {
+                    if ($remember) {
+                        Singletons::$auth->rememberMe($password);
+                    }
 
                     $this->outputJSON([
                         'status' => 'ok'
@@ -29,19 +30,19 @@ class Login extends AbstractController {
                 }
                 else {
                     $this->outputJSON([
-                        'error' => Registry::$language->translate('LOGIN_FAILED')
+                        'error' => Singletons::$language->translate('LOGIN_FAILED')
                     ]);
                 }
             }
             else {
                 $this->outputJSON([
-                    'error' => Registry::$language->translate('LOGIN_MISSING_PARAMETERS')
+                    'error' => Singletons::$language->translate('LOGIN_MISSING_PARAMETERS')
                 ]);
             }
         }
         else {
             $this->outputJSON([
-                'error' => Registry::$language->translate('ALREADY_SIGNED_IN')
+                'error' => Singletons::$language->translate('ALREADY_SIGNED_IN')
             ]);
         }
     }

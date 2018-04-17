@@ -8,10 +8,10 @@ class Test extends AbstractController {
     }
 
     public function index() {
-        //$user = \lib\Registry::get('user');
+        //$user = \lib\Singletons::get('user');
         //\lib\File::createFile($user, 'Test6.txt', base64_encode('/'), 'text/plain', 'tjena dumsnut åäö');
 
-        //$list = new \lib\FileList(\lib\Registry::get('user'), 'Lw==');
+        //$list = new \lib\FileList(\lib\Singletons::get('user'), 'Lw==');
         //var_dump($list->run());
 
         /*$protected_key = \Defuse\Crypto\KeyProtectedByPassword::createRandomPasswordProtectedKey('aabbcc');
@@ -20,7 +20,7 @@ class Test extends AbstractController {
         var_dump($protected_key->unlockKey('aabbcc')->saveToAsciiSafeString());*/
 
         /*$file = new \lib\File('23');
-        $enc = new \lib\Encryption(\lib\Registry::get('user')->getKey());
+        $enc = new \lib\Encryption(\lib\Singletons::get('user')->getKey());
         $tempFile = $enc->decryptFile($file);
         $content = file_get_contents($tempFile);
         unlink($tempFile);

@@ -1,6 +1,14 @@
 <?php
-namespace lib;
+namespace lib\Repositories;
 
+
+use lib\AbstractFile;
+use lib\Directory;
+use lib\File;
+use lib\FileList;
+use lib\Singletons;
+use lib\SearchEngine;
+use lib\User;
 
 class FileRepository
 {
@@ -113,7 +121,7 @@ class FileRepository
      */
     private static function getPDO()
     {
-        return Registry::get('db')->getPDO();
+        return Singletons::$db->getPDO();
     }
 
     /**

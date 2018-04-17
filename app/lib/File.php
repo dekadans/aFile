@@ -2,6 +2,8 @@
 
 namespace lib;
 
+use lib\Repositories\FileRepository;
+
 class File extends AbstractFile {
     protected $tmpPath;
 
@@ -82,8 +84,8 @@ class File extends AbstractFile {
     public function getEncryptionKey()
     {
         if ($this->encryption == self::ENCRYPTION_PERSONAL) {
-            if (Registry::get('user')) {
-                return Registry::get('user')->getKey();
+            if (Singletons::$auth->isSignedIn()) {
+                return Singletons::$auth->getUser()->getKey();
             }
         }
         else {
@@ -99,7 +101,7 @@ class File extends AbstractFile {
      */
     public function getToken()
     {
-        $shareQuery = Registry::get('db')->getPDO()->prepare('SELECT * FROM share WHERE file_id = ?');
+        $shareQuery = Singletons::$db->getPDO()->prepare('SELECT * FROM share WHERE file_id = ?');
         $shareQuery->execute([$this->id]);
         $shareData = $shareQuery->fetch();
 
@@ -137,7 +139,7 @@ class File extends AbstractFile {
 
     public function openFileInNewTab()
     {
-        return in_array($this->getMime(), Registry::get('config')->files->inline_download);
+        return in_array($this->getMime(), Singletons::get('config')->files->inline_download);
     }
 
     public function delete() : bool
@@ -164,11 +166,11 @@ class File extends AbstractFile {
         if (!FileRepository::exists($user, $name, $location)) {
             $string_id = self::getUniqueStringId();
 
-            $addFile = Registry::get('db')->getPDO()->prepare('INSERT INTO files (user_id, name, location, mime, type, string_id) VALUES (?,?,?,?,?,?)');
+            $addFile = Singletons::$db->getPDO()->prepare('INSERT INTO files (user_id, name, location, mime, type, string_id) VALUES (?,?,?,?,?,?)');
 
             try {
                 if ($addFile->execute([$user->getId(), $name, $location, $mime, 'FILE', $string_id])) {
-                    $file = FileRepository::find(Registry::get('db')->getPDO()->lastInsertId());
+                    $file = FileRepository::find(Singletons::$db->getPDO()->lastInsertId());
                     $file->setTmpPath($tmpPath);
                     $file->write();
                     return $file;
@@ -193,7 +195,7 @@ class File extends AbstractFile {
 
     public function getFilePath() : string
     {
-        return __DIR__ . '/' . Registry::get('config')->files->path . $this->id;
+        return __DIR__ . '/' . Singletons::get('config')->files->path . $this->id;
     }
 
     /**

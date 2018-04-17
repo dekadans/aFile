@@ -2,8 +2,8 @@
 
 namespace controllers;
 
-use lib\FileRepository;
-use lib\Registry;
+use lib\Repositories\FileRepository;
+use lib\Singletons;
 
 class ListFiles extends AbstractController {
     public function getAccessLevel()
@@ -24,7 +24,7 @@ class ListFiles extends AbstractController {
             $location = base64_encode('/');
         }
 
-        $fileList = FileRepository::findByLocation(Registry::get('user'), $location);
+        $fileList = FileRepository::findByLocation(Singletons::$auth->getUser(), $location);
         $this->parseView('partials/filelist', ['fileList' => $fileList, 'printPath' => false]);
     }
 
@@ -32,7 +32,7 @@ class ListFiles extends AbstractController {
     {
         $searchString = $this->param('search');
 
-        $fileList = FileRepository::search(Registry::get('user'), $searchString);
+        $fileList = FileRepository::search(Singletons::$auth->getUser(), $searchString);
         $this->parseView('partials/filelist', ['fileList' => $fileList, 'printPath' => true]);
     }
 }
