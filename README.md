@@ -25,6 +25,8 @@ mobilanspassa
 
 refaktorera js
 
+"sign out everywhere"
+
 länkar
 
 hjälp-popup med kortkomandon samt sökhjälp

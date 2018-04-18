@@ -51,10 +51,8 @@ class Authentication
         session_regenerate_id();
 
         if (isset($_COOKIE[self::COOKIE_REMEMBER])) {
-            $this->userRepository->deleteAuthTokenForUser($this->user->getId(), $this->getSelectorFromAuthCookie());
-
-            unset($_COOKIE[self::COOKIE_REMEMBER]);
-            setcookie(self::COOKIE_REMEMBER, null, -1, '/');
+            $token = $this->getAuthenticationTokenFromCookie();
+            $this->clearRememberMeCookie($token);
         }
 
         $this->user = null;
@@ -71,9 +69,17 @@ class Authentication
                 $selector = bin2hex(random_bytes(6));
 
                 $hashedToken = hash('sha256', $token);
-                $expires = strtotime('+ 1 YEAR');
+                $expires = strtotime('+ 1 MONTH');
 
-                $result = $this->userRepository->addAuthTokenToUser($this->user->getId(), $selector, $hashedToken, $encryptedPassword, date('Y-m-d H:i:s', $expires));
+                $authToken = new AuthenticationToken(
+                    $this->user,
+                    $selector,
+                    $hashedToken,
+                    $encryptedPassword,
+                    $expires
+                );
+
+                $result = $this->userRepository->addAuthTokenToUser($authToken);
 
                 if ($result) {
                     setcookie(self::COOKIE_REMEMBER, $selector . ':' . $token, $expires, '/');
@@ -83,19 +89,59 @@ class Authentication
         }
     }
 
-    private function getSelectorFromAuthCookie()
+    /**
+     * Signs in a user based on authentication cookie
+     */
+    private function authenticateUsingCookie()
     {
-        if (isset($_COOKIE[self::COOKIE_REMEMBER])) {
-            list($selector,$token) = explode(':', $_COOKIE[self::COOKIE_REMEMBER]);
-            return $selector;
+        $authenticationToken = $this->getAuthenticationTokenFromCookie();
+
+        if ($authenticationToken) {
+            $hashedTokenFromCookie = hash('sha256', $authenticationToken->getToken());
+
+            if (hash_equals($authenticationToken->getHashedToken(), $hashedTokenFromCookie)) {
+                if ($authenticationToken->getExpires() > time()) {
+                    try {
+                        $encryptionKey = Key::loadFromAsciiSafeString($authenticationToken->getToken());
+
+                        $password = Crypto::decrypt($authenticationToken->getEncryptedPassword(), $encryptionKey);
+
+                        $this->loadUser($authenticationToken->getUser(), $password);
+                        return;
+                    } catch (\Exception $e) {
+                        die('Encryption error error for "remind me" cookie. Clear cookies to login.');
+                    }
+                }
+            }
         }
+
+        $this->clearRememberMeCookie($authenticationToken);
     }
 
-    private function getTokenFromAuthCookie()
+    private function clearRememberMeCookie(AuthenticationToken $token = null)
+    {
+        if ($token) {
+            $this->userRepository->deleteAuthTokenForUser($token);
+        }
+
+        unset($_COOKIE[self::COOKIE_REMEMBER]);
+        setcookie(self::COOKIE_REMEMBER, null, -1, '/');
+    }
+
+    /**
+     * @return AuthenticationToken
+     */
+    private function getAuthenticationTokenFromCookie()
     {
         if (isset($_COOKIE[self::COOKIE_REMEMBER])) {
             list($selector,$token) = explode(':', $_COOKIE[self::COOKIE_REMEMBER]);
-            return $token;
+
+            $authenticationToken = $this->userRepository->getAuthenticationTokenBySelector($selector);
+
+            if ($authenticationToken) {
+                $authenticationToken->setToken($token);
+                return $authenticationToken;
+            }
         }
     }
 
@@ -115,6 +161,9 @@ class Authentication
         return $this->user;
     }
 
+    /**
+     * Checks if there's a user in the session, or if an authentication cookie exists
+     */
     private function checkIfAuthenticated()
     {
         if (isset($_SESSION[self::SESSION_USER_ID])) {
@@ -125,28 +174,16 @@ class Authentication
             }
         }
         else if (isset($_COOKIE[self::COOKIE_REMEMBER]) && $this->isRememberMeActivated) {
-            $tokenInfoFromDb = $this->userRepository->getAuthRowBySelector($this->getSelectorFromAuthCookie());
-            $token = $this->getTokenFromAuthCookie();
-            $hashedTokenFromCookie = hash('sha256', $token);
-
-            if ($tokenInfoFromDb && hash_equals($tokenInfoFromDb['hashed_token'], $hashedTokenFromCookie)) {
-                if (strtotime($tokenInfoFromDb['expires']) > time()) {
-                    $user = $this->userRepository->getUserById($tokenInfoFromDb['user_id']);
-
-                    try {
-                        $encryptionKey = Key::loadFromAsciiSafeString($token);
-
-                        $password = Crypto::decrypt($tokenInfoFromDb['encrypted_password'], $encryptionKey);
-
-                        $this->loadUser($user, $password);
-                    } catch (\Exception $e) {
-                        die('Encryption error error for "remind me" cookie. Clear cookies to login.');
-                    }
-                }
-            }
+            $this->authenticateUsingCookie();
         }
     }
 
+    /**
+     * Loads a user to the session after signing in though username/password or authentication cookie
+     * @param User $user
+     * @param string $password
+     * @return bool
+     */
     private function loadUser(User $user, string $password)
     {
         $protectedKey = $this->userRepository->getProtectedEncryptionKeyForUser($user->getId());

@@ -2,6 +2,7 @@
 namespace lib\Repositories;
 
 
+use lib\AuthenticationToken;
 use lib\Database;
 use lib\User;
 
@@ -54,26 +55,44 @@ class UserRepository
         return $user['encryption_key'] ?? false;
     }
 
-    public function addAuthTokenToUser($userId, $selector, $hashedToken, $encryptedPassword, $expires)
+    public function addAuthTokenToUser(AuthenticationToken $authenticationToken)
     {
         $statement = $this->pdo->prepare('INSERT INTO auth (user_id, selector, hashed_token, encrypted_password, expires) VALUES (?,?,?,?,?);');
-        $result = $statement->execute([$userId, $selector, $hashedToken, $encryptedPassword, $expires]);
+        $result = $statement->execute([
+            $authenticationToken->getUser()->getId(),
+            $authenticationToken->getSelector(),
+            $authenticationToken->getHashedToken(),
+            $authenticationToken->getEncryptedPassword(),
+            date('Y-m-d H:i:s', $authenticationToken->getExpires())
+        ]);
 
         return $result;
     }
 
-    public function deleteAuthTokenForUser($userId, $selector)
+    public function deleteAuthTokenForUser(AuthenticationToken $authenticationToken)
     {
-        $statement = $this->pdo->prepare('DELETE FROM auth WHERE user_id = ? AND selector = ?;');
-        $result = $statement->execute([$userId, $selector]);
+        $statement = $this->pdo->prepare('DELETE FROM auth WHERE selector = ?;');
+        $result = $statement->execute([$authenticationToken->getSelector()]);
 
         return $result;
     }
 
-    public function getAuthRowBySelector($selector)
+    public function getAuthenticationTokenBySelector($selector)
     {
         $statement = $this->pdo->prepare('SELECT user_id, hashed_token, encrypted_password, expires FROM auth WHERE selector = ?');
         $statement->execute([$selector]);
-        return $statement->fetch();
+        $row = $statement->fetch();
+
+        if ($row) {
+            return new AuthenticationToken(
+                $this->getUserById($row['user_id']),
+                $selector,
+                $row['hashed_token'],
+                $row['encrypted_password'],
+                strtotime($row['expires'])
+            );
+        }
     }
+
+
 }
