@@ -148,7 +148,7 @@ abstract class AbstractFile {
         try {
             return $updateFile->execute([$this->id]);
         }
-        catch (PDOException $e) {
+        catch (\PDOException $e) {
             return false;
         }
     }
@@ -296,6 +296,29 @@ abstract class AbstractFile {
     public function getLastEdit()
     {
         return $this->last_edit;
+    }
+
+    public function getReadableDateForFileList()
+    {
+        if (Singletons::get('config')->presentation->upload_date_in_list) {
+            $timestamp = strtotime($this->created);
+        }
+        else {
+            $timestamp = strtotime($this->last_edit);
+        }
+
+        $now = time();
+
+        if (date('Y-m-d', $timestamp) === date('Y-m-d', $now)) {
+            $todayString = Singletons::$language->translate('TODAY');
+            return $todayString . ' ' . date('H:i', $timestamp);
+        }
+        else if (date('Y', $timestamp) === date('Y', $now)) {
+            return date('j M', $timestamp);
+        }
+        else {
+            return date('j M Y', $timestamp);
+        }
     }
 
     /**

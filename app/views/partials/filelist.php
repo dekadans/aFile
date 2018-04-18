@@ -18,7 +18,7 @@ foreach ($fileList as $file): ?>
             </td>
             <td class="fileName"><?= $file->getName() ?></td>
             <td><?= $file->getSizeReadable() ?></td>
-            <td><?= $file->getLastEdit() // TODO: Readable version eg. Idag kl 12:00 ?></td>
+            <td><?= $file->getReadableDateForFileList() ?></td>
         </tr>
 
     <?php elseif ($file->isDirectory()): ?>

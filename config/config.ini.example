@@ -23,9 +23,13 @@ inline_download[] = application/pdf
 inline_download[] = image/jpeg
 inline_download[] = image/png
 inline_download[] = image/gif
+inline_download[] = image/svg+xml
 inline_download[] = text/plain
 
 [presentation]
 ; If true then SI-prefixes will be used for file sizes (kB = 1000 bytes),
 ; if false, binary prefixes is used (KiB = 1024 bytes)
 siprefix = true
+
+; If false, time for last edit will be shown
+upload_date_in_list = true

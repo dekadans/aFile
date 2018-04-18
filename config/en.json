@@ -40,5 +40,7 @@
     "CLIPBOARD" : "There are currently <strong>%files% file(s)</strong> in the clipboard",
     "CLIPBOARD_DELETE" : "Delete",
     "CLIPBOARD_PASTE" : "Paste",
-    "FILES" : " file(s)"
+    "FILES" : " file(s)",
+
+    "TODAY" : "Today"
 }
