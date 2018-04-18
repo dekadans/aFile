@@ -82,25 +82,30 @@ html, body, #AppContainer {
 }
 
 #FileButtons button:disabled {
-    cursor: default;
+    /*cursor: default;*/
 }
 
 #ListContainer {
     padding-top: 185px;
 }
 
-#List {
-    width: 100%;
-}
-
 .listItem {
+    cursor:pointer;
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome and Opera */
+}
+/*.listItem {
     border-bottom: 1px solid #dddddd;
     cursor:pointer;
 }
 
 .listItem > td:first-child {
     position: relative;
-    width: 60px; /* Ugly fix for now */
+    width: 60px;
 }
 .listItem > td:nth-child(2) {
     width: 70%;
@@ -113,21 +118,16 @@ html, body, #AppContainer {
 
 .listItemActive {
     background-color: #dddddd5c;
+}*/
+
+.fileName,.fileInfo {
+
 }
 
-.fileName {
-  -webkit-touch-callout: none; /* iOS Safari */
-    -webkit-user-select: none; /* Safari */
-       -moz-user-select: none; /* Firefox */
-        -ms-user-select: none; /* Internet Explorer/Edge */
-            user-select: none; /* Non-prefixed version, currently
-                                  supported by Chrome and Opera */
-}
-
-.fileIcon, .directoryIcon {
+/*.fileIcon, .directoryIcon {
     position: relative;
     z-index: 50;
-}
+}*/
 
 .directoryIcon {
     width: 30px;
@@ -136,12 +136,12 @@ html, body, #AppContainer {
     margin-top: 14px;
 }
 
-.hasToken {
+/*.hasToken {
     position: absolute;
     left: -20px;
     top: 20px;
     cursor: default;
-}
+}*/
 
 #Progress {
     position: fixed;
@@ -166,6 +166,6 @@ html, body, #AppContainer {
 }
 
 /* MISC */
-.right {
+/*.right {
     float: right;
-}
+}*/

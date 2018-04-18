@@ -39,7 +39,7 @@
                     <div id="FileButtons" class="btn-group" role="group" aria-label="...">
                         <button id="Delete" type="button" class="btn btn-outline-dark"><i class="fas fa-trash-alt"></i></button>
                         <button id="Rename" type="button" class="btn btn-outline-dark"><i class="fas fa-edit"></i></button>
-                        <button id="Share" type="button" class="btn btn-outline-dark"><i class="fas fa-share-square"></i></button>
+                        <button id="Share" type="button" class="btn btn-outline-dark"><i class="fas fa-share-alt"></i></button>
                         <button id="Download" type="button" class="btn btn-outline-dark"><i class="fas fa-cloud-download-alt"></i></button>
                     </div>
 
@@ -59,8 +59,8 @@
             <button id="ClipboardDelete" class="btn btn-xs btn-danger"><?= $L['CLIPBOARD_DELETE'] ?></button>
         </div>
 
-        <table id="List">
-        </table>
+        <div id="List">
+        </div>
     </div>
 
     <div class="modal fade" id="Modal" tabindex="-1" role="dialog">

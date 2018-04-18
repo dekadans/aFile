@@ -308,7 +308,7 @@ class aFile {
      * @param item
      */
     selectItem(item) {
-        $('.listItem').removeClass('listItemActive');
+        $('.listItem').removeClass('bg-light');
 
         if (item === null) {
             this.selected = null;
@@ -316,7 +316,7 @@ class aFile {
         }
         else {
             this.selected = item;
-            this.selected.addClass('listItemActive');
+            this.selected.addClass('bg-light');
             $('#FileButtons').find('button').prop('disabled', false);
 
             if (this.selected.hasClass('directory')) {
