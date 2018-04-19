@@ -472,6 +472,18 @@ class aFile {
                 $('#ModalEditor').modal('show');
             }
         });
+
+        $('.sortby').click(e => {
+            e.preventDefault();
+            let column = $(e.target).data('column');
+
+            this.get('Sort','', data => {
+                $('.sortby').removeClass('active');
+                $(e.target).addClass('active');
+
+                this.list();
+            }, {column : column});
+        });
     }
 
     /**

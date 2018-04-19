@@ -155,6 +155,8 @@ class FileRepository
     {
         $files = [];
 
+        $sort = Singletons::$sort;
+
         $sql = "SELECT
                     *
                 FROM files
@@ -165,7 +167,7 @@ class FileRepository
                     WHEN type = 'DIRECTORY' THEN 1
                     WHEN type = 'SPECIAL' THEN 2
                     ELSE 4
-                END), name";
+                END), " . $sort->getSortBy() . ' ' . $sort->getDirection();
 
         $filesQuery = $this->pdo->prepare($sql);
         $filesQuery->execute([($location ?? null), $user->getId()]);
@@ -200,7 +202,7 @@ class FileRepository
     public function search(User $user, string $searchString = '')
     {
         $files = [];
-        $engine = new SearchEngine($this->pdo);
+        $engine = new SearchEngine($this->pdo, Singletons::$sort);
         $searchResult = $engine->search($searchString, $user->getId());
 
         foreach ($searchResult as $file) {

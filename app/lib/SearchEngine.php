@@ -10,6 +10,8 @@ class SearchEngine
 {
     /** @var \PDO */
     private $pdo;
+    /** @var Sort */
+    private $sort;
 
     private $originalInput;
     private $searchString;
@@ -18,9 +20,10 @@ class SearchEngine
     private $sqlWhereClauses = [];
     private $sqlWhereParameters = [];
 
-    public function __construct(\PDO $pdo)
+    public function __construct(\PDO $pdo, Sort $sort)
     {
         $this->pdo = $pdo;
+        $this->sort = $sort;
     }
 
     public function search(string $searchString, int $userId)
@@ -104,7 +107,7 @@ class SearchEngine
                     WHEN type = 'DIRECTORY' THEN 1
                     WHEN type = 'SPECIAL' THEN 2
                     ELSE 4
-                END), name";
+                END), " . $this->sort->getSortBy() . ' ' . $this->sort->getDirection();
 
         return $sql;
     }

@@ -21,7 +21,7 @@ class ListFiles extends AbstractController {
 
     public function index()
     {
-        $this->parseView('main');
+        $this->parseView('main', ['currentSorting' => Singletons::$sort->getSortBy()]);
     }
 
     public function actionList()

@@ -21,7 +21,7 @@ sortera fillista
 
 -snyggare timestamps
 
-ny db struktur? :( ist för locations så pekar filer på en parent dir
+-ny db struktur? :( ist för locations så pekar filer på en parent dir
 
 mobilanspassa
 

@@ -14,6 +14,9 @@ class Singletons {
     /** @var Database */
     public static $db;
 
+    /** @var Sort */
+    public static $sort;
+
     public static function set($key, $value) {
         if (!is_array(self::$storage)) {
             self::$storage = [];

@@ -52,9 +52,14 @@
                                 <i class="fas fa-sort-amount-down"></i>
                             </button>
                             <div class="dropdown-menu" aria-labelledby="SortMenu">
-                                <a class="dropdown-item" href="#"><?= $L['SORT_NAME'] ?></a>
-                                <a class="dropdown-item" href="#"><?= $L['SORT_SIZE'] ?></a>
-                                <a class="dropdown-item" href="#"><?= $L['SORT_DATE'] ?></a>
+                                <a class="dropdown-item sortby <?= ($currentSorting === \lib\Sort::COLUMN_NAME ? 'active' : '') ?>" href="#" data-column="<?= \lib\Sort::COLUMN_NAME ?>"><?= $L['SORT_NAME'] ?></a>
+                                <a class="dropdown-item sortby <?= ($currentSorting === \lib\Sort::COLUMN_SIZE ? 'active' : '') ?>" href="#" data-column="<?= \lib\Sort::COLUMN_SIZE ?>"><?= $L['SORT_SIZE'] ?></a>
+
+                                <?php if (\lib\Singletons::get('config')->presentation->upload_date_in_list): ?>
+                                <a class="dropdown-item sortby <?= ($currentSorting === \lib\Sort::COLUMN_DATE_UPLOAD ? 'active' : '') ?>" href="#" data-column="<?= \lib\Sort::COLUMN_DATE_UPLOAD ?>"><?= $L['SORT_DATE'] ?></a>
+                                <?php else: ?>
+                                <a class="dropdown-item sortby <?= ($currentSorting === \lib\Sort::COLUMN_DATE_EDIT ? 'active' : '') ?>" href="#" data-column="<?= \lib\Sort::COLUMN_DATE_EDIT ?>"><?= $L['SORT_DATE'] ?></a>
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>

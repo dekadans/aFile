@@ -57,7 +57,8 @@ $db = new \lib\Database();
 $translation = new lib\Translation($config->language);
 lib\Singletons::$language = $translation;
 
+\lib\Singletons::$sort = \lib\Sort::loadFromSession();
+
 $userRepository = new \lib\Repositories\UserRepository($db);
 $authentication = new \lib\Authentication($userRepository, $config->login->remember_me_activated);
 \lib\Singletons::$auth = $authentication;
-
