@@ -15,9 +15,10 @@ class File extends AbstractFile {
      */
 
     /**
-    * Reads and returns the contents of the File
-    * @return string|bool
-    */
+     * Reads and returns the contents of the File
+     * @param bool $returnPathToContent
+     * @return string|bool
+     */
     public function read($returnPathToContent = false)
     {
         $encryptionKey = $this->getEncryptionKey();
@@ -147,47 +148,6 @@ class File extends AbstractFile {
         @unlink($this->getFilePath());
         return $this->deleteFileFromDatabase();
     }
-
-    /**
-    *  STATIC
-    */
-
-    /**
-     * Creates a new file in the database and returns File object for it
-     * @param  User $user
-     * @param  string $name
-     * @param  string $location
-     * @param  string $mime
-     * @param  string $tmpPath
-     * @return AbstractFile | boolean
-     */
-    public static function create(User $user, $name, $location, $mime, $tmpPath)
-    {
-        if (!FileRepository::exists($user, $name, $location)) {
-            $string_id = self::getUniqueStringId();
-
-            $addFile = Singletons::$db->getPDO()->prepare('INSERT INTO files (user_id, name, location, mime, type, string_id) VALUES (?,?,?,?,?,?)');
-
-            try {
-                if ($addFile->execute([$user->getId(), $name, $location, $mime, 'FILE', $string_id])) {
-                    $file = FileRepository::find(Singletons::$db->getPDO()->lastInsertId());
-                    $file->setTmpPath($tmpPath);
-                    $file->write();
-                    return $file;
-                }
-                else {
-                    return false;
-                }
-            }
-            catch (\PDOException $e) {
-                return false;
-            }
-        }
-        else {
-            return false;
-        }
-    }
-
 
     /**
     * GETTERS AND SETTERS

@@ -11,15 +11,17 @@ Dev branch. The project is very much in progress and not very functional.
 -regler för att tvinga tex SVG till rätt mime alt.  
 -manuellt redigera mime genom dolt kortkommando
 
-fråga om att ersätta när man laddar upp existerande fil
+-fråga om att ersätta när man laddar upp existerande fil
 
-composer
+-composer
 
 klickbart i breadcrumbs
 
 sortera fillista
 
-snyggare timestamps
+-snyggare timestamps
+
+ny db struktur? :( ist för locations så pekar filer på en parent dir
 
 mobilanspassa
 

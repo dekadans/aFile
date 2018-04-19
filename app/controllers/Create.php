@@ -2,6 +2,7 @@
 namespace controllers;
 
 use lib\Directory;
+use lib\Repositories\FileRepository;
 use lib\Singletons;
 
 class Create extends AbstractController
@@ -16,9 +17,10 @@ class Create extends AbstractController
         $user = Singletons::$auth->getUser();
         $name = $this->param('name');
         $location = $this->param('location');
+        $fileRepository = new FileRepository();
 
-        if (!empty($name) && !empty($location)) {
-            $result = Directory::create($user, $name, $location);
+        if (!empty($name)) {
+            $result = $fileRepository->createDirectory($user, $name, $location);
 
             if ($result) {
                 $this->outputJSON([

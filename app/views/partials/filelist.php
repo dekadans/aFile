@@ -1,7 +1,7 @@
 <ul class="list-group list-group-flush">
 <?php
 /** @var \lib\FileList $fileList */
-/** @var string $printPath */
+/** @var bool $printPath */
 foreach ($fileList as $file): ?>
     <?php if ($file->isFile()): ?>
 
@@ -10,8 +10,8 @@ foreach ($fileList as $file): ?>
             data-newtab="<?= $file->openFileInNewTab() ?>"
             data-stringid="<?= $file->getStringId() ?>"
             data-mime="<?= $file->getMime() ?>"
-            title="<?= ($printPath ? base64_decode($file->getLocation()) : '') ?>">
-            <div class="row h-100 align-items-center">
+            title="<?= ($printPath ? '' : '') ?>">
+            <div class="row align-items-center">
                 <div class="col-md-1">
                     <span class="flaticon-<?= $file->getFileExtension() ?> flaticon-blank fileIcon"></span>
                 </div>
@@ -29,23 +29,6 @@ foreach ($fileList as $file): ?>
                 </div>
             </div>
         </li>
-
-        <!--<tr class="listItem file"
-            data-id="<?= $file->getId() ?>"
-            data-newtab="<?= $file->openFileInNewTab() ?>"
-            data-stringid="<?= $file->getStringId() ?>"
-            data-mime="<?= $file->getMime() ?>"
-            title="<?= ($printPath ? base64_decode($file->getLocation()) : '') ?>">
-            <td>
-                <?php if ($file->getEncryption() === \lib\File::ENCRYPTION_TOKEN): ?>
-                <i class="fas fa-link hasToken"></i>
-                <?php endif; ?>
-                <span class="flaticon-<?= $file->getFileExtension() ?> flaticon-blank fileIcon"></span>
-            </td>
-            <td class="fileName"><?= $file->getName() ?></td>
-            <td><?= $file->getSizeReadable() ?></td>
-            <td><?= $file->getReadableDateForFileList() ?></td>
-        </tr>-->
 
     <?php elseif ($file->isDirectory()): ?>
 

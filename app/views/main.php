@@ -46,6 +46,17 @@
                     <div class="btn-group" role="group" aria-label="..." style="float:right;">
                         <button id="CreateDirectory" type="button" class="btn btn-outline-dark"><i class="fas fa-folder-open"></i></button>
                         <button id="OpenEditor" type="button" class="btn btn-outline-dark"><i class="fas fa-font"></i></button>
+
+                        <div class="btn-group" role="group">
+                            <button id="SortMenu" type="button" class="btn btn-outline-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-sort-amount-down"></i>
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="SortMenu">
+                                <a class="dropdown-item" href="#"><?= $L['SORT_NAME'] ?></a>
+                                <a class="dropdown-item" href="#"><?= $L['SORT_SIZE'] ?></a>
+                                <a class="dropdown-item" href="#"><?= $L['SORT_DATE'] ?></a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -55,8 +66,8 @@
         <div class="alert alert-info" id="Clipboard">
             <button id="ClipboardDismiss" type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             <span id="ClipboardText"><?= $L['CLIPBOARD'] ?></span>
-            <button id="ClipboardPaste" class="btn btn-xs btn-success"><?= $L['CLIPBOARD_PASTE'] ?></button>
-            <button id="ClipboardDelete" class="btn btn-xs btn-danger"><?= $L['CLIPBOARD_DELETE'] ?></button>
+            <button id="ClipboardPaste" class="btn btn-sm btn-success"><?= $L['CLIPBOARD_PASTE'] ?></button>
+            <button id="ClipboardDelete" class="btn btn-sm btn-danger"><?= $L['CLIPBOARD_DELETE'] ?></button>
         </div>
 
         <div id="List">

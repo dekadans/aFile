@@ -21,6 +21,9 @@ class Editor extends AbstractController
     /** @var File */
     private $file;
 
+    /** @var FileRepository */
+    private $fileRepository;
+
     public function getAccessLevel()
     {
         return self::ACCESS_LOGIN;
@@ -32,9 +35,11 @@ class Editor extends AbstractController
         $this->content = $this->param('content');
         $this->location = $this->param('location');
 
+        $this->fileRepository = new FileRepository();
+
         $fileId = $this->param('id');
         if ($fileId) {
-            $this->file = FileRepository::find($fileId);
+            $this->file = $this->fileRepository->find($fileId);
 
             if ($this->file->isset() && !Acl::checkFileAccess($this->file)) {
                 $this->outputJSON([
@@ -49,7 +54,7 @@ class Editor extends AbstractController
         $tempFile = tempnam(sys_get_temp_dir(), 'afile');
         file_put_contents($tempFile, $this->content);
 
-        $file = File::create(Singletons::$auth->getUser(), $this->filename, $this->location, 'text/plain', $tempFile);
+        $file = $this->fileRepository->createFile(Singletons::$auth->getUser(), $this->filename, $this->location, 'text/plain', $tempFile);
         @unlink($tempFile);
 
         if ($file) {

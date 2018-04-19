@@ -291,7 +291,11 @@ class aFile {
                 }
 
                 if (this.selected.hasClass('directory')) {
-                    this.path.push(this.selected.find('.fileName').text());
+                    //this.path.push(this.selected.find('.fileName').text());
+                    this.path.push({
+                        name : this.selected.find('.fileName').text(),
+                        id : this.selected.data('id')
+                    });
                     this.drawPath();
                     this.selectItem(null);
                     this.list();
@@ -799,9 +803,13 @@ class aFile {
      * @returns {string}
      */
     getPath() {
-        let path = '/' + this.path.join('/');
-        path = btoa(path);
-        return path;
+        if (this.path.length) {
+            let path = this.path[this.path.length-1];
+            return path.id;
+        }
+        else {
+            return null;
+        }
     }
 
     /**
@@ -817,9 +825,9 @@ class aFile {
             pathElement.append(directory);
         }
         else {
-            for (let directoryName of this.path) {
+            for (let directoryObject of this.path) {
                 let directory = $('<li class="breadcrumb-item">');
-                directory.addClass('directory').text(directoryName);
+                directory.addClass('directory').text(directoryObject.name);
                 pathElement.append(directory);
             }
         }

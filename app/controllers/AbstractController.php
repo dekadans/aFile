@@ -20,16 +20,23 @@ abstract class AbstractController {
         $get = filter_input(INPUT_GET, $name);
 
         if (!empty($post)) {
-            return $post;
+            $value = $post;
         }
         else if (!empty($get)) {
-            return $get;
+            $value = $get;
         }
         else if (!empty($postArray)) {
             return $postArray;
         }
         else {
             return null;
+        }
+
+        if ($value === 'null' || $value === '') {
+            return null;
+        }
+        else {
+            return $value;
         }
     }
 

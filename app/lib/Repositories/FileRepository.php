@@ -12,6 +12,100 @@ use lib\User;
 
 class FileRepository
 {
+    /** @var \PDO */
+    private $pdo;
+
+    public function __construct()
+    {
+        $this->pdo = Singletons::$db->getPDO();
+    }
+
+    /**
+     * @param User $user
+     * @param string $name
+     * @param int $location
+     * @param string $mime
+     * @param string $temporaryPath
+     * @return File
+     */
+    public function createFile(User $user, string $name, $location, string $mime, string $temporaryPath)
+    {
+        /** @var File $file */
+        $file = $this->create($user, $name, $location, $mime, 'FILE', 'PERSONAL');
+
+        if ($file) {
+            $file->setTmpPath($temporaryPath);
+            $file->write();
+        }
+
+        return $file;
+    }
+
+    /**
+     * @param User $user
+     * @param string $name
+     * @param int $location
+     * @return bool|Directory
+     */
+    public function createDirectory(User $user, string $name, $location)
+    {
+        return $this->create($user, $name, $location, '', 'DIRECTORY', 'NONE');
+    }
+
+    private function create(User $user, $name, $location, $mime, $type, $encryption)
+    {
+        if (!$this->exists($user, $name, $location)) {
+            $stringId = $this->getUniqueStringId();
+
+            $SQL = "INSERT INTO files
+                  (user_id, name, parent_id, mime, type, encryption, string_id)
+                VALUES
+                  (:user_id, :name, :location, :mime, :type, :encryption, :string_id)";
+
+            $createStatement = $this->pdo->prepare($SQL);
+
+            $createStatement->bindValue(':user_id', $user->getId());
+            $createStatement->bindValue(':name', $name);
+            $createStatement->bindValue(':location', $location, \PDO::PARAM_INT);
+            $createStatement->bindValue(':mime', $mime);
+            $createStatement->bindValue(':type', $type);
+            $createStatement->bindValue(':encryption', $encryption);
+            $createStatement->bindValue(':string_id', $stringId);
+
+            if ($createStatement->execute()) {
+                $file = $this->find($this->pdo->lastInsertId());
+                return $file;
+            }
+            else {
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
+    }
+
+    private function getUniqueStringId() : string
+    {
+        $fileQuery = $this->pdo->prepare('SELECT id FROM files WHERE string_id = ?');
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyz';
+        $length = Singletons::get('config')->files->id_string_length;
+
+        while (true) {
+            $randomString = '';
+
+            for ($i = 0; $i < $length; $i++) {
+                $randomString .= $characters[rand(0, strlen($characters) - 1)];
+            }
+
+            $fileQuery->execute([$randomString]);
+
+            if (!$fileQuery->fetch()) {
+                return $randomString;
+            }
+        }
+    }
+
     /**
      * Checks if a file exists in the database
      * @param  user $user
@@ -19,9 +113,9 @@ class FileRepository
      * @param  string $location
      * @return boolean
      */
-    public static function exists(User $user, $name, $location) : bool
+    public function exists(User $user, $name, $location) : bool
     {
-        $checkFile = self::getPDO()->prepare('SELECT * FROM files WHERE user_id = ? AND name = ? AND location = ?');
+        $checkFile = $this->pdo->prepare('SELECT * FROM files WHERE user_id = ? AND name = ? AND parent_id '. (is_null($location) ? 'is' : '=') .' ?');
         $checkFile->execute([$user->getId(), $name, $location]);
         return $checkFile->fetch() ? true : false;
     }
@@ -30,26 +124,26 @@ class FileRepository
      * @param integer $id
      * @return AbstractFile
      */
-    public static function find($id)
+    public function find($id)
     {
-        $checkFile = self::getPDO()->prepare('SELECT * FROM files WHERE id = ?');
+        $checkFile = $this->pdo->prepare('SELECT * FROM files WHERE id = ?');
         $checkFile->execute([$id]);
         $fileData = $checkFile->fetch();
 
-        return self::createFileObject($fileData);
+        return $this->createFileObject($fileData);
     }
 
     /**
      * @param string $stringId
      * @return AbstractFile
      */
-    public static function findByUniqueString($stringId)
+    public function findByUniqueString($stringId)
     {
-        $checkFile = self::getPDO()->prepare('SELECT * FROM files WHERE string_id = ?');
+        $checkFile = $this->pdo->prepare('SELECT * FROM files WHERE string_id = ?');
         $checkFile->execute([$stringId]);
         $fileData = $checkFile->fetch();
 
-        return self::createFileObject($fileData);
+        return $this->createFileObject($fileData);
     }
 
     /**
@@ -57,14 +151,14 @@ class FileRepository
      * @param $location
      * @return FileList
      */
-    public static function findByLocation(User $user, $location)
+    public function findByLocation(User $user, $location)
     {
         $files = [];
 
         $sql = "SELECT
                     *
                 FROM files
-                WHERE location = ?
+                WHERE parent_id ". (is_null($location) ? 'is' : '=') ." ?
                 AND user_id = ?
                 ORDER BY (
                 CASE
@@ -73,12 +167,12 @@ class FileRepository
                     ELSE 4
                 END), name";
 
-        $filesQuery = self::getPDO()->prepare($sql);
-        $filesQuery->execute([$location, $user->getId()]);
+        $filesQuery = $this->pdo->prepare($sql);
+        $filesQuery->execute([($location ?? null), $user->getId()]);
         $filesResult = $filesQuery->fetchAll();
 
         foreach ($filesResult as $file) {
-            $files[] = self::createFileObject($file);
+            $files[] = $this->createFileObject($file);
         }
 
         return new FileList($files);
@@ -90,12 +184,12 @@ class FileRepository
      * @param string $name
      * @return AbstractFile
      */
-    public static function findByLocationAndName(User $user, string $location, string $name)
+    public function findByLocationAndName(User $user, $location, string $name)
     {
-        $fileQuery = self::getPDO()->prepare('SELECT * FROM files WHERE user_id = ? AND name = ? AND location = ?');
+        $fileQuery = $this->pdo->prepare('SELECT * FROM files WHERE user_id = ? AND name = ? AND parent_id = '. (is_null($location) ? 'is' : '=') .' ?');
         $fileQuery->execute([$user->getId(), $name, $location]);
 
-        return self::createFileObject($fileQuery->fetch());
+        return $this->createFileObject($fileQuery->fetch());
     }
 
     /**
@@ -103,32 +197,24 @@ class FileRepository
      * @param string $searchString
      * @return FileList
      */
-    public static function search(User $user, string $searchString = '')
+    public function search(User $user, string $searchString = '')
     {
         $files = [];
-        $engine = new SearchEngine(self::getPDO());
+        $engine = new SearchEngine($this->pdo);
         $searchResult = $engine->search($searchString, $user->getId());
 
         foreach ($searchResult as $file) {
-            $files[] = self::createFileObject($file);
+            $files[] = $this->createFileObject($file);
         }
 
         return new FileList($files, true);
     }
 
     /**
-     * @return \PDO
-     */
-    private static function getPDO()
-    {
-        return Singletons::$db->getPDO();
-    }
-
-    /**
      * @param array $fileData
      * @return AbstractFile
      */
-    private static function createFileObject($fileData)
+    private function createFileObject($fileData)
     {
         if ($fileData) {
             if ($fileData['type'] === 'FILE') {

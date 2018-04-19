@@ -11,9 +11,17 @@ class Upload extends AbstractController {
     private $location;
     private $user;
 
+    /** @var FileRepository */
+    private $fileRepository;
+
     public function getAccessLevel()
     {
         return self::ACCESS_LOGIN;
+    }
+
+    public function init()
+    {
+        $this->fileRepository = new FileRepository();
     }
 
     public function index()
@@ -40,7 +48,7 @@ class Upload extends AbstractController {
                 $previousFileWithSameName = $file['name'];
             }
 
-            $file = File::create($this->user, $name, $this->location, $mime, $file['tmp_name']);
+            $file = $this->fileRepository->createFile($this->user, $name, $this->location, $mime, $file['tmp_name']);
             $results[] = $file;
         }
 
@@ -50,7 +58,7 @@ class Upload extends AbstractController {
             ]);
         }
         else if ($previousFileWithSameName && count($results) === 1) {
-            $fileToOverwrite = FileRepository::findByLocationAndName($this->user, $this->location, $previousFileWithSameName);
+            $fileToOverwrite = $this->fileRepository->findByLocationAndName($this->user, $this->location, $previousFileWithSameName);
             $newFile = array_pop($results);
 
             $this->outputJSON([
@@ -69,8 +77,8 @@ class Upload extends AbstractController {
 
     public function actionConfirmoverwrite()
     {
-        $oldFile = FileRepository::find($this->param('oldId'));
-        $newFile = FileRepository::find($this->param('newId'));
+        $oldFile = $this->fileRepository->find($this->param('oldId'));
+        $newFile = $this->fileRepository->find($this->param('newId'));
 
         if (Acl::checkFileAccess($oldFile) && Acl::checkFileAccess($newFile)) {
             try {
@@ -99,7 +107,7 @@ class Upload extends AbstractController {
 
     private function getUniqueName(string $name)
     {
-        if (!FileRepository::exists($this->user, $name, $this->location)) {
+        if (!$this->fileRepository->exists($this->user, $name, $this->location)) {
             return $name;
         }
 

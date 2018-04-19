@@ -6,9 +6,17 @@ use lib\Repositories\FileRepository;
 use lib\Singletons;
 
 class ListFiles extends AbstractController {
+    /** @var FileRepository */
+    private $fileRepository;
+
     public function getAccessLevel()
     {
         return self::ACCESS_LOGIN;
+    }
+
+    public function init()
+    {
+        $this->fileRepository = new FileRepository();
     }
 
     public function index()
@@ -20,11 +28,11 @@ class ListFiles extends AbstractController {
     {
         $location = $this->param('location');
 
-        if (!$location) {
-            $location = base64_encode('/');
+        if (empty($location)) {
+            $location = null;
         }
 
-        $fileList = FileRepository::findByLocation(Singletons::$auth->getUser(), $location);
+        $fileList = $this->fileRepository->findByLocation(Singletons::$auth->getUser(), $location);
         $this->parseView('partials/filelist', ['fileList' => $fileList, 'printPath' => false]);
     }
 
@@ -32,7 +40,7 @@ class ListFiles extends AbstractController {
     {
         $searchString = $this->param('search');
 
-        $fileList = FileRepository::search(Singletons::$auth->getUser(), $searchString);
+        $fileList = $this->fileRepository->search(Singletons::$auth->getUser(), $searchString);
         $this->parseView('partials/filelist', ['fileList' => $fileList, 'printPath' => true]);
     }
 }

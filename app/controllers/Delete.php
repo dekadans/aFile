@@ -3,10 +3,8 @@
 namespace controllers;
 
 use lib\Acl;
-use \lib\File;
 use lib\Repositories\FileRepository;
 use lib\Singletons;
-use lib\User;
 
 class Delete extends AbstractController {
     public function getAccessLevel() {
@@ -40,7 +38,8 @@ class Delete extends AbstractController {
 
     private function deleteFile($id)
     {
-        $file = FileRepository::find($id);
+        $fileRepository = new FileRepository();
+        $file = $fileRepository->find($id);
         if ($file->isset() && Acl::checkFileAccess($file)) {
             return $file->delete();
         }

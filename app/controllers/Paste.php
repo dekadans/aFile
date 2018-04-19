@@ -20,9 +20,11 @@ class Paste extends AbstractController
         $newLocation = $this->param('location');
         $result = [];
 
+        $fileRepository = new FileRepository();
+
         if (is_array($fileIds) && isset($newLocation)) {
             foreach ($fileIds as $id) {
-                $file = FileRepository::find($id);
+                $file = $fileRepository->find($id);
                 if ($file->isset() && Acl::checkFileAccess($file)) {
                     $result[] = $file->move($newLocation);
                 }

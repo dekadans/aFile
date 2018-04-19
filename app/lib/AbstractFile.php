@@ -19,8 +19,12 @@ abstract class AbstractFile {
     protected $created;
     protected $string_id;
 
+    protected $fileRepository;
+
     public function __construct($data = null)
     {
+        $this->fileRepository = new FileRepository();
+
         if ($data) {
             $this->setData($data);
         }
@@ -35,7 +39,7 @@ abstract class AbstractFile {
             $this->id = $fileData['id'];
             $this->user_id = $fileData['user_id'];
             $this->name = $fileData['name'];
-            $this->location = $fileData['location'];
+            $this->location = $fileData['parent_id'];
             $this->size = $fileData['size'];
             $this->mime = $fileData['mime'];
             $this->type = $fileData['type'];
@@ -82,7 +86,7 @@ abstract class AbstractFile {
      */
     public function rename($newName) : bool
     {
-        if (!FileRepository::exists($this->getUser(), $newName, $this->location)) {
+        if (!$this->fileRepository->exists($this->getUser(), $newName, $this->location)) {
             return $this->update(['name' => $newName]);
         }
         else {
@@ -119,8 +123,12 @@ abstract class AbstractFile {
      */
     public function move($newLocation) : bool
     {
-        if (!FileRepository::exists($this->getUser(), $this->name, $newLocation)) {
-            return $this->update(['location' => $newLocation]);
+        if ($newLocation === $this->location) {
+            return true;
+        }
+
+        if (!$this->fileRepository->exists($this->getUser(), $this->name, $newLocation)) {
+            return $this->update(['parent_id' => $newLocation]);
         }
         else {
             return false;
@@ -150,31 +158,6 @@ abstract class AbstractFile {
         }
         catch (\PDOException $e) {
             return false;
-        }
-    }
-
-    /**
-     * Generates a unique identifyer string for a files
-     * @return string
-     */
-    protected static function getUniqueStringId() : string
-    {
-        $fileQuery = Singletons::$db->getPDO()->prepare('SELECT id FROM files WHERE string_id = ?');
-        $characters = '0123456789abcdefghijklmnopqrstuvwxyz';
-        $length = Singletons::get('config')->files->id_string_length;
-
-        while (true) {
-            $randomString = '';
-
-            for ($i = 0; $i < $length; $i++) {
-                $randomString .= $characters[rand(0, strlen($characters) - 1)];
-            }
-
-            $fileQuery->execute([$randomString]);
-
-            if (!$fileQuery->fetch()) {
-                return $randomString;
-            }
         }
     }
 

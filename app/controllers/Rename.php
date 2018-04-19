@@ -8,9 +8,17 @@ use lib\Repositories\FileRepository;
 
 class Rename extends AbstractController
 {
+    /** @var FileRepository */
+    private $fileRepository;
+
     public function getAccessLevel()
     {
         return self::ACCESS_LOGIN;
+    }
+
+    public function init()
+    {
+        $this->fileRepository = new FileRepository();
     }
 
     public function index()
@@ -18,7 +26,7 @@ class Rename extends AbstractController
         $id = $this->param('id');
         $newName = $this->param('name');
 
-        $file = FileRepository::find($id);
+        $file = $this->fileRepository->find($id);
 
         if ($file->isset() && !Acl::checkFileAccess($file)) {
             $this->outputJSON([
@@ -43,7 +51,7 @@ class Rename extends AbstractController
         $id = $this->param('id');
         $newMime = $this->param('mime');
 
-        $file = FileRepository::find($id);
+        $file = $this->fileRepository->find($id);
 
         if ($file->isset() && Acl::checkFileAccess($file)) {
             $file->setMime($newMime);

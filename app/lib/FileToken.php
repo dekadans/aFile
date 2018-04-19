@@ -58,8 +58,10 @@ class FileToken
      */
     private function __construct($id, int $fileId, $openToken, $passwordToken, $active, $password, $encryptionKey, $activeTo)
     {
+        $fileRepository = new FileRepository();
+
         $this->id = $id;
-        $this->file = FileRepository::find($fileId);
+        $this->file = $fileRepository->find($fileId);
         $this->openToken = $openToken;
         $this->passwordToken = $passwordToken;
         $this->active = $active;

@@ -19,8 +19,9 @@ class Share extends AbstractController {
 
     public function init()
     {
+        $fileRepository = new FileRepository();
         $fileId = $this->param('id');
-        $this->file = FileRepository::find($fileId);
+        $this->file = $fileRepository->find($fileId);
 
         if (!$this->file->isset() && $this->file->isFile()) {
             $this->outputJSON([

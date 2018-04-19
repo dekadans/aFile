@@ -24,7 +24,7 @@
                         </div>
                         <?php endif; ?>
 
-                        <button class="btn btn-primary btn-sm right" id="LoginButton"><?= $L['LOGIN'] ?></button>
+                        <button class="btn btn-primary btn-sm float-right" id="LoginButton"><?= $L['LOGIN'] ?></button>
                     </div>
 
                 </div>
