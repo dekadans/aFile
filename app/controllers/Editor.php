@@ -6,6 +6,7 @@ use lib\Acl;
 use lib\File;
 use lib\Singletons;
 use lib\Repositories\FileRepository;
+use lib\Translation;
 
 class Editor extends AbstractController
 {
@@ -43,7 +44,7 @@ class Editor extends AbstractController
 
             if ($this->file->isset() && !Acl::checkFileAccess($this->file)) {
                 $this->outputJSON([
-                    'error' => Singletons::$language->translate('ACCESS_DENIED')
+                    'error' => Translation::getInstance()->translate('ACCESS_DENIED')
                 ]);
             }
         }
@@ -90,13 +91,13 @@ class Editor extends AbstractController
             }
             else {
                 $this->outputJSON([
-                    'error' => Singletons::$language->translate('EDITOR_TYPE_ERROR')
+                    'error' => Translation::getInstance()->translate('EDITOR_TYPE_ERROR')
                 ]);
             }
         }
         else {
             $this->outputJSON([
-                'error' => Singletons::$language->translate('NO_FILE')
+                'error' => Translation::getInstance()->translate('NO_FILE')
             ]);
         }
     }
@@ -128,7 +129,7 @@ class Editor extends AbstractController
         }
         else {
             $this->outputJSON([
-                'error' => Singletons::$language->translate('NO_FILE')
+                'error' => Translation::getInstance()->translate('NO_FILE')
             ]);
         }
     }

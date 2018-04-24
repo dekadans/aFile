@@ -4,7 +4,7 @@ namespace controllers;
 
 use lib\Acl;
 use lib\Repositories\FileRepository;
-use lib\Singletons;
+use lib\Translation;
 
 class Delete extends AbstractController {
     public function getAccessLevel() {
@@ -31,7 +31,7 @@ class Delete extends AbstractController {
         }
         else {
             $this->outputJSON([
-                'error' => Singletons::$language->translate('DELETE_FAILED')
+                'error' => Translation::getInstance()->translate('DELETE_FAILED')
             ]);
         }
     }

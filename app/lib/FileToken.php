@@ -82,7 +82,7 @@ class FileToken
 
         if ($result) {
             $SQL = "DELETE from share WHERE id = :id";
-            $deleteStatement = Singletons::$db->getPDO()->prepare($SQL);
+            $deleteStatement = Database::getInstance()->getPDO()->prepare($SQL);
             $deleteStatement->bindParam(':id', $this->id);
             return $deleteStatement->execute();
         }
@@ -154,7 +154,7 @@ class FileToken
         $openToken = $token['open_token'] ?? null;
         $passwordToken = $token['password_token'] ?? null;
 
-        $createStatement = Singletons::$db->getPDO()->prepare($SQL);
+        $createStatement = Database::getInstance()->getPDO()->prepare($SQL);
         $createStatement->bindParam(':fileId', $id);
         $createStatement->bindParam(':openToken', $openToken);
         $createStatement->bindParam(':passwordToken', $passwordToken);
@@ -192,7 +192,7 @@ class FileToken
         $passwordToken = $token['password_token'] ?? $this->getPasswordToken();
         $password = $password ?? $this->getPassword();
 
-        $updateStatement = Singletons::$db->getPDO()->prepare($SQL);
+        $updateStatement = Database::getInstance()->getPDO()->prepare($SQL);
         $updateStatement->bindParam(':fileId', $id);
         $updateStatement->bindParam(':openToken', $openToken);
         $updateStatement->bindParam(':passwordToken', $passwordToken);

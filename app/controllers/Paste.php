@@ -4,8 +4,8 @@ namespace controllers;
 
 
 use lib\Acl;
-use lib\Singletons;
 use lib\Repositories\FileRepository;
+use lib\Translation;
 
 class Paste extends AbstractController
 {
@@ -38,7 +38,7 @@ class Paste extends AbstractController
         }
         else {
             $this->outputJSON([
-                'error' => Singletons::$language->translate('PASTE_FAILED')
+                'error' => Translation::getInstance()->translate('PASTE_FAILED')
             ]);
         }
     }

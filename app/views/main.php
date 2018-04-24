@@ -1,4 +1,8 @@
-<div id="Loading" class="view"><?= $L['LOADING'] ?></div>
+<?php
+$lang = \lib\Translation::getInstance();
+?>
+
+<div id="Loading" class="view"><?= $lang->translate('LOADING') ?></div>
 
 <div id="Progress" class="bg-success"></div>
 
@@ -6,7 +10,7 @@
 
         <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
-            <a class="navbar-brand" href="#" id="BrandHome"><?= $L['BRAND'] ?></a>
+            <a class="navbar-brand" href="#" id="BrandHome"><?= $lang->translate('BRAND') ?></a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -14,12 +18,12 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item">
-                        <a class="nav-link" id="Logout" href="#"><?= $L['LOGOUT'] ?></a>
+                        <a class="nav-link" id="Logout" href="#"><?= $lang->translate('LOGOUT') ?></a>
                     </li>
                 </ul>
                 <div class="form-inline my-2 my-lg-0">
-                    <input class="form-control mr-sm-2" id="SearchInput" type="search" placeholder="<?= $L['SEARCH'] ?>" aria-label="Search">
-                    <button class="btn btn-outline-light my-2 my-sm-0" id="Search" type="submit"><?= $L['SEARCH_SHORT'] ?></button>
+                    <input class="form-control mr-sm-2" id="SearchInput" type="search" placeholder="<?= $lang->translate('SEARCH') ?>" aria-label="Search">
+                    <button class="btn btn-outline-light my-2 my-sm-0" id="Search" type="submit"><?= $lang->translate('SEARCH_SHORT') ?></button>
                 </div>
             </div>
         </div>
@@ -30,7 +34,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <ol class="breadcrumb bg-light" id="Path">
-                        <li class="breadcrumb-item"><a href="#" id="PathHome"><?= $L['HOME'] ?></a></li>
+                        <li class="breadcrumb-item"><a href="#" id="PathHome"><?= $lang->translate('HOME') ?></a></li>
                     </ol>
                 </div>
             </div>
@@ -52,13 +56,13 @@
                                 <i class="fas fa-sort-amount-down"></i>
                             </button>
                             <div class="dropdown-menu" aria-labelledby="SortMenu">
-                                <a class="dropdown-item sortby <?= ($currentSorting === \lib\Sort::COLUMN_NAME ? 'active' : '') ?>" href="#" data-column="<?= \lib\Sort::COLUMN_NAME ?>"><?= $L['SORT_NAME'] ?></a>
-                                <a class="dropdown-item sortby <?= ($currentSorting === \lib\Sort::COLUMN_SIZE ? 'active' : '') ?>" href="#" data-column="<?= \lib\Sort::COLUMN_SIZE ?>"><?= $L['SORT_SIZE'] ?></a>
+                                <a class="dropdown-item sortby <?= ($currentSorting === \lib\Sort::COLUMN_NAME ? 'active' : '') ?>" href="#" data-column="<?= \lib\Sort::COLUMN_NAME ?>"><?= $lang->translate('SORT_NAME') ?></a>
+                                <a class="dropdown-item sortby <?= ($currentSorting === \lib\Sort::COLUMN_SIZE ? 'active' : '') ?>" href="#" data-column="<?= \lib\Sort::COLUMN_SIZE ?>"><?= $lang->translate('SORT_SIZE') ?></a>
 
-                                <?php if (\lib\Singletons::get('config')->presentation->upload_date_in_list): ?>
-                                <a class="dropdown-item sortby <?= ($currentSorting === \lib\Sort::COLUMN_DATE_UPLOAD ? 'active' : '') ?>" href="#" data-column="<?= \lib\Sort::COLUMN_DATE_UPLOAD ?>"><?= $L['SORT_DATE'] ?></a>
+                                <?php if (\lib\Config::getInstance()->presentation->upload_date_in_list): ?>
+                                <a class="dropdown-item sortby <?= ($currentSorting === \lib\Sort::COLUMN_DATE_UPLOAD ? 'active' : '') ?>" href="#" data-column="<?= \lib\Sort::COLUMN_DATE_UPLOAD ?>"><?= $lang->translate('SORT_DATE') ?></a>
                                 <?php else: ?>
-                                <a class="dropdown-item sortby <?= ($currentSorting === \lib\Sort::COLUMN_DATE_EDIT ? 'active' : '') ?>" href="#" data-column="<?= \lib\Sort::COLUMN_DATE_EDIT ?>"><?= $L['SORT_DATE'] ?></a>
+                                <a class="dropdown-item sortby <?= ($currentSorting === \lib\Sort::COLUMN_DATE_EDIT ? 'active' : '') ?>" href="#" data-column="<?= \lib\Sort::COLUMN_DATE_EDIT ?>"><?= $lang->translate('SORT_DATE') ?></a>
                                 <?php endif; ?>
                             </div>
                         </div>
@@ -70,9 +74,9 @@
     <div class="container" id="ListContainer">
         <div class="alert alert-info" id="Clipboard">
             <button id="ClipboardDismiss" type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <span id="ClipboardText"><?= $L['CLIPBOARD'] ?></span>
-            <button id="ClipboardPaste" class="btn btn-sm btn-success"><?= $L['CLIPBOARD_PASTE'] ?></button>
-            <button id="ClipboardDelete" class="btn btn-sm btn-danger"><?= $L['CLIPBOARD_DELETE'] ?></button>
+            <span id="ClipboardText"><?= $lang->translate('CLIPBOARD') ?></span>
+            <button id="ClipboardPaste" class="btn btn-sm btn-success"><?= $lang->translate('CLIPBOARD_PASTE') ?></button>
+            <button id="ClipboardDelete" class="btn btn-sm btn-danger"><?= $lang->translate('CLIPBOARD_DELETE') ?></button>
         </div>
 
         <div id="List">
@@ -90,8 +94,8 @@
                 </div>
                 <div class="modal-body" id="ModalBody"></div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal"><?= $L['CANCEL'] ?></button>
-                    <button type="button" class="btn btn-primary" id="ModalOk"><?= $L['OK'] ?></button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal"><?= $lang->translate('CANCEL') ?></button>
+                    <button type="button" class="btn btn-primary" id="ModalOk"><?= $lang->translate('OK') ?></button>
                 </div>
             </div>
         </div>
@@ -101,19 +105,19 @@
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="ModalEditorTitle"><?= $L['EDITOR'] ?></h5>
+                    <h5 class="modal-title" id="ModalEditorTitle"><?= $lang->translate('EDITOR') ?></h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body" id="ModalEditorBody">
-                    <p><input id="EditorName" type="text" placeholder="<?= $L['EDITOR_NAME'] ?>" class="form-control"></p>
+                    <p><input id="EditorName" type="text" placeholder="<?= $lang->translate('EDITOR_NAME') ?>" class="form-control"></p>
                     <p><textarea id="Editor" class="form-control" spellcheck="false"></textarea></p>
                     <input type="hidden" id="EditorFileId" value="">
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" id="ModalEditorClose" data-dismiss="modal"><?= $L['EDITOR_CLOSE'] ?></button>
-                    <button type="button" class="btn btn-primary" id="ModalEditorSave"><?= $L['EDITOR_SAVE'] ?></button>
+                    <button type="button" class="btn btn-default" id="ModalEditorClose" data-dismiss="modal"><?= $lang->translate('EDITOR_CLOSE') ?></button>
+                    <button type="button" class="btn btn-primary" id="ModalEditorSave"><?= $lang->translate('EDITOR_SAVE') ?></button>
                 </div>
             </div>
         </div>

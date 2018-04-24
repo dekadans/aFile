@@ -18,7 +18,7 @@ class Sort
     private $sortBy;
     private $direction;
 
-    public function __construct()
+    private function __construct()
     {
         $this->sortBy = self::COLUMN_NAME;
         $this->direction = self::DIRECTION_ASCENDING;
@@ -96,6 +96,17 @@ class Sort
         $sort->setSortBy($column);
         $sort->setDirection($direction);
 
-        return $sort;
+        self::$instance = $sort;
+    }
+
+    /** @var Sort */
+    private static $instance;
+
+    /**
+     * @return Sort
+     */
+    public static function getInstance()
+    {
+        return self::$instance;
     }
 }

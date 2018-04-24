@@ -4,6 +4,7 @@ namespace controllers;
 
 use lib\Repositories\FileRepository;
 use lib\Singletons;
+use lib\Sort;
 
 class ListFiles extends AbstractController {
     /** @var FileRepository */
@@ -21,7 +22,8 @@ class ListFiles extends AbstractController {
 
     public function index()
     {
-        $this->parseView('main', ['currentSorting' => Singletons::$sort->getSortBy()]);
+        $currentSorting = Sort::getInstance()->getSortBy();
+        $this->parseView('main', ['currentSorting' => $currentSorting]);
     }
 
     public function actionList()

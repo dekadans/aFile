@@ -68,7 +68,7 @@ abstract class AbstractFile {
     */
     protected function deleteFileFromDatabase() : bool
     {
-        $deleteFile = Singletons::$db->getPDO()->prepare('DELETE FROM files WHERE id = ?');
+        $deleteFile = Database::getInstance()->getPDO()->prepare('DELETE FROM files WHERE id = ?');
 
         if ($deleteFile->execute([$this->id])) {
             $this->id = null;
@@ -152,7 +152,7 @@ abstract class AbstractFile {
         $sets = implode(', ',$sets);
 
         $sql = 'UPDATE files SET ' . $sets . ' WHERE id = ?';
-        $updateFile = Singletons::$db->getPDO()->prepare($sql);
+        $updateFile = Database::getInstance()->getPDO()->prepare($sql);
         try {
             return $updateFile->execute([$this->id]);
         }
@@ -179,7 +179,7 @@ abstract class AbstractFile {
     public function getUser()
     {
         if (is_null($this->user)) {
-            $repository = new UserRepository(Singletons::$db);
+            $repository = new UserRepository(Database::getInstance());
             $this->user = $repository->getUserById($this->user_id);
         }
 
@@ -216,7 +216,7 @@ abstract class AbstractFile {
      */
     public function getSizeReadable() : string
     {
-        $siPrefix = Singletons::get('config')->presentation->siprefix;
+        $siPrefix = Config::getInstance()->presentation->siprefix;
         $thresh = $siPrefix ? 1000 : 1024;
         $bytes = (int)$this->size;
 
@@ -283,7 +283,7 @@ abstract class AbstractFile {
 
     public function getReadableDateForFileList()
     {
-        if (Singletons::get('config')->presentation->upload_date_in_list) {
+        if (Config::getInstance()->presentation->upload_date_in_list) {
             $timestamp = strtotime($this->created);
         }
         else {
@@ -293,7 +293,7 @@ abstract class AbstractFile {
         $now = time();
 
         if (date('Y-m-d', $timestamp) === date('Y-m-d', $now)) {
-            $todayString = Singletons::$language->translate('TODAY');
+            $todayString = Translation::getInstance()->translate('TODAY');
             return $todayString . ' ' . date('H:i', $timestamp);
         }
         else if (date('Y', $timestamp) === date('Y', $now)) {

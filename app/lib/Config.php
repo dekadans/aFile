@@ -2,9 +2,9 @@
 namespace lib;
 
 class Config {
-    protected $config;
+    private $config;
 
-    function __construct ($filename) {
+    private function __construct ($filename) {
         $this->config = json_decode(json_encode(parse_ini_file($filename,true)));
     }
 
@@ -15,5 +15,21 @@ class Config {
         else {
             return null;
         }
+    }
+
+    public static function load($filename)
+    {
+        self::$instance = new self($filename);
+    }
+
+    /** @var Config */
+    private static $instance;
+
+    /**
+     * @return Config
+     */
+    public static function getInstance()
+    {
+        return self::$instance;
     }
 }

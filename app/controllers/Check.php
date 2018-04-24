@@ -3,6 +3,7 @@
 namespace controllers;
 
 use \lib\Singletons;
+use lib\Translation;
 
 class Check extends AbstractController {
     public function getAccessLevel() {
@@ -21,7 +22,7 @@ class Check extends AbstractController {
                 'username' => $user->getUsername(),
                 'type' => $user->getType()
             ];
-            $info['language'] = Singletons::$language->getLanguageData();
+            $info['language'] = Translation::getInstance()->getLanguageData();
         }
         else {
             $info['login'] = false;

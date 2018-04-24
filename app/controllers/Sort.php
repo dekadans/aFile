@@ -1,9 +1,7 @@
 <?php
 namespace controllers;
 
-
-use lib\AbstractFile;
-use lib\Singletons;
+use lib\Sort as Sorting;
 
 class Sort extends AbstractController
 {
@@ -16,7 +14,7 @@ class Sort extends AbstractController
     {
         $column = $this->param('column');
 
-        Singletons::$sort->setSortBy($column);
+        Sorting::getInstance()->setSortBy($column);
 
         self::outputJSON([
             'status' => 'ok'

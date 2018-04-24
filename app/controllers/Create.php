@@ -4,6 +4,7 @@ namespace controllers;
 use lib\Directory;
 use lib\Repositories\FileRepository;
 use lib\Singletons;
+use lib\Translation;
 
 class Create extends AbstractController
 {
@@ -30,7 +31,7 @@ class Create extends AbstractController
         }
 
         $this->outputJSON([
-            'error' => Singletons::$language->translate('CREATE_DIRECTORY_FAILED')
+            'error' => Translation::getInstance()->translate('CREATE_DIRECTORY_FAILED')
         ]);
     }
 }

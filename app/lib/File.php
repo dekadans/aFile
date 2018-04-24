@@ -102,7 +102,7 @@ class File extends AbstractFile {
      */
     public function getToken()
     {
-        $shareQuery = Singletons::$db->getPDO()->prepare('SELECT * FROM share WHERE file_id = ?');
+        $shareQuery = Database::getInstance()->getPDO()->prepare('SELECT * FROM share WHERE file_id = ?');
         $shareQuery->execute([$this->id]);
         $shareData = $shareQuery->fetch();
 
@@ -140,7 +140,7 @@ class File extends AbstractFile {
 
     public function openFileInNewTab()
     {
-        return in_array($this->getMime(), Singletons::get('config')->files->inline_download);
+        return in_array($this->getMime(), Config::getInstance()->files->inline_download);
     }
 
     public function delete() : bool
@@ -155,7 +155,7 @@ class File extends AbstractFile {
 
     public function getFilePath() : string
     {
-        return __DIR__ . '/' . Singletons::get('config')->files->path . $this->id;
+        return __DIR__ . '/' . Config::getInstance()->files->path . $this->id;
     }
 
     /**

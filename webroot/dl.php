@@ -7,7 +7,7 @@ if ($fileIdString) {
     $fileIdString = substr($fileIdString, 1) . '/';
     list($id, $token) = explode('/', $fileIdString);
 
-    if (strlen($id) == \lib\Singletons::get('config')->files->id_string_length) {
+    if (strlen($id) == \lib\Config::getInstance()->files->id_string_length) {
         $dl = new \lib\Download($id);
         // AYAA == Ayaa ???
         if ($dl->getFile() && $dl->getFile()->isset()) {

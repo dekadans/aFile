@@ -1,4 +1,7 @@
-<div id="Loading" class="view"><?= $L['LOADING'] ?></div>
+<?php
+$lang = \lib\Translation::getInstance();
+?>
+<div id="Loading" class="view"><?= $lang->translate('LOADING') ?></div>
 
 <div id="Login">
     <div class="container-fluid h-100">
@@ -7,24 +10,24 @@
             <div class="col-md-4 my-auto">
                 <div class="card">
                     <div class="card-header">
-                        <h4 class="card-title m-0"><?= $L['LOGIN'] ?></h4>
+                        <h4 class="card-title m-0"><?= $lang->translate('LOGIN') ?></h4>
                     </div>
                     <div class="card-body" id="LoginMessage">
                         <div class="alert alert-danger" role="alert"></div>
                     </div>
                     <div class="card-body p-0" id="LoginInputs">
-                        <input type="text" id="LoginUsername" placeholder="<?= $L['USERNAME'] ?>">
-                        <input type="password" id="LoginPassword" placeholder="<?= $L['PASSWORD'] ?>">
+                        <input type="text" id="LoginUsername" placeholder="<?= $lang->translate('USERNAME') ?>">
+                        <input type="password" id="LoginPassword" placeholder="<?= $lang->translate('PASSWORD') ?>">
                     </div>
                     <div class="card-footer">
-                        <?php if (\lib\Singletons::get('config')->login->remember_me_activated): ?>
+                        <?php if (\lib\Config::getInstance()->login->remember_me_activated): ?>
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="checkbox" id="RememberMe" value="1">
-                            <label class="form-check-label" for="RememberMe"><?= $L['REMEMBER_ME'] ?></label>
+                            <label class="form-check-label" for="RememberMe"><?= $lang->translate('REMEMBER_ME') ?></label>
                         </div>
                         <?php endif; ?>
 
-                        <button class="btn btn-primary btn-sm float-right" id="LoginButton"><?= $L['LOGIN'] ?></button>
+                        <button class="btn btn-primary btn-sm float-right" id="LoginButton"><?= $lang->translate('LOGIN') ?></button>
                     </div>
 
                 </div>

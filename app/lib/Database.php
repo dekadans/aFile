@@ -4,11 +4,18 @@ namespace lib;
 
 class Database {
     /** @var \PDO */
-    protected $pdo;
+    private $pdo;
+    /** @var string */
+    private $driver = '';
+    /** @var \stdClass */
+    private $config;
 
-    public function __construct()
+    private function __construct()
     {
-        switch (Singletons::get('config')->database->driver) {
+        $this->config = Config::getInstance()->database;
+        $this->driver = $this->config->driver;
+
+        switch ($this->driver) {
             case 'mysql':
                 $this->connectToMysql();
                 break;
@@ -21,10 +28,10 @@ class Database {
 
     private function connectToMysql()
     {
-        $host = Singletons::get('config')->database->host;
-        $db = Singletons::get('config')->database->database;
-        $user = Singletons::get('config')->database->user;
-        $password = Singletons::get('config')->database->password;
+        $host = $this->config->host;
+        $db = $this->config->database;
+        $user = $this->config->user;
+        $password = $this->config->password;
 
         $this->pdo = new \PDO('mysql:host='. $host .';dbname='. $db, $user, $password);
     }
@@ -32,5 +39,23 @@ class Database {
     public function getPDO()
     {
         return $this->pdo;
+    }
+
+    /** @var Database */
+    private static $instance;
+
+    /**
+     * @return Database
+     */
+    public static function getInstance()
+    {
+        if (is_null(self::$instance)) {
+            try {
+                self::$instance = new self();
+            } catch (\Exception $e) {
+
+            }
+        }
+        return self::$instance;
     }
 }

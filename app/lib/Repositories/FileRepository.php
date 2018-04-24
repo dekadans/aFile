@@ -1,13 +1,15 @@
 <?php
 namespace lib\Repositories;
 
-
 use lib\AbstractFile;
+use lib\Config;
+use lib\Database;
 use lib\Directory;
 use lib\File;
 use lib\FileList;
 use lib\Singletons;
 use lib\SearchEngine;
+use lib\Sort;
 use lib\User;
 
 class FileRepository
@@ -17,7 +19,7 @@ class FileRepository
 
     public function __construct()
     {
-        $this->pdo = Singletons::$db->getPDO();
+        $this->pdo = Database::getInstance()->getPDO();
     }
 
     /**
@@ -89,7 +91,7 @@ class FileRepository
     {
         $fileQuery = $this->pdo->prepare('SELECT id FROM files WHERE string_id = ?');
         $characters = '0123456789abcdefghijklmnopqrstuvwxyz';
-        $length = Singletons::get('config')->files->id_string_length;
+        $length = Config::getInstance()->files->id_string_length;
 
         while (true) {
             $randomString = '';
@@ -155,7 +157,7 @@ class FileRepository
     {
         $files = [];
 
-        $sort = Singletons::$sort;
+        $sort = Sort::getInstance();
 
         $sql = "SELECT
                     *
@@ -202,7 +204,7 @@ class FileRepository
     public function search(User $user, string $searchString = '')
     {
         $files = [];
-        $engine = new SearchEngine($this->pdo, Singletons::$sort);
+        $engine = new SearchEngine($this->pdo, Sort::getInstance());
         $searchResult = $engine->search($searchString, $user->getId());
 
         foreach ($searchResult as $file) {

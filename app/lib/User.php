@@ -63,7 +63,7 @@ class User {
      * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      */
     public static function create($username, $password) {
-        $checkName = Singletons::$db->getPDO()->prepare('SELECT * FROM users WHERE username = ?');
+        $checkName = Database::getInstance()->getPDO()->prepare('SELECT * FROM users WHERE username = ?');
         $checkName->execute([$username]);
 
         if (!$checkName->fetch()) {
@@ -72,11 +72,11 @@ class User {
             $key = \Defuse\Crypto\KeyProtectedByPassword::createRandomPasswordProtectedKey($password);
             $keyAscii = $key->saveToAsciiSafeString();
 
-            $addUser = Singletons::$db->getPDO()->prepare('INSERT INTO users (username, password, encryption_key) VALUES (?,?,?)');
+            $addUser = Database::getInstance()->getPDO()->prepare('INSERT INTO users (username, password, encryption_key) VALUES (?,?,?)');
 
             try {
                 if ($addUser->execute([$username, $pwhash, $keyAscii])) {
-                    return new self(Singletons::$db->getPDO()->lastInsertId());
+                    return new self(Database::getInstance()->getPDO()->lastInsertId());
                 }
                 else {
                     return false;

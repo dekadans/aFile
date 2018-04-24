@@ -3,7 +3,7 @@
 namespace controllers;
 
 use lib\Singletons;
-use lib\User;
+use lib\Translation;
 
 class Login extends AbstractController {
     public function getAccessLevel() {
@@ -30,19 +30,19 @@ class Login extends AbstractController {
                 }
                 else {
                     $this->outputJSON([
-                        'error' => Singletons::$language->translate('LOGIN_FAILED')
+                        'error' => Translation::getInstance()->translate('LOGIN_FAILED')
                     ]);
                 }
             }
             else {
                 $this->outputJSON([
-                    'error' => Singletons::$language->translate('LOGIN_MISSING_PARAMETERS')
+                    'error' => Translation::getInstance()->translate('LOGIN_MISSING_PARAMETERS')
                 ]);
             }
         }
         else {
             $this->outputJSON([
-                'error' => Singletons::$language->translate('ALREADY_SIGNED_IN')
+                'error' => Translation::getInstance()->translate('ALREADY_SIGNED_IN')
             ]);
         }
     }

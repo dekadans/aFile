@@ -22,7 +22,7 @@ class Download {
             $encryption = new Encryption($encryptionKey);
             $tempFile = $encryption->decryptFile($this->file);
 
-            $disposition = in_array($this->file->getMime(), Singletons::get('config')->files->inline_download) ? 'inline' : 'attachment';
+            $disposition = in_array($this->file->getMime(), Config::getInstance()->files->inline_download) ? 'inline' : 'attachment';
 
             header('Content-Type:' . $this->file->getMime());
             header("Cache-Control: no-cache, must-revalidate");
