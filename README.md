@@ -6,24 +6,13 @@ Dev branch. The project is very much in progress and not very functional.
 
 ## Todo
 
--sök
-
--regler för att tvinga tex SVG till rätt mime alt.  
--manuellt redigera mime genom dolt kortkommando
-
--fråga om att ersätta när man laddar upp existerande fil
-
--composer
+FUNKAR EJ -fråga om att ersätta när man laddar upp existerande fil
 
 klickbart i breadcrumbs
 
-sortera fillista
-
--snyggare timestamps
-
--ny db struktur? :( ist för locations så pekar filer på en parent dir
-
 mobilanspassa
+
+stöd för views i dl.php (först för snyggare Access Denied. Sen för markdown etc.)
 
 refaktorera js
 
