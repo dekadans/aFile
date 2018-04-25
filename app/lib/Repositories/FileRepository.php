@@ -189,7 +189,7 @@ class FileRepository
      */
     public function findByLocationAndName(User $user, $location, string $name)
     {
-        $fileQuery = $this->pdo->prepare('SELECT * FROM files WHERE user_id = ? AND name = ? AND parent_id = '. (is_null($location) ? 'is' : '=') .' ?');
+        $fileQuery = $this->pdo->prepare('SELECT * FROM files WHERE user_id = ? AND name = ? AND parent_id '. (is_null($location) ? 'is' : '=') .' ?');
         $fileQuery->execute([$user->getId(), $name, $location]);
 
         return $this->createFileObject($fileQuery->fetch());

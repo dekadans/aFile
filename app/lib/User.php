@@ -10,7 +10,7 @@ class User {
     private $hashedPassword;
 
     public function __construct(array $userData) {
-        if ($userData) {
+        if (!empty($userData)) {
             $this->id = $userData['id'];
             $this->username = $userData['username'];
             $this->account_type = $userData['account_type'];

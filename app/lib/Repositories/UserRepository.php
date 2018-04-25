@@ -28,7 +28,7 @@ class UserRepository
             return new User($user);
         }
         else {
-            return new User(null);
+            return new User([]);
         }
     }
 
@@ -42,7 +42,7 @@ class UserRepository
             return new User($user);
         }
         else {
-            return new User(null);
+            return new User([]);
         }
     }
 

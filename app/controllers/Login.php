@@ -14,10 +14,11 @@ class Login extends AbstractController {
     }
 
     public function index() {
+        $translation = Translation::getInstance();
         $userRepository = new UserRepository(Database::getInstance());
         $authentication = new Authentication($userRepository, Config::getInstance()->login->remember_me_activated);
 
-        if (Authentication::isSignedIn()) {
+        if (!Authentication::isSignedIn()) {
             $username = $this->param('username');
             $password = $this->param('password');
             $remember = ($this->param('remember') === 'true');
@@ -35,22 +36,20 @@ class Login extends AbstractController {
                     ]);
                 }
                 else {
-                    $this->outputJSON([
-                        'error' => Translation::getInstance()->translate('LOGIN_FAILED')
-                    ]);
+                    $errorMessage = $translation->translate('LOGIN_FAILED');
                 }
             }
             else {
-                $this->outputJSON([
-                    'error' => Translation::getInstance()->translate('LOGIN_MISSING_PARAMETERS')
-                ]);
+                $errorMessage = $translation->translate('LOGIN_MISSING_PARAMETERS');
             }
         }
         else {
-            $this->outputJSON([
-                'error' => Translation::getInstance()->translate('ALREADY_SIGNED_IN')
-            ]);
+            $errorMessage = $translation->translate('ALREADY_SIGNED_IN');
         }
+
+        self::outputJSON([
+            'error' => $errorMessage
+        ]);
     }
 
     public function actionForm() {
