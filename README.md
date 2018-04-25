@@ -6,17 +6,18 @@ Dev branch. The project is very much in progress and not very functional.
 
 ## Todo
 
-FUNKAR EJ -fråga om att ersätta när man laddar upp existerande fil
+responseobjekt (ärvs av JSONResponse, HTMLResponse typ), kanske även requestobjekt  
+Relaterat: stöd för views i dl.php (först för snyggare Access Denied. Sen för markdown etc.)  
+Nedladdningar ska också vara ett responseobjekt
 
-responseobjekt (ärvs av JSONResponse, HTMLResponse typ), kanske även requestobjekt
-
-klickbart i breadcrumbs
-
-mobilanspassa
-
-stöd för views i dl.php (först för snyggare Access Denied. Sen för markdown etc.)
+mobilanspassa  
+möjlighet att öppna mappar på mobilen...
 
 refaktorera js
+
+bättre clipboard. rutan följer inte med scroll. bökigt med Ctrl-X
+
+klickbart i breadcrumbs
 
 "sign out everywhere"
 
