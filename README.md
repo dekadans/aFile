@@ -8,6 +8,8 @@ Dev branch. The project is very much in progress and not very functional.
 
 FUNKAR EJ -fråga om att ersätta när man laddar upp existerande fil
 
+responseobjekt (ärvs av JSONResponse, HTMLResponse typ), kanske även requestobjekt
+
 klickbart i breadcrumbs
 
 mobilanspassa
