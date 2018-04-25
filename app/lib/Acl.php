@@ -17,14 +17,14 @@ class Acl {
             case AbstractController::ACCESS_OPEN:
                 return true;
             case AbstractController::ACCESS_LOGIN:
-                if (Singletons::$auth->isSignedIn()) {
+                if (Authentication::isSignedIn()) {
                     return true;
                 }
                 else {
                     return false;
                 }
             case AbstractController::ACCESS_ADMIN:
-                if (Singletons::$auth->isSignedIn() && Singletons::$auth->getUser()->getType() == 'ADMIN') {
+                if (Authentication::isSignedIn() && Authentication::getUser()->getType() == 'ADMIN') {
                     return true;
                 }
                 else {
@@ -42,7 +42,7 @@ class Acl {
      * @return boolean
      */
     public static function checkDownloadAccess(Download $download, $token) {
-        if (Singletons::$auth->isSignedIn() && Singletons::$auth->getUser()->getId() == $download->getFile()->getUser()->getId()) {
+        if (Authentication::isSignedIn() && Authentication::getUser()->getId() == $download->getFile()->getUser()->getId()) {
             return true;
         }
         else {
@@ -63,7 +63,7 @@ class Acl {
     public static function checkFileAccess(AbstractFile $file)
     {
         /** @var User $user */
-        $user = Singletons::$auth->getUser();
+        $user = Authentication::getUser();
 
         if ($user && $user->getId() === $file->getUser()->getId()) {
             return true;

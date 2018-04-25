@@ -2,8 +2,8 @@
 
 namespace controllers;
 
+use lib\Authentication;
 use lib\Repositories\FileRepository;
-use lib\Singletons;
 use lib\Sort;
 
 class ListFiles extends AbstractController {
@@ -34,7 +34,7 @@ class ListFiles extends AbstractController {
             $location = null;
         }
 
-        $fileList = $this->fileRepository->findByLocation(Singletons::$auth->getUser(), $location);
+        $fileList = $this->fileRepository->findByLocation(Authentication::getUser(), $location);
         $this->parseView('partials/filelist', ['fileList' => $fileList, 'printPath' => false]);
     }
 
@@ -42,7 +42,7 @@ class ListFiles extends AbstractController {
     {
         $searchString = $this->param('search');
 
-        $fileList = $this->fileRepository->search(Singletons::$auth->getUser(), $searchString);
+        $fileList = $this->fileRepository->search(Authentication::getUser(), $searchString);
         $this->parseView('partials/filelist', ['fileList' => $fileList, 'printPath' => true]);
     }
 }

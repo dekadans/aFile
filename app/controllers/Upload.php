@@ -3,8 +3,8 @@
 namespace controllers;
 
 use lib\Acl;
+use lib\Authentication;
 use lib\Config;
-use lib\Singletons;
 use lib\Repositories\FileRepository;
 use lib\Translation;
 
@@ -28,7 +28,7 @@ class Upload extends AbstractController {
     public function index()
     {
         $this->location = $this->param('location');
-        $this->user = Singletons::$auth->getUser();
+        $this->user = Authentication::getUser();
 
         $previousFileWithSameName = null;
 

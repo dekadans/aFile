@@ -2,7 +2,7 @@
 
 namespace controllers;
 
-use \lib\Singletons;
+use lib\Authentication;
 use lib\Translation;
 
 class Check extends AbstractController {
@@ -13,7 +13,7 @@ class Check extends AbstractController {
     public function index() {
         $info = [];
 
-        $user = Singletons::$auth->getUser();
+        $user = Authentication::getUser();
 
         if ($user) {
             $info['login'] = true;

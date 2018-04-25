@@ -16,8 +16,8 @@ class Authentication
     const SESSION_USER_KEY = 'aFile_User_Key';
     const COOKIE_REMEMBER = 'afile_rememberme';
 
-    /** @var User */
-    private $user = null;
+    private static $signedInUser;
+
     /** @var UserRepository */
     private $userRepository;
     /** @var bool */
@@ -27,8 +27,6 @@ class Authentication
     {
         $this->userRepository = $userRepository;
         $this->isRememberMeActivated = $isRememberMeActivated;
-
-        $this->checkIfAuthenticated();
     }
 
     public function authenticate(string $username, string $password)
@@ -37,7 +35,7 @@ class Authentication
 
         if ($user->isset()) {
             if (password_verify($password, $user->getHashedPassword())) {
-                return $this->loadUser($user, $password);
+                return $this->signInUser($user, $password);
             }
         }
 
@@ -55,12 +53,12 @@ class Authentication
             $this->clearRememberMeCookie($token);
         }
 
-        $this->user = null;
+        self::$signedInUser = null;
     }
 
     public function rememberMe(string $password)
     {
-        if (!is_null($this->user) && $this->isRememberMeActivated) {
+        if (!is_null(self::$signedInUser) && $this->isRememberMeActivated) {
             try {
                 $encryptionKey = Key::createNewRandomKey();
                 $token = $encryptionKey->saveToAsciiSafeString();
@@ -72,7 +70,7 @@ class Authentication
                 $expires = strtotime('+ 1 MONTH');
 
                 $authToken = new AuthenticationToken(
-                    $this->user,
+                    self::$signedInUser,
                     $selector,
                     $hashedToken,
                     $encryptedPassword,
@@ -106,7 +104,7 @@ class Authentication
 
                         $password = Crypto::decrypt($authenticationToken->getEncryptedPassword(), $encryptionKey);
 
-                        $this->loadUser($authenticationToken->getUser(), $password);
+                        $this->signInUser($authenticationToken->getUser(), $password);
                         return;
                     } catch (\Exception $e) {
                         die('Encryption error error for "remind me" cookie. Clear cookies to login.');
@@ -148,29 +146,29 @@ class Authentication
     /**
      * @return bool
      */
-    public function isSignedIn() : bool
+    public static function isSignedIn() : bool
     {
-        return !is_null($this->user);
+        return !is_null(self::$signedInUser);
     }
 
     /**
      * @return User
      */
-    public function getUser()
+    public static function getUser()
     {
-        return $this->user;
+        return self::$signedInUser;
     }
 
     /**
      * Checks if there's a user in the session, or if an authentication cookie exists
      */
-    private function checkIfAuthenticated()
+    public function loadUserFromSession()
     {
         if (isset($_SESSION[self::SESSION_USER_ID])) {
             $user = $this->userRepository->getUserById($_SESSION[self::SESSION_USER_ID]);
             if ($user->isset()) {
                 $user->setKey($_SESSION[self::SESSION_USER_KEY]);
-                $this->user = $user;
+                self::$signedInUser = $user;
             }
         }
         else if (isset($_COOKIE[self::COOKIE_REMEMBER]) && $this->isRememberMeActivated) {
@@ -184,7 +182,7 @@ class Authentication
      * @param string $password
      * @return bool
      */
-    private function loadUser(User $user, string $password)
+    private function signInUser(User $user, string $password)
     {
         $protectedKey = $this->userRepository->getProtectedEncryptionKeyForUser($user->getId());
 
@@ -199,7 +197,7 @@ class Authentication
                 $_SESSION[self::SESSION_USER_KEY] = $user->getKey();
                 session_regenerate_id();
 
-                $this->user = $user;
+                self::$signedInUser = $user;
 
                 return true;
             }

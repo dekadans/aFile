@@ -85,8 +85,8 @@ class File extends AbstractFile {
     public function getEncryptionKey()
     {
         if ($this->encryption == self::ENCRYPTION_PERSONAL) {
-            if (Singletons::$auth->isSignedIn()) {
-                return Singletons::$auth->getUser()->getKey();
+            if (Authentication::isSignedIn()) {
+                return Authentication::getUser()->getKey();
             }
         }
         else {

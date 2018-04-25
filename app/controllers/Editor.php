@@ -3,8 +3,8 @@ namespace controllers;
 
 
 use lib\Acl;
+use lib\Authentication;
 use lib\File;
-use lib\Singletons;
 use lib\Repositories\FileRepository;
 use lib\Translation;
 
@@ -55,7 +55,7 @@ class Editor extends AbstractController
         $tempFile = tempnam(sys_get_temp_dir(), 'afile');
         file_put_contents($tempFile, $this->content);
 
-        $file = $this->fileRepository->createFile(Singletons::$auth->getUser(), $this->filename, $this->location, 'text/plain', $tempFile);
+        $file = $this->fileRepository->createFile(Authentication::getUser(), $this->filename, $this->location, 'text/plain', $tempFile);
         @unlink($tempFile);
 
         if ($file) {

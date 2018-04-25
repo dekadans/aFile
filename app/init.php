@@ -50,4 +50,4 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 $userRepository = new \lib\Repositories\UserRepository(\lib\Database::getInstance());
 $authentication = new \lib\Authentication($userRepository, \lib\Config::getInstance()->login->remember_me_activated);
-\lib\Singletons::$auth = $authentication;
+$authentication->loadUserFromSession();

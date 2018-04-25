@@ -77,7 +77,7 @@ class FileToken
 
     public function destroy()
     {
-        $newEncryptionKey = Singletons::$auth->getUser()->getKey();
+        $newEncryptionKey = Authentication::getUser()->getKey();
         $result = $this->file->changeEncryptionKey($newEncryptionKey, File::ENCRYPTION_PERSONAL);
 
         if ($result) {

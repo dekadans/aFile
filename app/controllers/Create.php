@@ -1,9 +1,8 @@
 <?php
 namespace controllers;
 
-use lib\Directory;
+use lib\Authentication;
 use lib\Repositories\FileRepository;
-use lib\Singletons;
 use lib\Translation;
 
 class Create extends AbstractController
@@ -15,7 +14,7 @@ class Create extends AbstractController
 
     public function actionDirectory()
     {
-        $user = Singletons::$auth->getUser();
+        $user = Authentication::getUser();
         $name = $this->param('name');
         $location = $this->param('location');
         $fileRepository = new FileRepository();

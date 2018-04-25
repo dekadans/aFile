@@ -1,8 +1,6 @@
 <?php
 namespace controllers;
 
-use lib\Sort as Sorting;
-
 class Sort extends AbstractController
 {
     public function getAccessLevel()
@@ -14,7 +12,7 @@ class Sort extends AbstractController
     {
         $column = $this->param('column');
 
-        Sorting::getInstance()->setSortBy($column);
+        \lib\Sort::getInstance()->setSortBy($column);
 
         self::outputJSON([
             'status' => 'ok'

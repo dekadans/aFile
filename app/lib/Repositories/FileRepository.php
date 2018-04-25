@@ -7,7 +7,6 @@ use lib\Database;
 use lib\Directory;
 use lib\File;
 use lib\FileList;
-use lib\Singletons;
 use lib\SearchEngine;
 use lib\Sort;
 use lib\User;

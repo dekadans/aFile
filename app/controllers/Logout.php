@@ -2,7 +2,10 @@
 
 namespace controllers;
 
-use lib\Singletons;
+use lib\Authentication;
+use lib\Config;
+use lib\Database;
+use lib\Repositories\UserRepository;
 
 class Logout extends AbstractController {
     public function getAccessLevel() {
@@ -10,7 +13,9 @@ class Logout extends AbstractController {
     }
 
     public function index() {
-        Singletons::$auth->logout();
+        $userRepository = new UserRepository(Database::getInstance());
+        $authentication = new Authentication($userRepository, Config::getInstance()->login->remember_me_activated);
+        $authentication->logout();
 
         $this->outputJSON([
             'status' => 'ok'
