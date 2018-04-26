@@ -23,13 +23,13 @@ class Create extends AbstractController
             $result = $fileRepository->createDirectory($user, $name, $location);
 
             if ($result) {
-                $this->outputJSON([
+                return $this->outputJSON([
                     'status' => 'ok'
                 ]);
             }
         }
 
-        $this->outputJSON([
+        return $this->outputJSON([
             'error' => Translation::getInstance()->translate('CREATE_DIRECTORY_FAILED')
         ]);
     }

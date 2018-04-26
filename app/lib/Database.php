@@ -50,11 +50,7 @@ class Database {
     public static function getInstance()
     {
         if (is_null(self::$instance)) {
-            try {
-                self::$instance = new self();
-            } catch (\Exception $e) {
-
-            }
+            self::$instance = new self();
         }
         return self::$instance;
     }

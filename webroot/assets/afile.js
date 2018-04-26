@@ -164,8 +164,8 @@ class aFile {
 
             if (username.length && password.length) {
                 this.post('Login', '', data => {
-                    if (data.error) {
-                        $('#LoginMessage > .alert').html(data.error);
+                    if (data.loginError) {
+                        $('#LoginMessage > .alert').html(data.loginError);
                         $('#LoginMessage').slideDown();
                     }
                     else if (data.status === 'ok') {
@@ -350,13 +350,8 @@ class aFile {
                     }
 
                     this.get('Delete', '', data => {
-                        if (data.error) {
-                            alert(data.error);
-                        }
-                        else {
-                            this.selected.remove();
-                            this.selectItem(selectNextInList);
-                        }
+                        this.selected.remove();
+                        this.selectItem(selectNextInList);
                     }, {id : id});
                 });
             }
@@ -368,12 +363,7 @@ class aFile {
 
                 this.input(this.info.language.RENAME, value => {
                     this.post('Rename', '', data => {
-                        if (data.error) {
-                            alert(data.error);
-                        }
-                        else {
-                            currentNameElement.text(value);
-                        }
+                        currentNameElement.text(value);
                     }, {id : this.selected.data('id'), name : value});
                 }, currentNameElement.text());
             }
@@ -396,25 +386,15 @@ class aFile {
 
                         $('#CreateToken').click(e => {
                             this.get('Share', 'create', result => {
-                                if (result.error) {
-                                    alert(data.error);
-                                }
-                                else {
-                                    loadShareDialog();
-                                    this.list();
-                                }
+                                loadShareDialog();
+                                this.list();
                             }, {id : fileId});
                         });
 
                         $('#DestroyToken').click(e => {
                             this.get('Share', 'destroy', result => {
-                                if (result.error) {
-                                    alert(data.error);
-                                }
-                                else {
-                                    loadShareDialog();
-                                    this.list();
-                                }
+                                loadShareDialog();
+                                this.list();
                             }, {id : fileId});
                         });
                     }, {id : fileId});
@@ -441,9 +421,6 @@ class aFile {
         $('#CreateDirectory').click(e => {
             this.input(this.info.language.CREATE_DIRECTORY, value => {
                 this.post('Create','directory', data => {
-                    if (data.error) {
-                        alert(data.error);
-                    }
                     this.list();
                 }, {location : this.getPath(), name : value});
             });
@@ -454,17 +431,12 @@ class aFile {
                 $('#EditorFileId').val(this.selected.data('id'));
 
                 this.get('Editor', 'read', data => {
-                    if (data.error) {
-                        alert(data.error);
-                    }
-                    else {
-                        let editor = $('#Editor')[0];
-                        $(editor).val(data.content);
-                        editor.selectionStart = editor.selectionEnd = 0;
+                    let editor = $('#Editor')[0];
+                    $(editor).val(data.content);
+                    editor.selectionStart = editor.selectionEnd = 0;
 
-                        $('#EditorName').val(data.filename);
-                        $('#ModalEditor').modal('show');
-                    }
+                    $('#EditorName').val(data.filename);
+                    $('#ModalEditor').modal('show');
                 }, {id : this.selected.data('id')});
             }
             else {
@@ -597,23 +569,13 @@ class aFile {
             if (filename.length > 0 && content.length > 0) {
                 if (fileId !== '') {
                     this.post('Editor', 'write', data => {
-                        if (data.error) {
-                            alert(data.error);
-                        }
-                        else {
-                            this.list();
-                        }
+                        this.list();
                     }, {filename : filename, content : content, id : fileId});
                 }
                 else {
                     this.post('Editor', 'create', data => {
-                        if (data.error) {
-                            alert(data.error);
-                        }
-                        else {
-                            $('#ModalEditor').modal('hide');
-                            this.list();
-                        }
+                        $('#ModalEditor').modal('hide');
+                        this.list();
                     }, {filename : filename, content : content, location : this.getPath()});
                 }
             }
@@ -677,14 +639,9 @@ class aFile {
             let idsToPaste = getClipboardFileIds();
 
             this.post('Paste', '', data => {
-                if (data.error) {
-                    alert(data.error);
-                }
-                else {
-                    this.clipboard = [];
-                    this.displayClipboard();
-                    this.list();
-                }
+                this.clipboard = [];
+                this.displayClipboard();
+                this.list();
             }, {id : idsToPaste, location : this.getPath()});
         });
 
@@ -697,14 +654,9 @@ class aFile {
                         + '?';
             this.confirm(message, e => {
                 this.post('Delete','', data => {
-                    if (data.error) {
-                        alert(data.error);
-                    }
-                    else {
-                        this.clipboard = [];
-                        this.displayClipboard();
-                        this.list();
-                    }
+                    this.clipboard = [];
+                    this.displayClipboard();
+                    this.list();
                 }, {id : idsToDelete});
             });
         });
@@ -745,13 +697,7 @@ class aFile {
      * @param data
      */
     get(controller, action = '', callback = null, data = {}) {
-        this.showLoading(true);
-
-        let url = 'ajax.php?do=' + controller + '&action=' + action;
-        $.get(url, data, returnData => {
-            this.showLoading(false);
-            callback(returnData);
-        });
+        this.ajax('GET', controller, action, callback, data);
     }
 
     /**
@@ -762,12 +708,29 @@ class aFile {
      * @param data
      */
     post(controller, action = '', callback = null, data = {}) {
-        this.showLoading(true);
+        this.ajax('POST', controller, action, callback, data);
+    }
 
+    ajax(method, controller, action = '', callback = null, data = {}) {
+        this.showLoading(true);
         let url = 'ajax.php?do=' + controller + '&action=' + action;
-        $.post(url, data, returnData => {
-            this.showLoading(false);
-            callback(returnData);
+
+        $.ajax({
+            method : method,
+            url : url,
+            data : data,
+            success : response => {
+                this.showLoading(false);
+                if (typeof response === 'object' && response.error) {
+                    alert(response.error);
+                }
+                else {
+                    callback(response);
+                }
+            },
+            error : response => {
+                $('body').html(response.responseText);
+            }
         });
     }
 

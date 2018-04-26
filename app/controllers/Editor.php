@@ -43,7 +43,7 @@ class Editor extends AbstractController
             $this->file = $this->fileRepository->find($fileId);
 
             if ($this->file->isset() && !Acl::checkFileAccess($this->file)) {
-                $this->outputJSON([
+                return $this->outputJSON([
                     'error' => Translation::getInstance()->translate('ACCESS_DENIED')
                 ]);
             }
@@ -59,13 +59,13 @@ class Editor extends AbstractController
         @unlink($tempFile);
 
         if ($file) {
-            $this->outputJSON([
+            return $this->outputJSON([
                 'status' => 'ok',
                 'file_id' => $file->getId()
             ]);
         }
         else {
-            $this->outputJSON([
+            return $this->outputJSON([
                 'error' => 'EDITOR_CREATE_ERROR'
             ]);
         }
@@ -78,25 +78,25 @@ class Editor extends AbstractController
                 $content = $this->file->read();
 
                 if ($content) {
-                    $this->outputJSON([
+                    return $this->outputJSON([
                         'filename' => $this->file->getName(),
                         'content' => $content
                     ]);
                 }
                 else {
-                    $this->outputJSON([
+                    return $this->outputJSON([
                         'error' => 'EDITOR_READ_ERROR'
                     ]);
                 }
             }
             else {
-                $this->outputJSON([
+                return $this->outputJSON([
                     'error' => Translation::getInstance()->translate('EDITOR_TYPE_ERROR')
                 ]);
             }
         }
         else {
-            $this->outputJSON([
+            return $this->outputJSON([
                 'error' => Translation::getInstance()->translate('NO_FILE')
             ]);
         }
@@ -117,18 +117,18 @@ class Editor extends AbstractController
                         $this->file->rename($this->filename);
                     }
 
-                    $this->outputJSON([
+                    return $this->outputJSON([
                         'status' => 'ok'
                     ]);
                 }
             }
 
-            $this->outputJSON([
+            return $this->outputJSON([
                 'error' => 'EDITOR_WRITE_ERROR'
             ]);
         }
         else {
-            $this->outputJSON([
+            return $this->outputJSON([
                 'error' => Translation::getInstance()->translate('NO_FILE')
             ]);
         }

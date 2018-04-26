@@ -2,6 +2,9 @@
 
 namespace controllers;
 
+use lib\HTTP\JsonResponse;
+use lib\HTTP\ViewResponse;
+
 abstract class AbstractController {
     const ACCESS_OPEN = 0;
     const ACCESS_LOGIN = 1;
@@ -40,20 +43,22 @@ abstract class AbstractController {
         }
     }
 
-    public function parseView($viewName, $params = []) {
-        extract($params);
-        require(__dir__ . '/../views/' . $viewName . '.php');
+    /**
+     * @param string $viewName
+     * @param array $params
+     * @return ViewResponse
+     */
+    public function parseView(string $viewName, $params = []) {
+        $response = new ViewResponse($viewName, $params);
+        return $response;
     }
 
     /**
      * Converts an array to JSON and prints the result.
      * @param  array $data
+     * @return JsonResponse
      */
-    public static function outputJSON($data) {
-        header('Content-Type:application/json; charset=UTF-8');
-        header("Cache-Control: no-cache, must-revalidate");
-
-        echo json_encode($data);
-        die;
+    public static function outputJSON(array $data) {
+        return new JsonResponse($data);
     }
 }

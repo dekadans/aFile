@@ -23,7 +23,7 @@ class ListFiles extends AbstractController {
     public function index()
     {
         $currentSorting = Sort::getInstance()->getSortBy();
-        $this->parseView('main', ['currentSorting' => $currentSorting]);
+        return $this->parseView('main', ['currentSorting' => $currentSorting]);
     }
 
     public function actionList()
@@ -35,7 +35,7 @@ class ListFiles extends AbstractController {
         }
 
         $fileList = $this->fileRepository->findByLocation(Authentication::getUser(), $location);
-        $this->parseView('partials/filelist', ['fileList' => $fileList, 'printPath' => false]);
+        return $this->parseView('partials/filelist', ['fileList' => $fileList, 'printPath' => false]);
     }
 
     public function actionSearch()
@@ -43,6 +43,6 @@ class ListFiles extends AbstractController {
         $searchString = $this->param('search');
 
         $fileList = $this->fileRepository->search(Authentication::getUser(), $searchString);
-        $this->parseView('partials/filelist', ['fileList' => $fileList, 'printPath' => true]);
+        return $this->parseView('partials/filelist', ['fileList' => $fileList, 'printPath' => true]);
     }
 }

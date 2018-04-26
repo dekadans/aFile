@@ -7,19 +7,12 @@ if ($fileIdString) {
     $fileIdString = substr($fileIdString, 1) . '/';
     list($id, $token) = explode('/', $fileIdString);
 
-    if (strlen($id) == \lib\Config::getInstance()->files->id_string_length) {
-        $dl = new \lib\Download($id);
-        // AYAA == Ayaa ???
-        if ($dl->getFile() && $dl->getFile()->isset()) {
-            if (\lib\Acl::checkDownloadAccess($dl, $token)) {
-                $dl->download();
-            }
-            else {
-                die('Access denied');
-            }
-        }
+    if (!empty($id)) {
+        $downloader = new \lib\Download($id, $token);
+        $response = $downloader->download();
+        $response->output();
+        die;
     }
 }
 
-
-die('Invalid file.');
+die('Error.');

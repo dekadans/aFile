@@ -14,7 +14,7 @@ class Sort extends AbstractController
 
         \lib\Sort::getInstance()->setSortBy($column);
 
-        self::outputJSON([
+        $this->outputJSON([
             'status' => 'ok'
         ]);
     }

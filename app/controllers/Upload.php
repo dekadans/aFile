@@ -54,7 +54,7 @@ class Upload extends AbstractController {
         }
 
         if (in_array(false, $results)) {
-            $this->outputJSON([
+            return $this->outputJSON([
                 'error' => Translation::getInstance()->translate('UPLOAD_FAILED')
             ]);
         }
@@ -62,7 +62,7 @@ class Upload extends AbstractController {
             $fileToOverwrite = $this->fileRepository->findByLocationAndName($this->user, $this->location, $previousFileWithSameName);
             $newFile = array_pop($results);
 
-            $this->outputJSON([
+            return $this->outputJSON([
                 'status' => 'confirm',
                 'oldId' => $fileToOverwrite->getId(),
                 'newId' => $newFile->getId(),
@@ -70,7 +70,7 @@ class Upload extends AbstractController {
             ]);
         }
         else {
-            $this->outputJSON([
+            return $this->outputJSON([
                 'status' => 'ok'
             ]);
         }
@@ -89,18 +89,18 @@ class Upload extends AbstractController {
                 @unlink($newContentPath);
                 $newFile->delete();
 
-                $this->outputJSON([
+                return $this->outputJSON([
                     'status' => 'ok'
                 ]);
             } catch(\Throwable $error) {
-                $this->outputJSON([
+                return $this->outputJSON([
                     'error' => Translation::getInstance()->translate('FAILED'),
                     'msg' => $error->getMessage()
                 ]);
             }
         }
         else {
-            $this->outputJSON([
+            return $this->outputJSON([
                 'error' => Translation::getInstance()->translate('ACCESS_DENIED')
             ]);
         }

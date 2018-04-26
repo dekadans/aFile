@@ -2,6 +2,8 @@ version = 6
 
 language = en
 
+show_detailed_exceptions = true
+
 [login]
 remember_me_activated = true
 

@@ -29,18 +29,18 @@ class Rename extends AbstractController
         $file = $this->fileRepository->find($id);
 
         if ($file->isset() && !Acl::checkFileAccess($file)) {
-            $this->outputJSON([
+            return $this->outputJSON([
                 'error' => Translation::getInstance()->translate('ACCESS_DENIED')
             ]);
         }
 
         if ($file->getName() === $newName || $file->rename($newName)) {
-            $this->outputJSON([
+            return $this->outputJSON([
                 'status' => 'ok'
             ]);
         }
         else {
-            $this->outputJSON([
+            return $this->outputJSON([
                 'error' => Translation::getInstance()->translate('RENAME_FAILED')
             ]);
         }
@@ -55,12 +55,12 @@ class Rename extends AbstractController
 
         if ($file->isset() && Acl::checkFileAccess($file)) {
             $file->setMime($newMime);
-            $this->outputJSON([
+            return $this->outputJSON([
                 'status' => 'ok'
             ]);
         }
         else {
-            $this->outputJSON([
+            return $this->outputJSON([
                 'error' => Translation::getInstance()->translate('ACCESS_DENIED')
             ]);
         }

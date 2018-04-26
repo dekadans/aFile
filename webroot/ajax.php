@@ -25,23 +25,27 @@ if (isset($_GET['do']) && !empty($_GET['do'])) {
             }
 
             if (method_exists($controller, $action)) {
-                $controller->$action();
+                /** @var \lib\HTTP\Response $response */
+                $response = $controller->$action();
             }
             else {
-                \controllers\AbstractController::outputJSON([
-                    'error' => lib\Translation::getInstance()->translate('NOT_FOUND')
-                ]);
+                $errorText = 'NOT_FOUND';
             }
         }
         else {
-            \controllers\AbstractController::outputJSON([
-                'error' => lib\Translation::getInstance()->translate('ACCESS_DENIED')
-            ]);
+            $errorText = 'ACCESS_DENIED';
         }
     }
     else {
-        \controllers\AbstractController::outputJSON([
-            'error' => lib\Translation::getInstance()->translate('NOT_FOUND')
+        $errorText = 'NOT_FOUND';
+    }
+
+    if (isset($errorText)) {
+        $response = new \lib\HTTP\JsonResponse([
+            'error' => \lib\Translation::getInstance()->translate($errorText)
         ]);
     }
+
+    echo $response->output();
+    die;
 }

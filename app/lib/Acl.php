@@ -41,14 +41,14 @@ class Acl {
      * @param string $token
      * @return boolean
      */
-    public static function checkDownloadAccess(Download $download, $token) {
+    public static function checkDownloadAccess(Download $download) {
         if (Authentication::isSignedIn() && Authentication::getUser()->getId() == $download->getFile()->getUser()->getId()) {
             return true;
         }
         else {
             $fileToken = $download->getFile()->getToken();
 
-            if ($fileToken->exists() && in_array($fileToken->getActiveState(), [FileToken::STATE_OPEN, FileToken::STATE_BOTH]) && $fileToken->getOpenToken() === $token) {
+            if ($fileToken->exists() && in_array($fileToken->getActiveState(), [FileToken::STATE_OPEN, FileToken::STATE_BOTH]) && $fileToken->getOpenToken() === $download->getToken()) {
                 return true;
             }
         }

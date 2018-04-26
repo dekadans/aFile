@@ -1,4 +1,5 @@
 {
+    "EXCEPTION_MESSAGE" : "Something went terribly wrong...",
     "LOADING" : "Loading...",
     "LOGIN" : "Sign in",
     "USERNAME" : "Username",

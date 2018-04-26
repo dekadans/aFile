@@ -32,12 +32,12 @@ class Paste extends AbstractController
         }
 
         if (!in_array(false, $result)) {
-            $this->outputJSON([
+            return $this->outputJSON([
                 'status' => 'ok'
             ]);
         }
         else {
-            $this->outputJSON([
+            return $this->outputJSON([
                 'error' => Translation::getInstance()->translate('PASTE_FAILED')
             ]);
         }

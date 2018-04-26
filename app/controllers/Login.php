@@ -31,7 +31,7 @@ class Login extends AbstractController {
                         $authentication->rememberMe($password);
                     }
 
-                    $this->outputJSON([
+                    return $this->outputJSON([
                         'status' => 'ok'
                     ]);
                 }
@@ -47,12 +47,12 @@ class Login extends AbstractController {
             $errorMessage = $translation->translate('ALREADY_SIGNED_IN');
         }
 
-        self::outputJSON([
-            'error' => $errorMessage
+        return $this->outputJSON([
+            'loginError' => $errorMessage
         ]);
     }
 
     public function actionForm() {
-        $this->parseView('loginForm');
+        return $this->parseView('loginForm');
     }
 }

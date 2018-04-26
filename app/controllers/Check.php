@@ -28,6 +28,6 @@ class Check extends AbstractController {
             $info['login'] = false;
         }
 
-        $this->outputJSON($info);
+        return $this->outputJSON($info);
     }
 }

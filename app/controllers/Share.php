@@ -24,13 +24,13 @@ class Share extends AbstractController {
         $this->file = $fileRepository->find($fileId);
 
         if (!$this->file->isset() && $this->file->isFile()) {
-            $this->outputJSON([
+            return $this->outputJSON([
                 'error' => 'NO_FILE'
             ]);
         }
 
         if (!Acl::checkFileAccess($this->file)) {
-            $this->outputJSON([
+            return $this->outputJSON([
                 'error' => 'NO_ACCESS'
             ]);
         }
@@ -54,12 +54,12 @@ class Share extends AbstractController {
         }
 
         if ($result) {
-            $this->outputJSON([
+            return $this->outputJSON([
                 'status' => 'ok'
             ]);
         }
         else {
-            $this->outputJSON([
+            return $this->outputJSON([
                 'error' => 'SHARING_ERROR'
             ]);
         }
@@ -70,13 +70,13 @@ class Share extends AbstractController {
         $token = $this->file->getToken();
         if ($token->exists()) {
             if ($token->destroy()) {
-                $this->outputJSON([
+                return $this->outputJSON([
                     'status' => 'ok'
                 ]);
             }
         }
 
-        $this->outputJSON([
+        return $this->outputJSON([
             'error' => 'COULD_NOT_DESTROY_TOKEN'
         ]);
     }
@@ -84,6 +84,6 @@ class Share extends AbstractController {
     public function actionPanel()
     {
         $token = $this->file->getToken();
-        $this->parseView('partials/sharepanel', ['token' => $token, 'file' => $this->file]);
+        return $this->parseView('partials/sharepanel', ['token' => $token, 'file' => $this->file]);
     }
 }

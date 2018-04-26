@@ -17,7 +17,7 @@ class Logout extends AbstractController {
         $authentication = new Authentication($userRepository, Config::getInstance()->login->remember_me_activated);
         $authentication->logout();
 
-        $this->outputJSON([
+        return $this->outputJSON([
             'status' => 'ok'
         ]);
     }
