@@ -47,5 +47,10 @@
     "CLIPBOARD_PASTE" : "Paste",
     "FILES" : " file(s)",
 
-    "TODAY" : "Today"
+    "TODAY" : "Today",
+
+    "403_FORBIDDEN" : "Forbidden",
+    "403_FORBIDDEN_TEXT" : "You don't have access to the requested file.",
+    "404_NOT_FOUND" : "Not Found",
+    "404_NOT_FOUND_TEXT" : "Nothing here, sorry."
 }

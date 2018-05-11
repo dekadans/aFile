@@ -3,6 +3,7 @@
 namespace lib;
 
 use lib\HTTP\DownloadResponse;
+use lib\HTTP\HTMLResponse;
 use lib\HTTP\Response;
 use lib\Repositories\FileRepository;
 
@@ -14,7 +15,8 @@ class Download {
     /** @var string */
     private $token;
 
-    public function __construct(string $id, string $token) {
+    public function __construct(string $id, string $token)
+    {
         $fileRepository = new FileRepository();
         $this->file = $fileRepository->findByUniqueString($id);
         $this->id = $id;
@@ -24,13 +26,14 @@ class Download {
     /**
      * @return Response
      */
-    public function download() {
+    public function download() : Response
+    {
         if (!$this->file->isset()) {
-            return new Response('Not Found', 404);
+            return new HTMLResponse('fileNotFound', [], 404);
         }
 
         if (!Acl::checkDownloadAccess($this)) {
-            return new Response('Access Denied', 401);
+            return new HTMLResponse('accessDenied', [], 403);
         }
 
         $encryptionKey = $this->file->getEncryptionKey();
@@ -47,11 +50,9 @@ class Download {
     }
 
     /**
-     * Get the value of File
-     *
      * @return File
      */
-    public function getFile()
+    public function getFile() : File
     {
         return $this->file;
     }

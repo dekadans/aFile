@@ -33,7 +33,7 @@ html, body, #AppContainer {
     min-height: 100%;
 }
 
-#Login {
+.cover-image {
     background-color: #eeeeee;
     background-image: url('cover.jpg'); /* http://apod.nasa.gov/apod/ap160913.html */
     background-size: cover;
@@ -169,3 +169,7 @@ html, body, #AppContainer {
 /*.right {
     float: right;
 }*/
+
+.jumbotron {
+    background-color: #FFFFFF;
+}

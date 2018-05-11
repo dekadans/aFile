@@ -6,9 +6,11 @@ Dev branch. The project is very much in progress and not very functional.
 
 ## Todo
 
-responseobjekt (ärvs av JSONResponse, HTMLResponse typ), kanske även requestobjekt  
-Relaterat: stöd för views i dl.php (först för snyggare Access Denied. Sen för markdown etc.)  
-Nedladdningar ska också vara ett responseobjekt
+Requestobject för params och stuff
+
+Refaktorera så att decrypt blir en metod på filobjektet.
+
+Refaktorera tokens
 
 mobilanspassa  
 möjlighet att öppna mappar på mobilen...
@@ -17,6 +19,8 @@ refaktorera js
 
 bättre clipboard. rutan följer inte med scroll. bökigt med Ctrl-X
 
+markdown
+
 klickbart i breadcrumbs
 
 "sign out everywhere"
@@ -24,8 +28,6 @@ klickbart i breadcrumbs
 länkar
 
 hjälp-popup med kortkomandon samt sökhjälp
-
-markdown?
 
 code?
 

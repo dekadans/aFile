@@ -2,6 +2,8 @@
 
 session_start();
 
+define('AFILE_LOCATION', (!empty($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['SERVER_NAME'] . preg_replace('/[a-z]*\.php[a-z1-9\/]*/', '', $_SERVER['PHP_SELF']));
+
 /**
  * Set up autoloading of classes.
  */
@@ -22,19 +24,7 @@ spl_autoload_register(function ($className) {
  * Set up basic error handling
  */
 set_exception_handler(function (\Throwable $ex){
-    $content = '<h2>Error!</h2>';
-    if (\lib\Config::getInstance()->show_detailed_exceptions) {
-        $content .= '<p>'. $ex->getMessage() .'</p>';
-        $content .= '<pre>';
-        $content .= $ex->getTraceAsString() . PHP_EOL . PHP_EOL;
-        $content .= print_r($ex, true);
-        $content .= '</pre>';
-    }
-    else {
-        $content .= '<p>'. \lib\Translation::getInstance()->translate('EXCEPTION_MESSAGE') .'</p>';
-    }
-
-    $response = new \lib\HTTP\Response($content, 500);
+    $response = new \lib\HTTP\HTMLResponse('exceptionError', ['exception' => $ex], 500);
     echo $response->output();
     die;
 });

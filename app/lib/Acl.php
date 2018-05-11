@@ -7,12 +7,11 @@ use \controllers\AbstractController;
 class Acl {
 
     /**
-     * Checks if a controller is accessible at the current request.
-     * Right now it just checks signed in status, but may be extended in the future.
      * @param  AbstractController $controller
      * @return boolean
      */
-    public static function checkAccess(AbstractController $controller) {
+    public static function checkControllerAccess(AbstractController $controller) : bool
+    {
         switch ($controller->getAccessLevel()) {
             case AbstractController::ACCESS_OPEN:
                 return true;
@@ -38,10 +37,10 @@ class Acl {
     /**
      * Checks access to a requested download
      * @param  Download $download
-     * @param string $token
      * @return boolean
      */
-    public static function checkDownloadAccess(Download $download) {
+    public static function checkDownloadAccess(Download $download) : bool
+    {
         if (Authentication::isSignedIn() && Authentication::getUser()->getId() == $download->getFile()->getUser()->getId()) {
             return true;
         }
@@ -60,7 +59,7 @@ class Acl {
      * @param AbstractFile $file
      * @return bool
      */
-    public static function checkFileAccess(AbstractFile $file)
+    public static function checkFileAccess(AbstractFile $file) : bool
     {
         /** @var User $user */
         $user = Authentication::getUser();

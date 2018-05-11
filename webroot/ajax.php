@@ -10,7 +10,7 @@ if (isset($_GET['do']) && !empty($_GET['do'])) {
         /** @var \controllers\AbstractController $controller */
         $controller = new $do();
 
-        if (\lib\Acl::checkAccess($controller)) {
+        if (\lib\Acl::checkControllerAccess($controller)) {
             if (method_exists($controller, 'init')) {
                 $controller->init();
             }

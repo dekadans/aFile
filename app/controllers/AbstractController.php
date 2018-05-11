@@ -3,9 +3,10 @@
 namespace controllers;
 
 use lib\HTTP\JsonResponse;
-use lib\HTTP\ViewResponse;
+use lib\HTTP\HTMLResponse;
 
 abstract class AbstractController {
+    const ACCESS_CLOSED = -1;
     const ACCESS_OPEN = 0;
     const ACCESS_LOGIN = 1;
     const ACCESS_ADMIN = 2;
@@ -46,10 +47,10 @@ abstract class AbstractController {
     /**
      * @param string $viewName
      * @param array $params
-     * @return ViewResponse
+     * @return HTMLResponse
      */
-    public function parseView(string $viewName, $params = []) {
-        $response = new ViewResponse($viewName, $params);
+    protected function parseView(string $viewName, $params = []) {
+        $response = new HTMLResponse($viewName, $params);
         return $response;
     }
 
@@ -58,7 +59,7 @@ abstract class AbstractController {
      * @param  array $data
      * @return JsonResponse
      */
-    public static function outputJSON(array $data) {
+    protected function outputJSON(array $data) {
         return new JsonResponse($data);
     }
 }

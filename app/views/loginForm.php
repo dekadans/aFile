@@ -3,7 +3,7 @@ $lang = \lib\Translation::getInstance();
 ?>
 <div id="Loading" class="view"><?= $lang->translate('LOADING') ?></div>
 
-<div id="Login">
+<div id="Login" class="cover-image">
     <div class="container-fluid h-100">
         <div class="row h-100">
             <div class="col-md-4">&nbsp;</div>

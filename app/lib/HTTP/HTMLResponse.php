@@ -1,7 +1,7 @@
 <?php
 namespace lib\HTTP;
 
-class ViewResponse extends Response
+class HTMLResponse extends Response
 {
     public function __construct(string $viewFile, array $parameters, int $statusCode = 200)
     {

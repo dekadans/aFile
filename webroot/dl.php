@@ -10,7 +10,7 @@ if ($fileIdString) {
     if (!empty($id)) {
         $downloader = new \lib\Download($id, $token);
         $response = $downloader->download();
-        $response->output();
+        echo $response->output();
         die;
     }
 }

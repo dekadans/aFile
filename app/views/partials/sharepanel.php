@@ -6,7 +6,7 @@ $lang = \lib\Translation::getInstance();
 ?>
 
 <?php if ($token->exists()):
-$link = (!empty($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['SERVER_NAME'] . str_replace('ajax', 'dl', $_SERVER['PHP_SELF']) . '/' . $file->getStringId() . '/' . $token->getOpenToken();
+$link = AFILE_LOCATION . 'dl.php/' . $file->getStringId() . '/' . $token->getOpenToken();
 ?>
     <input type="text" onClick="this.select();" class="form-control" value="<?= $link ?>" spellcheck="false">
     <hr>
