@@ -1,14 +1,18 @@
 <?php
 
-namespace lib;
+namespace controllers;
 
+use lib\Acl;
+use lib\Encryption;
+use lib\File;
 use lib\HTTP\DownloadResponse;
 use lib\HTTP\HTMLResponse;
 use lib\HTTP\Response;
 use lib\Repositories\FileRepository;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
-class Download {
+class Download extends AbstractController {
     /** @var File */
     protected $file;
     /** @var string */
@@ -16,8 +20,15 @@ class Download {
     /** @var string */
     private $token;
 
-    public function __construct(string $id, string $token)
+    public function __construct(ServerRequestInterface $request)
     {
+        parent::__construct($request);
+
+        $pathInfo = $this->request->getServerParams()['PATH_INFO'] ?? '';
+
+        $pathInfo = substr($pathInfo, 1) . '/';
+        list($id, $token) = explode('/', $pathInfo);
+
         $fileRepository = new FileRepository();
         $this->file = $fileRepository->findByUniqueString($id);
         $this->id = $id;
@@ -27,13 +38,13 @@ class Download {
     /**
      * @return ResponseInterface
      */
-    public function download() : ResponseInterface
+    public function index() : ResponseInterface
     {
         if (!$this->file->isset()) {
             return (new HTMLResponse('fileNotFound', [], 404))->psr7();
         }
 
-        if (!Acl::checkDownloadAccess($this)) {
+        if (!Acl::checkDownloadAccess($this->file, $this->token)) {
             return (new HTMLResponse('accessDenied', [], 403))->psr7();
         }
 
@@ -50,19 +61,8 @@ class Download {
         }
     }
 
-    /**
-     * @return File
-     */
-    public function getFile() : File
+    public function getAccessLevel()
     {
-        return $this->file;
-    }
-
-    /**
-     * @return string
-     */
-    public function getToken(): string
-    {
-        return $this->token;
+        return self::ACCESS_CLOSED;
     }
 }

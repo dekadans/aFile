@@ -36,18 +36,19 @@ class Acl {
 
     /**
      * Checks access to a requested download
-     * @param  Download $download
+     * @param File $file
+     * @param string $token
      * @return boolean
      */
-    public static function checkDownloadAccess(Download $download) : bool
+    public static function checkDownloadAccess(File $file, string $linkToken = '') : bool
     {
-        if (Authentication::isSignedIn() && Authentication::getUser()->getId() == $download->getFile()->getUser()->getId()) {
+        if (Authentication::isSignedIn() && Authentication::getUser()->getId() == $file->getUser()->getId()) {
             return true;
         }
         else {
-            $fileToken = $download->getFile()->getToken();
+            $fileToken = $file->getToken();
 
-            if ($fileToken->exists() && in_array($fileToken->getActiveState(), [FileToken::STATE_OPEN, FileToken::STATE_BOTH]) && $fileToken->getOpenToken() === $download->getToken()) {
+            if ($fileToken->exists() && in_array($fileToken->getActiveState(), [FileToken::STATE_OPEN, FileToken::STATE_BOTH]) && $fileToken->getOpenToken() === $linkToken) {
                 return true;
             }
         }
