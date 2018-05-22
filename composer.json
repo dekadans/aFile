@@ -1,5 +1,6 @@
 {
     "require": {
-        "defuse/php-encryption": "^2.1"
+        "defuse/php-encryption": "^2.1",
+        "guzzlehttp/psr7": "^1.4"
     }
 }

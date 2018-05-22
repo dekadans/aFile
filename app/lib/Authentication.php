@@ -9,6 +9,7 @@ use Defuse\Crypto\Exception\WrongKeyOrModifiedCiphertextException;
 use Defuse\Crypto\Key;
 use Defuse\Crypto\KeyProtectedByPassword;
 use lib\Repositories\UserRepository;
+use Psr\Http\Message\ServerRequestInterface;
 
 class Authentication
 {
@@ -22,11 +23,14 @@ class Authentication
     private $userRepository;
     /** @var bool */
     private $isRememberMeActivated;
+    /** @var ServerRequestInterface */
+    private $request;
 
-    public function __construct(UserRepository $userRepository, bool $isRememberMeActivated)
+    public function __construct(UserRepository $userRepository, ServerRequestInterface $request, bool $isRememberMeActivated)
     {
         $this->userRepository = $userRepository;
         $this->isRememberMeActivated = $isRememberMeActivated;
+        $this->request = $request;
     }
 
     public function authenticate(string $username, string $password)
@@ -48,7 +52,7 @@ class Authentication
         unset($_SESSION[self::SESSION_USER_KEY]);
         session_regenerate_id();
 
-        if (isset($_COOKIE[self::COOKIE_REMEMBER])) {
+        if (isset($this->request->getCookieParams()[self::COOKIE_REMEMBER])) {
             $token = $this->getAuthenticationTokenFromCookie();
             $this->clearRememberMeCookie($token);
         }
@@ -122,7 +126,6 @@ class Authentication
             $this->userRepository->deleteAuthTokenForUser($token);
         }
 
-        unset($_COOKIE[self::COOKIE_REMEMBER]);
         setcookie(self::COOKIE_REMEMBER, null, -1, '/');
     }
 
@@ -131,8 +134,9 @@ class Authentication
      */
     private function getAuthenticationTokenFromCookie()
     {
-        if (isset($_COOKIE[self::COOKIE_REMEMBER])) {
-            list($selector,$token) = explode(':', $_COOKIE[self::COOKIE_REMEMBER]);
+        $cookieValue = $this->request->getCookieParams()[self::COOKIE_REMEMBER] ?? null;
+        if (isset($cookieValue)) {
+            list($selector,$token) = explode(':', $cookieValue);
 
             $authenticationToken = $this->userRepository->getAuthenticationTokenBySelector($selector);
 
@@ -171,7 +175,7 @@ class Authentication
                 self::$signedInUser = $user;
             }
         }
-        else if (isset($_COOKIE[self::COOKIE_REMEMBER]) && $this->isRememberMeActivated) {
+        else if (isset($this->request->getCookieParams()[self::COOKIE_REMEMBER]) && $this->isRememberMeActivated) {
             $this->authenticateUsingCookie();
         }
     }

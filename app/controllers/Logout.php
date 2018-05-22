@@ -14,7 +14,7 @@ class Logout extends AbstractController {
 
     public function index() {
         $userRepository = new UserRepository(Database::getInstance());
-        $authentication = new Authentication($userRepository, Config::getInstance()->login->remember_me_activated);
+        $authentication = new Authentication($userRepository, $this->request, Config::getInstance()->login->remember_me_activated);
         $authentication->logout();
 
         return $this->outputJSON([

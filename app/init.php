@@ -48,5 +48,6 @@ require_once __DIR__ . '/../vendor/autoload.php';
 \lib\Sort::loadFromSession();
 
 $userRepository = new \lib\Repositories\UserRepository(\lib\Database::getInstance());
-$authentication = new \lib\Authentication($userRepository, \lib\Config::getInstance()->login->remember_me_activated);
+$request = \GuzzleHttp\Psr7\ServerRequest::fromGlobals();
+$authentication = new \lib\Authentication($userRepository, $request, \lib\Config::getInstance()->login->remember_me_activated);
 $authentication->loadUserFromSession();

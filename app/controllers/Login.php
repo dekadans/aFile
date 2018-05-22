@@ -16,7 +16,7 @@ class Login extends AbstractController {
     public function index() {
         $translation = Translation::getInstance();
         $userRepository = new UserRepository(Database::getInstance());
-        $authentication = new Authentication($userRepository, Config::getInstance()->login->remember_me_activated);
+        $authentication = new Authentication($userRepository, $this->request, Config::getInstance()->login->remember_me_activated);
 
         if (!Authentication::isSignedIn()) {
             $username = $this->param('username');

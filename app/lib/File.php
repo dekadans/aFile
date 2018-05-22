@@ -2,8 +2,6 @@
 
 namespace lib;
 
-use lib\Repositories\FileRepository;
-
 class File extends AbstractFile {
     protected $tmpPath;
 

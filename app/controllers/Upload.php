@@ -7,6 +7,7 @@ use lib\Authentication;
 use lib\Config;
 use lib\Repositories\FileRepository;
 use lib\Translation;
+use Psr\Http\Message\UploadedFileInterface;
 
 class Upload extends AbstractController {
     private $location;
@@ -36,21 +37,25 @@ class Upload extends AbstractController {
 
         $results = [];
 
-        foreach ($_FILES as $file) {
-            if ($file['error'] || $file['size'] > $maxsize) {
+        /** @var UploadedFileInterface $file */
+        foreach ($this->request->getUploadedFiles() as $file) {
+            if ($file->getError() || $file->getSize() > $maxsize) {
                 $results[] = false;
                 continue;
             }
 
-            $name = $this->getUniqueName($file['name']);
-            $mime = $this->getMimeType($file['name'], $file['tmp_name']);
+            $name = $this->getUniqueName($file->getClientFilename());
+            $mime = $this->getMimeType($file->getClientMediaType(), $file->getClientFilename());
 
-            if (strcmp($name, $file['name']) !== 0) {
-                $previousFileWithSameName = $file['name'];
+            if (strcmp($name, $file->getClientFilename()) !== 0) {
+                $previousFileWithSameName = $file->getClientFilename();
             }
 
-            $file = $this->fileRepository->createFile($this->user, $name, $this->location, $mime, $file['tmp_name']);
-            $results[] = $file;
+            $temporaryFile = tempnam(sys_get_temp_dir(), 'afile_upload');
+            $file->moveTo($temporaryFile);
+
+            $result = $this->fileRepository->createFile($this->user, $name, $this->location, $mime, $temporaryFile);
+            $results[] = $result;
         }
 
         if (in_array(false, $results)) {
@@ -119,9 +124,8 @@ class Upload extends AbstractController {
         return $fileName . '-' . uniqid() . '.' . $extension;
     }
 
-    private function getMimeType(string $filename, string $temporaryLocation)
+    private function getMimeType(string $mimeType, string $filename)
     {
-        $detectedMime = mime_content_type($temporaryLocation);
         $extension = explode('.', $filename);
         $extension = array_pop($extension);
 
@@ -135,7 +139,7 @@ class Upload extends AbstractController {
             case 'svg':
                 return 'image/svg+xml';
             default:
-                return $detectedMime;
+                return $mimeType;
         }
     }
 }
