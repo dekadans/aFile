@@ -2,11 +2,14 @@
 namespace lib\HTTP;
 
 
+use function GuzzleHttp\Psr7\stream_for;
+use Psr\Http\Message\ResponseInterface;
+
 class Response
 {
-    private $body;
-    private $headers = [];
-    private $statusCode;
+    protected $body;
+    protected $headers = [];
+    protected $statusCode;
 
     /**
      * @param string $body
@@ -19,28 +22,36 @@ class Response
     }
 
     /**
-     * @return string
+     * @return ResponseInterface
      */
-    public function output()
+    public function psr7()
     {
-        http_response_code($this->statusCode);
-        foreach ($this->headers as $header) {
-            header($header);
+        $response = new \GuzzleHttp\Psr7\Response();
+
+        $body = stream_for($this->body);
+
+        $response = $response
+            ->withStatus($this->statusCode)
+            ->withBody($body);
+
+        foreach ($this->headers as $header => $value) {
+            $response = $response->withHeader($header, $value);
         }
-        return $this->body;
+
+        return $response;
     }
 
     public function disableCache()
     {
-        $this->addHeader('Cache-Control: no-cache, must-revalidate');
+        $this->addHeader('Cache-Control', 'no-cache, must-revalidate');
     }
 
     /**
      * @param string $header
      */
-    public function addHeader(string $header)
+    public function addHeader(string $header, string $value)
     {
-        $this->headers[] = $header;
+        $this->headers[$header] = $value;
     }
 
     /**

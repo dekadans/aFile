@@ -12,18 +12,18 @@ class DownloadResponse extends Response
     public function __construct(File $file)
     {
         parent::__construct('');
-        $this->file = $file;
+        $this->setFile($file);
     }
 
-    public function output()
+    public function setFile(File $file)
     {
-        $this->addHeader('Content-Type: ' . $this->file->getMime());
-        $this->addHeader('Content-Disposition: ' . $this->getDisposition() . '; filename="'. $this->file->getName() .'"');
+        $this->file = $file;
+        $this->addHeader('Content-Type', $this->file->getMime());
+        $this->addHeader('Content-Disposition', $this->getDisposition() . '; filename="'. $this->file->getName() .'"');
         $this->disableCache();
-        parent::output();
 
-        readfile($this->file->getTmpPath());
-        @unlink($this->file->getTmpPath());
+        $fileResource = fopen($this->file->getTmpPath(), 'r');
+        $this->body = $fileResource;
     }
 
     private function getDisposition() : string

@@ -4,6 +4,7 @@ namespace controllers;
 
 use lib\HTTP\JsonResponse;
 use lib\HTTP\HTMLResponse;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 abstract class AbstractController {
@@ -56,19 +57,20 @@ abstract class AbstractController {
     /**
      * @param string $viewName
      * @param array $params
-     * @return HTMLResponse
+     * @return ResponseInterface
      */
     protected function parseView(string $viewName, $params = []) {
         $response = new HTMLResponse($viewName, $params);
-        return $response;
+        return $response->psr7();
     }
 
     /**
      * Converts an array to JSON and prints the result.
      * @param  array $data
-     * @return JsonResponse
+     * @return ResponseInterface
      */
     protected function outputJSON(array $data) {
-        return new JsonResponse($data);
+        $response = new JsonResponse($data);
+        return $response->psr7();
     }
 }

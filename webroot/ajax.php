@@ -44,11 +44,11 @@ if (isset($_GET['do']) && !empty($_GET['do'])) {
     }
 
     if (isset($errorText)) {
-        $response = new \lib\HTTP\JsonResponse([
+        $response = (new \lib\HTTP\JsonResponse([
             'error' => \lib\Translation::getInstance()->translate($errorText)
-        ]);
+        ]))->psr7();
     }
 
-    echo $response->output();
+    printResponse($response);
     die;
 }

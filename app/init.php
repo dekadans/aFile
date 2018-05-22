@@ -25,7 +25,7 @@ spl_autoload_register(function ($className) {
  */
 set_exception_handler(function (\Throwable $ex){
     $response = new \lib\HTTP\HTMLResponse('exceptionError', ['exception' => $ex], 500);
-    echo $response->output();
+    printResponse($response->psr7());
     die;
 });
 
@@ -51,3 +51,27 @@ $userRepository = new \lib\Repositories\UserRepository(\lib\Database::getInstanc
 $request = \GuzzleHttp\Psr7\ServerRequest::fromGlobals();
 $authentication = new \lib\Authentication($userRepository, $request, \lib\Config::getInstance()->login->remember_me_activated);
 $authentication->loadUserFromSession();
+
+function printResponse(\Psr\Http\Message\ResponseInterface $response)
+{
+    http_response_code($response->getStatusCode());
+
+    foreach ($response->getHeaders() as $name => $values) {
+        foreach ($values as $value) {
+            header(sprintf('%s: %s', $name, $value), false);
+        }
+    }
+
+    $stream = $response->getBody();
+    $streamUri = $stream->getMetadata()['uri'] ?? null;
+
+    while (!$stream->eof()) {
+        echo $stream->read(100000);
+    }
+
+    $stream->close();
+
+    if (is_file($streamUri)) {
+        @unlink($streamUri);
+    }
+}

@@ -6,8 +6,6 @@ Dev branch. The project is very much in progress and not very functional.
 
 ## Todo
 
-Requestobject för params och stuff
-
 Refaktorera så att decrypt blir en metod på filobjektet.
 
 Refaktorera tokens

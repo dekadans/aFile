@@ -6,6 +6,7 @@ use lib\HTTP\DownloadResponse;
 use lib\HTTP\HTMLResponse;
 use lib\HTTP\Response;
 use lib\Repositories\FileRepository;
+use Psr\Http\Message\ResponseInterface;
 
 class Download {
     /** @var File */
@@ -24,16 +25,16 @@ class Download {
     }
 
     /**
-     * @return Response
+     * @return ResponseInterface
      */
-    public function download() : Response
+    public function download() : ResponseInterface
     {
         if (!$this->file->isset()) {
-            return new HTMLResponse('fileNotFound', [], 404);
+            return (new HTMLResponse('fileNotFound', [], 404))->psr7();
         }
 
         if (!Acl::checkDownloadAccess($this)) {
-            return new HTMLResponse('accessDenied', [], 403);
+            return (new HTMLResponse('accessDenied', [], 403))->psr7();
         }
 
         $encryptionKey = $this->file->getEncryptionKey();
@@ -42,10 +43,10 @@ class Download {
             $encryption = new Encryption($encryptionKey);
             $encryption->decryptFile($this->file);
 
-            return new DownloadResponse($this->file);
+            return (new DownloadResponse($this->file))->psr7();
         }
         else {
-            return new Response('Could not download file', 500);
+            return (new Response('Could not download file', 500))->psr7();
         }
     }
 
