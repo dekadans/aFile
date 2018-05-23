@@ -48,12 +48,7 @@ class Download extends AbstractController {
             return (new HTMLResponse('accessDenied', [], 403))->psr7();
         }
 
-        $encryptionKey = $this->file->getEncryptionKey();
-
-        if ($this->file->isFile() && file_exists($this->file->getFilePath()) && $encryptionKey) {
-            $encryption = new Encryption($encryptionKey);
-            $encryption->decryptFile($this->file);
-
+        if ($this->file->isFile() && file_exists($this->file->getFilePath()) && $this->file->decrypt()) {
             return (new DownloadResponse($this->file))->psr7();
         }
         else {

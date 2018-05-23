@@ -19,6 +19,7 @@ abstract class AbstractFile {
     protected $created;
     protected $string_id;
 
+    /** @var FileRepository */
     protected $fileRepository;
 
     public function __construct($data = null)

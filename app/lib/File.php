@@ -8,6 +8,15 @@ class File extends AbstractFile {
     const ENCRYPTION_PERSONAL = 'PERSONAL';
     const ENCRYPTION_TOKEN = 'TOKEN';
 
+    /** @var Encryption */
+    private $encryptionService;
+
+    public function __construct($data = null, Encryption $encryptionService = null)
+    {
+        parent::__construct($data);
+        $this->encryptionService = $encryptionService;
+    }
+
     /**
      * FILE OPERATIONS
      */
@@ -22,9 +31,9 @@ class File extends AbstractFile {
         $encryptionKey = $this->getEncryptionKey();
 
         if ($encryptionKey) {
-            $encryption = new Encryption($encryptionKey);
+            $this->encryptionService->setKey($encryptionKey);
 
-            $tempFile = $encryption->decryptFile($this);
+            $tempFile = $this->encryptionService->decryptFile($this);
 
             if ($tempFile) {
                 if ($returnPathToContent) {
@@ -46,6 +55,16 @@ class File extends AbstractFile {
     }
 
     /**
+     * More or less an alias for read(true)
+     * Decrypts and sets the temporary path
+     * @return bool
+     */
+    public function decrypt()
+    {
+        return (bool) $this->read(true);
+    }
+
+    /**
      * Writes data to the file
      * @param  string $pathToContent
      * @return boolean
@@ -62,9 +81,9 @@ class File extends AbstractFile {
             return false;
         }
 
-        $encryption = new Encryption($encryptionKey);
+        $this->encryptionService->setKey($encryptionKey);
 
-        $result = $encryption->encryptFile($this);
+        $result = $this->encryptionService->encryptFile($this);
 
         if ($result && is_file($this->getFilePath())) {
             $this->update([
@@ -119,14 +138,14 @@ class File extends AbstractFile {
      */
     public function changeEncryptionKey($encryptionKey, $type)
     {
-        $encryption = new Encryption($this->getEncryptionKey());
-        $unencryptedFile = $encryption->decryptFile($this);
+        $this->encryptionService->setKey($this->getEncryptionKey());
+        $unencryptedFile = $this->encryptionService->decryptFile($this);
 
         if ($unencryptedFile) {
-            $encryption->setKey($encryptionKey);
+            $this->encryptionService->setKey($encryptionKey);
 
-            if ($encryption->encryptFile($this)) {
-                @unlink($this->getTmpPath());
+            if ($this->encryptionService->encryptFile($this)) {
+                @unlink($this->getPlainTextPath());
                 $this->update([
                     'encryption' => $type
                 ]);
@@ -153,7 +172,7 @@ class File extends AbstractFile {
 
     public function getFilePath() : string
     {
-        return __DIR__ . '/' . Config::getInstance()->files->path . $this->id;
+        return __DIR__ . '/../../' . Config::getInstance()->files->path . $this->id;
     }
 
     /**
@@ -161,15 +180,16 @@ class File extends AbstractFile {
      *
      * @return string
      */
-    public function getTmpPath() : string
+    public function getPlainTextPath() : string
     {
         return $this->tmpPath;
     }
 
     /**
      * Set the value of tmpPath
+     * @param string $path
      */
-    public function setTmpPath($path)
+    public function setPlainTextPath(string $path)
     {
         $this->tmpPath = $path;
     }

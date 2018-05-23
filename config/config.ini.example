@@ -2,7 +2,7 @@ version = 6
 
 language = en
 
-show_detailed_exceptions = true
+show_detailed_exceptions = false
 
 [login]
 remember_me_activated = true
@@ -15,9 +15,9 @@ password = PASSWORD
 database = DATABASE
 
 [files]
-; Path to where the files should be stores, relative to /app/lib
+; Path to where the encrypted files should be stored, relative to project root
 ; Must include a trailing /
-path = "../../storage/"
+path = "./storage/"
 maxsize = 20971520
 id_string_length = 5
 
@@ -33,5 +33,5 @@ inline_download[] = text/plain
 ; if false, binary prefixes is used (KiB = 1024 bytes)
 siprefix = true
 
-; If false, time for last edit will be shown
+; If false, time for last edit will be shown in file list
 upload_date_in_list = true

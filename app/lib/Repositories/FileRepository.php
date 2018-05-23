@@ -5,6 +5,7 @@ use lib\AbstractFile;
 use lib\Config;
 use lib\Database;
 use lib\Directory;
+use lib\Encryption;
 use lib\File;
 use lib\FileList;
 use lib\SearchEngine;
@@ -35,7 +36,7 @@ class FileRepository
         $file = $this->create($user, $name, $location, $mime, 'FILE', 'PERSONAL');
 
         if ($file) {
-            $file->setTmpPath($temporaryPath);
+            $file->setPlainTextPath($temporaryPath);
             $file->write();
         }
 
@@ -221,7 +222,8 @@ class FileRepository
     {
         if ($fileData) {
             if ($fileData['type'] === 'FILE') {
-                $file = new File($fileData);
+                $encryption = new Encryption();
+                $file = new File($fileData, $encryption);
             }
             else if ($fileData['type'] === 'DIRECTORY') {
                 $file = new Directory($fileData);

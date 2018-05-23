@@ -6,7 +6,7 @@ Dev branch. The project is very much in progress and not very functional.
 
 ## Todo
 
-Refaktorera så att decrypt blir en metod på filobjektet.
+Ändra så att filer sparas i storage/USERID/FILEID
 
 Refaktorera tokens
 

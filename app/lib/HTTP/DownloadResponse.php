@@ -22,7 +22,7 @@ class DownloadResponse extends Response
         $this->addHeader('Content-Disposition', $this->getDisposition() . '; filename="'. $this->file->getName() .'"');
         $this->disableCache();
 
-        $fileResource = fopen($this->file->getTmpPath(), 'r');
+        $fileResource = fopen($this->file->getPlainTextPath(), 'r');
         $this->body = $fileResource;
     }
 

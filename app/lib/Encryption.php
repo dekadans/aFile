@@ -10,15 +10,17 @@ class Encryption
 {
     private $key;
 
-    function __construct($key)
+    function __construct(string $key = '')
     {
-        $this->setKey($key);
+        if (!empty($key)) {
+            $this->setKey($key);
+        }
     }
 
     public function encryptFile(File $file) {
         if ($file->isset()) {
             try {
-                \Defuse\Crypto\File::encryptFile($file->getTmpPath(), $file->getFilePath(), $this->key);
+                \Defuse\Crypto\File::encryptFile($file->getPlainTextPath(), $file->getFilePath(), $this->key);
                 return true;
             }
             catch (\Defuse\Crypto\Exception\IOException $ex) {
@@ -32,7 +34,7 @@ class Encryption
 
     public function decryptFile(File $file) {
         $tempFile = tempnam(sys_get_temp_dir(), 'afile');
-        $file->setTmpPath($tempFile);
+        $file->setPlainTextPath($tempFile);
 
         if ($file->isset()) {
             try {
