@@ -172,7 +172,7 @@ class File extends AbstractFile {
 
     public function getFilePath() : string
     {
-        return __DIR__ . '/../../' . Config::getInstance()->files->path . $this->id;
+        return __DIR__ . '/../../' . Config::getInstance()->files->path . $this->getUser()->getId() . '/' . $this->id;
     }
 
     /**
