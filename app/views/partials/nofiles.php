@@ -1,0 +1,1 @@
+<div class="alert alert-info text-center my-3"><?= $message ?></div>

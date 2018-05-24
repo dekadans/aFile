@@ -5,6 +5,7 @@ namespace controllers;
 use lib\Authentication;
 use lib\Repositories\FileRepository;
 use lib\Sort;
+use lib\Translation;
 
 class ListFiles extends AbstractController {
     /** @var FileRepository */
@@ -35,7 +36,14 @@ class ListFiles extends AbstractController {
         }
 
         $fileList = $this->fileRepository->findByLocation(Authentication::getUser(), $location);
-        return $this->parseView('partials/filelist', ['fileList' => $fileList, 'printPath' => false]);
+
+        if (count($fileList)) {
+            return $this->parseView('partials/filelist', ['fileList' => $fileList]);
+        }
+        else {
+            return $this->parseView('partials/nofiles', ['message' => Translation::getInstance()->translate('NO_FILES')]);
+        }
+
     }
 
     public function actionSearch()
@@ -43,6 +51,11 @@ class ListFiles extends AbstractController {
         $searchString = $this->param('search');
 
         $fileList = $this->fileRepository->search(Authentication::getUser(), $searchString);
-        return $this->parseView('partials/filelist', ['fileList' => $fileList, 'printPath' => true]);
+        if (count($fileList)) {
+            return $this->parseView('partials/filelist', ['fileList' => $fileList]);
+        }
+        else {
+            return $this->parseView('partials/nofiles', ['message' => Translation::getInstance()->translate('NO_FILES_SEARCH')]);
+        }
     }
 }

@@ -198,6 +198,6 @@ class File extends AbstractFile {
     {
         $fileNameParts = explode('.', $this->name);
         $extension = array_pop($fileNameParts);
-        return $extension;
+        return strtolower($extension);
     }
 }

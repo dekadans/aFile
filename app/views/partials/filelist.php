@@ -1,7 +1,6 @@
 <ul class="list-group list-group-flush">
 <?php
 /** @var \lib\FileList $fileList */
-/** @var bool $printPath */
 foreach ($fileList as $file): ?>
     <?php if ($file->isFile()): ?>
 
@@ -9,8 +8,7 @@ foreach ($fileList as $file): ?>
             data-id="<?= $file->getId() ?>"
             data-newtab="<?= $file->openFileInNewTab() ?>"
             data-stringid="<?= $file->getStringId() ?>"
-            data-mime="<?= $file->getMime() ?>"
-            title="<?= ($printPath ? '' : '') ?>">
+            data-mime="<?= $file->getMime() ?>">
             <div class="row align-items-center">
                 <div class="col-1 pl-0 pl-sm-3">
                     <span class="flaticon-<?= $file->getFileExtension() ?> flaticon-blank fileIcon"></span>
