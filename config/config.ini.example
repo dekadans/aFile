@@ -1,24 +1,22 @@
-version = 6
-
 language = en
 
-show_detailed_exceptions = false
+show_detailed_exceptions = EXCEPTIONS
 
 [login]
 remember_me_activated = true
 
 [database]
 driver = mysql
-host = HOST
-user = USER
-password = PASSWORD
-database = DATABASE
+host = DB_HOST
+user = DB_USER
+password = DB_PASSWORD
+database = DB_DATABASE
 
 [files]
 ; Path to where the encrypted files should be stored, relative to project root
 ; Must include a trailing /
-path = "./storage/"
-maxsize = 20971520
+path = STORAGE
+maxsize = MAXSIZE
 id_string_length = 5
 
 inline_download[] = application/pdf

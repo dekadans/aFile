@@ -34,6 +34,11 @@ set_exception_handler(function (\Throwable $ex){
  */
 require_once __DIR__ . '/../vendor/autoload.php';
 
+if (!file_exists(__DIR__ . '/../config/config.ini')) {
+    $response = new \lib\HTTP\Response('No config found. Please run installation script.', 500);
+    printResponse($response->psr7());
+    die;
+}
 
 /**
  * Parse config file.
