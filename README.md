@@ -6,7 +6,10 @@ Dev branch. The project is very much in progress and not very functional.
 
 ## Todo
 
-Ändra så att filer sparas i storage/USERID/FILEID
+installer
+
+user type med bara read access?  
+tillgång till någon annans filer?
 
 Refaktorera tokens
 
