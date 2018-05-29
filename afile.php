@@ -9,23 +9,42 @@ if (!file_exists('vendor/autoload.php')) {
 require_once 'app/autoload.php';
 require_once 'vendor/autoload.php';
 
-Config::load('config/config.ini.example');
+if (\lib\Installation::isInstalled()) {
+    Config::load('config/config.ini');
+}
+
 $climate = new CLImate();
 
 $climate->description('Script for installing and configuring aFile.');
-$climate->arguments->add([
-	'install' => [
-		'longPrefix' => 'install',
-		'description' => 'Install aFile',
-		'noValue' => true
-	]
+try {
+    $climate->arguments->add([
+        'install' => [
+            'longPrefix' => 'install',
+            'description' => 'Install aFile',
+            'noValue' => true
+        ],
+        'addUser' => [
+            'longPrefix' => 'add-user',
+            'description' => 'Adds a user. Specify the new username with -u',
+            'noValue' => true
+        ],
+        'username' => [
+            'prefix' => 'u',
+            'description' => 'A username'
+        ]
 
-]);
+    ]);
 
-$climate->arguments->parse();
+    $climate->arguments->parse();
+} catch (Exception $e) {
+    die('CLImate arguments error!');
+}
 
 if ($climate->arguments->get('install')) {
 	require('cli/install.php');
+}
+else if ($climate->arguments->get('addUser')) {
+	require('cli/addUser.php');
 }
 else {
 	$climate->usage();
