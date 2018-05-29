@@ -5,20 +5,9 @@ session_start();
 define('AFILE_LOCATION', (!empty($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['SERVER_NAME'] . preg_replace('/[a-z]*\.php[a-z1-9\/]*/', '', $_SERVER['PHP_SELF']));
 
 /**
- * Set up autoloading of classes.
+ * Autoloading aFile classes
  */
-spl_autoload_register(function ($className) {
-    $filename = __DIR__ . '/' . str_replace("\\", "/", $className);
-
-    if (file_exists($filename . ".php")) {
-        include($filename . ".php");
-    }
-
-    if (class_exists($className)) {
-        return TRUE;
-    }
-    return FALSE;
-});
+require __DIR__ . '/autoload.php';
 
 /**
  * Set up basic error handling

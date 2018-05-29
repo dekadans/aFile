@@ -1,16 +1,5 @@
 <?php
-use League\CLImate\CLImate;
 use lib\Config;
-
-if (!file_exists('vendor/autoload.php')) {
-    die('ERROR! Run composer install first.'.PHP_EOL);
-}
-
-require_once 'vendor/autoload.php';
-require_once 'app/lib/Config.php';
-
-Config::load('config/config.ini.example');
-$climate = new CLImate();
 
 if (file_exists('config/config.ini')) {
     $climate->red('Install config already exists at config/config.ini. Delete it to reinstall.');
@@ -24,24 +13,23 @@ $configValues = [
 ];
 
 $climate->br();
-$climate->flank('aFile Install');
+$climate->white()->flank('aFile Install');
 $climate->br();
 
-$climate->out('Step 1: Configure environment');
+$climate->green('Step 1: Configure environment');
 
-$database = [];
 $climate->br()->inline('Using default database driver: ');
 $climate->green()->out(Config::getInstance()->database->driver);
 $climate->out('Required database tables will be created if missing.');
-$input = $climate->input('Enter hostname:');
-$database['HOST'] = $input->prompt();
-$input = $climate->input('Enter database name:');
-$database['DATABASE'] = $input->prompt();
-$input = $climate->input('Enter username:');
-$database['USER'] = $input->prompt();
-$input = $climate->password('Enter password:');
-$database['PASSWORD'] = $input->prompt();
-$configValues['DB'] = $database;
+$climate->out('Enter database information.');
+$input = $climate->input('Hostname:');
+$configValues['DB_HOST'] = $input->prompt();
+$input = $climate->input('Database name:');
+$configValues['DB_DATABASE'] = $input->prompt();
+$input = $climate->input('Username:');
+$configValues['DB_USER'] = $input->prompt();
+$input = $climate->password('Password:');
+$configValues['DB_PASSWORD'] = $input->prompt();
 
 // TRY TO CONNECT TO DB, ABORT IF FAILURE
 
@@ -64,3 +52,4 @@ $configValues['EXCEPTIONS'] = strtolower($value) === 'y' ? true : false;
 
 
 $climate->dump($configValues);
+
