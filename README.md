@@ -6,7 +6,9 @@ Dev branch. The project is very much in progress and not very functional.
 
 ## Todo
 
-installer
+afile-script
+    byta lösenord
+    ta bort användare+filer?
 
 user type med bara read access?  
 tillgång till någon annans filer?

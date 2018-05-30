@@ -23,16 +23,14 @@ try {
             'description' => 'Install aFile',
             'noValue' => true
         ],
-        'addUser' => [
+        'newUsername' => [
             'longPrefix' => 'add-user',
-            'description' => 'Adds a user. Specify the new username with -u',
-            'noValue' => true
+            'description' => 'Adds a user.'
         ],
-        'username' => [
-            'prefix' => 'u',
-            'description' => 'A username'
+        'encryptionKeyUsername' => [
+            'longPrefix' => 'print-key',
+            'description' => 'Prints the encryption key for a user.'
         ]
-
     ]);
 
     $climate->arguments->parse();
@@ -40,11 +38,14 @@ try {
     die('CLImate arguments error!');
 }
 
-if ($climate->arguments->get('install')) {
+if ($climate->arguments->defined('install')) {
 	require('cli/install.php');
 }
-else if ($climate->arguments->get('addUser')) {
+else if ($climate->arguments->defined('newUsername')) {
 	require('cli/addUser.php');
+}
+else if ($climate->arguments->defined('encryptionKeyUsername')) {
+    require('cli/printKey.php');
 }
 else {
 	$climate->usage();

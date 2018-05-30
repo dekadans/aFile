@@ -53,6 +53,10 @@ $input = $climate->input('>');
 $input->defaultTo($configValues['STORAGE']);
 $configValues['STORAGE'] = $input->prompt();
 
+if ($configValues['STORAGE'][strlen($configValues['STORAGE'])-1] !== '/') {
+    $configValues['STORAGE'] .= '/';
+}
+
 $climate->br()->out('Enter the maximum size of file uploads ['. $configValues['MAXSIZE'] .']');
 $input = $climate->input('>');
 $input->defaultTo($configValues['MAXSIZE']);
