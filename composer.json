@@ -2,6 +2,7 @@
     "require": {
         "defuse/php-encryption": "^2.1",
         "guzzlehttp/psr7": "^1.4",
-        "league/climate": "^3.2"
+        "league/climate": "^3.2",
+        "php": ">=7.0"
     }
 }

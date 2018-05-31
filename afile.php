@@ -1,4 +1,8 @@
 <?php
+/**
+ * CLI-application for installing and configuring
+ */
+
 use League\CLImate\CLImate;
 use lib\Config;
 
