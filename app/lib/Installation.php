@@ -20,7 +20,7 @@ class Installation
             $database = Database::getInstance();
             return true;
         } catch (\PDOException $e) {
-            return false;
+            return $e->getMessage();
         }
     }
 

@@ -43,8 +43,9 @@ $configValues['DB_PASSWORD'] = $input->prompt();
 
 $databaseResult = $installation->tryAndConnectToDatabase($configValues['DB_HOST'], $configValues['DB_DATABASE'], $configValues['DB_USER'], $configValues['DB_PASSWORD']);
 
-if (!$databaseResult) {
+if (is_string($databaseResult)) {
     $climate->red('ERROR! Failed to establish connection to database!');
+    $climate->red($databaseResult);
     die;
 }
 
