@@ -516,11 +516,9 @@ class aFile {
                     this.updateProgress();
                     this.list();
                 },
-                error: () => {
-                    alert('Upload Error');
+                error: response => {
                     delete this.currentUploads[uploadId];
-                    this.updateProgress();
-                    this.list();
+                    $('body').html(response.responseText);
                 },
                 xhr: () => {
                     let xhr = new window.XMLHttpRequest();

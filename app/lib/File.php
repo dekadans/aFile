@@ -99,7 +99,7 @@ class File extends AbstractFile {
     Encryption and sharing
      */
 
-    public function getEncryptionKey()
+    private function getEncryptionKey()
     {
         if ($this->encryption == self::ENCRYPTION_PERSONAL) {
             if (Authentication::isSignedIn()) {
