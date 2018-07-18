@@ -22,7 +22,7 @@ class Paste extends AbstractController
 
         $fileRepository = new FileRepository();
 
-        if (is_array($fileIds) && isset($newLocation)) {
+        if (is_array($fileIds)) {
             foreach ($fileIds as $id) {
                 $file = $fileRepository->find($id);
                 if ($file->isset() && Acl::checkFileAccess($file)) {

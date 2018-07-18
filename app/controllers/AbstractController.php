@@ -30,7 +30,6 @@ abstract class AbstractController {
      */
     public function param($name) {
         $post = $this->request->getParsedBody();
-        //$postArray = filter_input(INPUT_POST, $name, FILTER_DEFAULT , FILTER_REQUIRE_ARRAY);
         $get = $this->request->getQueryParams();
 
         if (isset($post[$name])) {
@@ -39,9 +38,6 @@ abstract class AbstractController {
         else if (isset($get[$name])) {
             $value = $get[$name];
         }
-        /*else if (!empty($postArray)) {
-            return $postArray;
-        }*/
         else {
             return null;
         }
