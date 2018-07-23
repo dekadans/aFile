@@ -34,7 +34,8 @@ hjälp-popup med kortkomandon samt sökhjälp
 
 code?
 
-galleri?
+galleri?  
+kolla på Drive. lightbox för bilderna i aktiv mapp. bara delbara en och en. 
 
 totalstorleksgräns/räknare??
 
