@@ -40,4 +40,6 @@ totalstorleksgräns/räknare??
 
 ### Kom ihåg
 
-https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Complete_list_of_MIME_types
+https://javascript.info/async-await  
+https://dzone.com/articles/top-javascript-libraries-for-making-ajax-calls  
+http://youmightnotneedjquery.com/  
