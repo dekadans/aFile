@@ -15,23 +15,17 @@ class aFile {
     /**
      * Fetches config and session info from the server.
      */
-    check() {
-        this.get('Check', '', data => {
-            this.info = data;
+    async check() {
+        this.info = await this.fetch('GET', 'Check');
 
-            if (this.info.login) {
-                this.get('ListFiles', '', html => {
-                    $('body').html(html);
-                    this.mainView();
-                });
-            }
-            else {
-                this.get('Login', 'form', html => {
-                    $('body').html(html);
-                    this.loginView();
-                });
-            }
-        });
+        if (this.info.login) {
+            document.querySelector('body').innerHTML = await this.fetch('GET', 'ListFiles');
+            this.mainView();
+        }
+        else {
+            document.querySelector('body').innerHTML = await this.fetch('GET', 'Login', 'form');
+            this.loginView();
+        }
     }
 
     /**
@@ -730,6 +724,47 @@ class aFile {
                 $('body').html(response.responseText);
             }
         });
+    }
+
+    async fetch(method, controller, action = '', data = {}) {
+        this.showLoading();
+        let url = 'ajax.php?do=' + controller + '&action=' + action;
+        let body = null;
+
+        for (let i in data) {
+            if (data.hasOwnProperty(i)) {
+                if (method === 'GET') {
+                    url += '&' + i + '=' + data[i];
+                }
+                else {
+                    if (body === null) {
+                        body = new FormData();
+                    }
+                    body.append(i, data[i]);
+                }
+            }
+        }
+
+        let response = await fetch(url, {
+            method : method,
+            body : body,
+            credentials : 'same-origin',
+            cache : 'no-cache'
+        });
+
+        if (response.ok) {
+            let contentType = response.headers.get('Content-Type');
+            let content = '';
+
+            if (contentType.indexOf('application/json') > -1) {
+                content = await response.json();
+            }
+            else {
+                content = await response.text();
+            }
+
+            return content;
+        }
     }
 
     /**
