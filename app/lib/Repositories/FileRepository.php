@@ -29,6 +29,7 @@ class FileRepository
      * @param string $mime
      * @param string $temporaryPath
      * @return File
+     * @throws \Exception
      */
     public function createFile(User $user, string $name, $location, string $mime, string $temporaryPath)
     {
@@ -37,7 +38,10 @@ class FileRepository
 
         if ($file) {
             $file->setPlainTextPath($temporaryPath);
-            $file->write();
+            if (!$file->write()) {
+                $file->delete();
+                throw new \Exception('Could not write file. Check directory permissions.');
+            }
         }
 
         return $file;
