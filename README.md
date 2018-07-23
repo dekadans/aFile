@@ -44,3 +44,4 @@ totalstorleksgräns/räknare??
 https://javascript.info/async-await  
 https://dzone.com/articles/top-javascript-libraries-for-making-ajax-calls  
 http://youmightnotneedjquery.com/  
+https://medium.freecodecamp.org/avoiding-the-async-await-hell-c77a0fb71c4c  
