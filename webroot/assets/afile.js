@@ -727,7 +727,7 @@ class aFile {
     }
 
     async fetch(method, controller, action = '', data = {}) {
-        this.showLoading();
+        this.showLoading(true);
         let url = 'ajax.php?do=' + controller + '&action=' + action;
         let body = null;
 
@@ -751,6 +751,8 @@ class aFile {
             credentials : 'same-origin',
             cache : 'no-cache'
         });
+
+        this.showLoading(false);
 
         if (response.ok) {
             let contentType = response.headers.get('Content-Type');
