@@ -138,6 +138,7 @@ abstract class AbstractFile {
 
     /**
      * Updates columns in files database
+     * @TODO Move this to repository
      * @param  array $data
      * @return boolean
      */
@@ -145,9 +146,13 @@ abstract class AbstractFile {
     {
         $sets = [];
         foreach ($data as $column => $value) {
-            if (!is_int($value)) {
+            if (!is_int($value) && !is_null($value)) {
                 $value = "'" . $value . "'";
             }
+            else if (is_null($value)) {
+                $value = 'NULL';
+            }
+
             $sets[] = $column . '=' . $value;
         }
         $sets = implode(', ',$sets);
