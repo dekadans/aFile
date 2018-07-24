@@ -6,7 +6,8 @@ $lang = \lib\Translation::getInstance();
 ?>
 
 <?php if ($token->exists()):
-$link = AFILE_LOCATION . 'dl.php/' . $file->getStringId() . '/' . $token->getOpenToken();
+$skipExtension = \lib\Config::getInstance()->files->skip_dl_php_extension;
+$link = AFILE_LOCATION . 'dl'. ($skipExtension ? '' : '.php') .'/' . $file->getStringId() . '/' . $token->getOpenToken();
 ?>
     <input type="text" onClick="this.select();" class="form-control" value="<?= $link ?>" spellcheck="false">
     <hr>

@@ -20,6 +20,10 @@ path = STORAGE
 maxsize = MAXSIZE
 id_string_length = 5
 
+; If the php extension should be skipped when writing download links
+; requires some htaccess magic to be added
+skip_dl_php_extension = false
+
 inline_download[] = application/pdf
 inline_download[] = image/jpeg
 inline_download[] = image/png

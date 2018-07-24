@@ -3,6 +3,7 @@
 namespace controllers;
 
 use lib\Authentication;
+use lib\Config;
 use lib\Translation;
 
 class Check extends AbstractController {
@@ -23,6 +24,7 @@ class Check extends AbstractController {
                 'type' => $user->getType()
             ];
             $info['language'] = Translation::getInstance()->getLanguageData();
+            $info['skip_dl_php_extension'] = Config::getInstance()->files->skip_dl_php_extension;
         }
         else {
             $info['login'] = false;
