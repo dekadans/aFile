@@ -157,7 +157,7 @@ class File extends AbstractFile {
 
     public function openFileInNewTab()
     {
-        return in_array($this->getMime(), Config::getInstance()->files->inline_download);
+        return in_array($this->getMime(), Config::getInstance()->files->inline_download) || in_array($this->getMime(), Config::getInstance()->files->editor);
     }
 
     public function delete() : bool

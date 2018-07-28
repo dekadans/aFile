@@ -9,9 +9,13 @@ class DownloadResponse extends Response
     /** @var File */
     private $file;
 
-    public function __construct(File $file)
+    /** @var string */
+    private $disposition = 'attachment';
+
+    public function __construct(File $file, bool $inline = false)
     {
         parent::__construct('');
+        $this->disposition = $inline ? 'inline' : 'attachment';
         $this->setFile($file);
     }
 
@@ -19,15 +23,19 @@ class DownloadResponse extends Response
     {
         $this->file = $file;
         $this->addHeader('Content-Type', $this->file->getMime());
-        $this->addHeader('Content-Disposition', $this->getDisposition() . '; filename="'. $this->file->getName() .'"');
+        $this->addHeader('Content-Disposition', $this->disposition . '; filename="'. $this->file->getName() .'"');
         $this->disableCache();
 
+        $this->file->decrypt();
         $fileResource = fopen($this->file->getPlainTextPath(), 'r');
         $this->body = $fileResource;
     }
 
-    private function getDisposition() : string
+    /**
+     * @param string $disposition
+     */
+    public function setDisposition(string $disposition)
     {
-        return in_array($this->file->getMime(), Config::getInstance()->files->inline_download) ? 'inline' : 'attachment';
+        $this->disposition = $disposition;
     }
 }

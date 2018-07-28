@@ -20,6 +20,8 @@ möjlighet att öppna mappar på mobilen...
 
 refaktorera js
 
+keepalive ajax
+
 bättre clipboard. rutan följer inte med scroll. bökigt med Ctrl-X
 
 markdown

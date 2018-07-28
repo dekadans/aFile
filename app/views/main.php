@@ -8,7 +8,7 @@ $lang = \lib\Translation::getInstance();
 
 <div id="Main" class="view">
 
-        <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
             <a class="navbar-brand" href="#" id="BrandHome"><?= $lang->translate('BRAND') ?></a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -96,28 +96,6 @@ $lang = \lib\Translation::getInstance();
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal"><?= $lang->translate('CANCEL') ?></button>
                     <button type="button" class="btn btn-primary" id="ModalOk"><?= $lang->translate('OK') ?></button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="ModalEditor" tabindex="-1" role="dialog" data-backdrop="static">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="ModalEditorTitle"><?= $lang->translate('EDITOR') ?></h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body" id="ModalEditorBody">
-                    <p><input id="EditorName" type="text" placeholder="<?= $lang->translate('EDITOR_NAME') ?>" class="form-control"></p>
-                    <p><textarea id="Editor" class="form-control" spellcheck="false"></textarea></p>
-                    <input type="hidden" id="EditorFileId" value="">
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" id="ModalEditorClose" data-dismiss="modal"><?= $lang->translate('EDITOR_CLOSE') ?></button>
-                    <button type="button" class="btn btn-primary" id="ModalEditorSave"><?= $lang->translate('EDITOR_SAVE') ?></button>
                 </div>
             </div>
         </div>

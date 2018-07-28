@@ -138,6 +138,8 @@ class Upload extends AbstractController {
                 return 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
             case 'svg':
                 return 'image/svg+xml';
+            case 'md':
+                return 'text/plain';
             default:
                 return $mimeType;
         }

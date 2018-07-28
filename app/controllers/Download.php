@@ -3,7 +3,8 @@
 namespace controllers;
 
 use lib\Acl;
-use lib\Encryption;
+use lib\Authentication;
+use lib\Config;
 use lib\File;
 use lib\HTTP\DownloadResponse;
 use lib\HTTP\HTMLResponse;
@@ -48,8 +49,17 @@ class Download extends AbstractController {
             return (new HTMLResponse('accessDenied', [], 403))->psr7();
         }
 
-        if ($this->file->isFile() && file_exists($this->file->getFilePath()) && $this->file->decrypt()) {
-            return (new DownloadResponse($this->file))->psr7();
+        if ($this->file->isFile() && file_exists($this->file->getFilePath())) {
+            if (in_array($this->file->getMime(), Config::getInstance()->files->editor)) {
+                return (new HTMLResponse('editor', [
+                    'file' => $this->file,
+                    'editable' => Authentication::isSignedIn() && $this->file->getUser()->getId() === Authentication::getUser()->getId()
+                ]))->psr7();
+            }
+            else {
+                $openInline = in_array($this->file->getMime(), Config::getInstance()->files->inline_download);
+                return (new DownloadResponse($this->file, $openInline))->psr7();
+            }
         }
         else {
             return (new Response('Could not download file', 500))->psr7();

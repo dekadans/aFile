@@ -21,9 +21,11 @@
     "SHARE_CREATE" : "Create a shareable link",
     "SHARE_DESTROY" : "Destroy link",
     "EDITOR" : "Editor",
-    "EDITOR_NAME" : "Filename...",
+    "EDITOR_NAME" : "Create a new text file",
     "EDITOR_CLOSE" : "Close",
     "EDITOR_SAVE" : "Save",
+    "EDITOR_SAVED" : "Saved",
+    "EDITOR_TOGGLE_PREVIEW" : "Toggle preview",
     "EDITOR_TYPE_ERROR" : "The editor is not enabled for this file type",
 
     "BRAND" : "aFile",

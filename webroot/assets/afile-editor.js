@@ -1,0 +1,120 @@
+class aFileEditor {
+    constructor(markdownConverter) {
+        this.markdownConverter = markdownConverter;
+        this.markdown = false;
+
+        this.bindEvents();
+    }
+
+    getText() {
+        return document.querySelector('#EditorTextarea').value;
+    }
+
+    getFileId() {
+        return document.querySelector('#EditorTextarea').dataset.fileid;
+    }
+
+    parseMarkdown() {
+        let html = this.markdownConverter.makeHtml(this.getText());
+        document.querySelector('.editor-preview').innerHTML = html;
+    }
+
+    togglePreview() {
+        if (this.markdown) {
+            this.parseMarkdown();
+        }
+
+        document.querySelector('.editor-preview').classList.toggle('d-none');
+        document.querySelector('#EditorContainer').classList.toggle('d-none');
+
+        let saveButton = document.querySelector('#EditorSave');
+        if (saveButton) {
+            saveButton.classList.toggle('d-none');
+        }
+    }
+
+    saveContent() {
+        this.fetch('POST', 'Editor', 'Write', {
+            content : this.getText(),
+            id : this.getFileId()
+        }).then(jsonResponse => {
+            if (jsonResponse.status === 'ok') {
+                let message = document.querySelector('#EditorSavedMessage');
+
+                message.classList.remove('d-none');
+                setTimeout(() => {
+                    message.classList.add('d-none');
+                }, 3000);
+            }
+            else {
+                alert('Failed');
+            }
+        });
+    }
+
+    bindEvents() {
+        let preview = document.querySelector('#EditorPreviewToggle');
+        if (preview) {
+            preview.addEventListener('click', e => {
+                e.preventDefault();
+                this.togglePreview();
+            });
+        }
+
+        document.querySelector('#EditorTextarea').addEventListener('keydown', e => {
+            let start = e.target.selectionStart;
+            let end = e.target.selectionEnd;
+            let value = e.target.value;
+
+            if (e.which === 9) {
+                e.target.value = value.substring(0, start)
+                    + "\t"
+                    + value.substring(end);
+
+                e.target.selectionStart = e.target.selectionEnd = start + 1;
+                e.preventDefault();
+            }
+            else if (e.which === 13) {
+                e.preventDefault();
+
+                let countTabs = 0;
+                for (let i = start-1; i>=0; i--) {
+                    if (value.charAt(i) === "\t") {
+                        countTabs++;
+                    }
+                    else if (value.charAt(i) === "\n") {
+                        break;
+                    }
+                    else {
+                        countTabs = 0;
+                    }
+                }
+
+                e.target.value = value.substring(0, start)
+                    + "\n"
+                    + "\t".repeat(countTabs)
+                    + value.substring(end);
+
+                e.target.selectionStart = e.target.selectionEnd = start + countTabs+1;
+                countTabs = 0;
+            }
+        });
+
+        let saveButton = document.querySelector('#EditorSave');
+        if (saveButton) {
+            saveButton.addEventListener('click', e => {
+                e.preventDefault();
+                this.saveContent();
+            });
+
+            document.addEventListener('keydown', e => {
+                if (e.which === 83 && (e.ctrlKey || e.metaKey)) {
+                    e.preventDefault();
+                    this.saveContent();
+                }
+            });
+        }
+    }
+}
+
+Object.assign(aFileEditor.prototype, aFileAjax);

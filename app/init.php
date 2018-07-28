@@ -2,7 +2,7 @@
 
 session_start();
 
-define('AFILE_LOCATION', (!empty($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['SERVER_NAME'] . preg_replace('/[a-z]*\.php[a-z1-9\/]*/', '', $_SERVER['PHP_SELF']));
+define('AFILE_LOCATION', (!empty($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['SERVER_NAME'] . preg_replace('/[a-z]*\.php[a-z0-9\/]*/', '', $_SERVER['PHP_SELF']));
 
 /**
  * Autoloading aFile classes

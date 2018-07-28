@@ -113,10 +113,6 @@ class Editor extends AbstractController
                 @unlink($tempFile);
 
                 if ($fileWritten) {
-                    if ($this->file->getName() !== $this->filename) {
-                        $this->file->rename($this->filename);
-                    }
-
                     return $this->outputJSON([
                         'status' => 'ok'
                     ]);
