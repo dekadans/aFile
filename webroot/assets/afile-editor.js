@@ -2,6 +2,7 @@ class aFileEditor {
     constructor(markdownConverter) {
         this.markdownConverter = markdownConverter;
         this.markdown = false;
+        this.code = false;
 
         this.bindEvents();
     }
@@ -19,9 +20,20 @@ class aFileEditor {
         document.querySelector('.editor-preview').innerHTML = html;
     }
 
+    highlightCode() {
+        let previewElement = document.querySelector('.editor-preview');
+        let code = this.getText();
+        code = code.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        previewElement.innerHTML = '<pre><code class="editorCode">'+ code +'</code></pre>';
+        hljs.highlightBlock(previewElement);
+    }
+
     togglePreview() {
         if (this.markdown) {
             this.parseMarkdown();
+        }
+        else if (this.code) {
+            this.highlightCode();
         }
 
         document.querySelector('.editor-preview').classList.toggle('d-none');

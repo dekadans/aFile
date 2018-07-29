@@ -18,7 +18,8 @@ class Delete extends AbstractController {
         if (is_numeric($id)) {
             $result[] = $this->deleteFile($id);
         }
-        else if (is_array($id)) {
+        else {
+            $id = explode(',', $id);
             foreach ($id as $fileId) {
                 $result[] = $this->deleteFile($fileId);
             }

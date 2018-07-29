@@ -129,6 +129,10 @@ class Upload extends AbstractController {
         $extension = explode('.', $filename);
         $extension = array_pop($extension);
 
+        if (in_array($extension, Config::getInstance()->files->code)) {
+            return 'text/plain';
+        }
+
         switch ($extension) {
             case 'docx':
                 return 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';

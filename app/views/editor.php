@@ -8,7 +8,10 @@ $text = $file->read();
 
 $preview = false;
 
-if ($file->getFileExtension() === 'md') {
+if (in_array($file->getFileExtension(), \lib\Config::getInstance()->files->code)) {
+    $preview = 'code';
+}
+else if ($file->getFileExtension() === 'md') {
     $preview = 'markdown';
 }
 
@@ -23,6 +26,8 @@ if ($file->getFileExtension() === 'md') {
     <title><?= $file->getName() ?></title>
 
     <script type="text/javascript" src=" https://cdn.rawgit.com/showdownjs/showdown/1.8.6/dist/showdown.min.js"></script>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <link rel="stylesheet" href="<?= AFILE_LOCATION ?>assets/bootstrap-4.1.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="<?= AFILE_LOCATION ?>assets/general.css">
@@ -42,12 +47,11 @@ if ($file->getFileExtension() === 'md') {
         });
     </script>
 
-    <?php if ($preview === 'markdown'): ?>
+    <?php if ($preview): ?>
         <script type="text/javascript">
             $(function(){
-                f.parseMarkdown();
+                f.<?= $preview ?> = true;
                 f.togglePreview();
-                f.markdown = true;
             });
         </script>
     <?php endif; ?>

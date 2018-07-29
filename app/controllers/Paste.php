@@ -16,7 +16,7 @@ class Paste extends AbstractController
 
     public function index()
     {
-        $fileIds = $this->param('id');
+        $fileIds = explode(',', $this->param('id'));
         $newLocation = $this->param('location');
         $result = [];
 

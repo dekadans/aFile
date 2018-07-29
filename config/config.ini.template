@@ -31,6 +31,29 @@ inline_download[] = image/gif
 inline_download[] = image/svg+xml
 inline_download[] = text/plain
 
+editor[] = text/plain
+
+; Which file extensions that should have code highlight in the editor
+code[] = css
+code[] = js
+code[] = h
+code[] = m
+code[] = rb
+code[] = sh
+code[] = ini
+code[] = coffee
+code[] = php
+code[] = sql
+code[] = cs
+code[] = json
+code[] = pl
+code[] = c
+code[] = cpp
+code[] = html
+code[] = xml
+code[] = java
+code[] = py
+
 [presentation]
 ; If true then SI-prefixes will be used for file sizes (kB = 1000 bytes),
 ; if false, binary prefixes is used (KiB = 1024 bytes)

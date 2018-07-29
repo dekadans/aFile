@@ -24,8 +24,6 @@ keepalive ajax
 
 bättre clipboard. rutan följer inte med scroll. bökigt med Ctrl-X
 
-markdown
-
 klickbart i breadcrumbs
 
 "sign out everywhere"
@@ -33,8 +31,6 @@ klickbart i breadcrumbs
 länkar
 
 hjälp-popup med kortkomandon samt sökhjälp
-
-code?
 
 galleri?  
 kolla på Drive. lightbox för bilderna i aktiv mapp. bara delbara en och en. 
