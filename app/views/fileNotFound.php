@@ -7,7 +7,7 @@
 
     <title>404 <?= \lib\Translation::getInstance()->translate('404_NOT_FOUND') ?></title>
 
-    <link rel="stylesheet" href="<?= AFILE_LOCATION ?>assets/bootstrap-4.1.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     <link rel="stylesheet" href="<?= AFILE_LOCATION ?>assets/general.css">
 </head>
 <body>
