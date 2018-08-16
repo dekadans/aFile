@@ -5,7 +5,6 @@ class aFile {
         this.currentSearch = '';
         this.selected = null;
         this.clipboard = [];
-        this.currentUploads = [];
         this.clickLock = false;
 
         this.keybindings();
@@ -157,7 +156,7 @@ class aFile {
                 }).then(data => {
                     if (data.loginError) {
                         $('#LoginMessage > .alert').html(data.loginError);
-                        $('#LoginMessage').slideDown();
+                        $('#LoginMessage').show();
                     }
                     else if (data.status === 'ok') {
                         this.check();
@@ -449,14 +448,11 @@ class aFile {
             e.stopPropagation();
         })
         .on('dragover dragenter', function() {
-            //$form.addClass('is-dragover');
         })
         .on('dragleave dragend drop', function() {
-            //$form.removeClass('is-dragover');
         })
         .on('drop', e => {
             let filesToUpload = e.originalEvent.dataTransfer.files;
-            let uploadId = Math.random();
 
             let ajaxData = new FormData();
 
@@ -466,77 +462,28 @@ class aFile {
                 });
             }
 
-            $.ajax({
-                url: 'ajax.php?do=Upload&location=' + this.getPath(),
-                type: 'POST',
-                data: ajaxData,
-                dataType: 'json',
-                cache: false,
-                contentType: false,
-                processData: false,
-                complete: () => {
-                    //console.log('complete');
-                },
-                success: data => {
-                    if (data.error) {
-                        alert(data.error);
-                    }
-                    delete this.currentUploads[uploadId];
-
-                    if (data.status === 'confirm') {
-                        let message = this.info.language.CONFIRM_OVERWRITE + ' ' + data.name + '?';
-                        this.confirm(message, e => {
-                            this.fetch('POST', 'Upload', 'Confirmoverwrite', {
-                                newId : data.newId,
-                                oldId : data.oldId
-                            }).then(overwriteResult => {
-                                if (overwriteResult.error) {
-                                    alert(overwriteResult.error);
-                                }
-                                this.list();
-                            });
-                        });
-                    }
-
-                    this.updateProgress();
-                    this.list();
-                },
-                error: response => {
-                    delete this.currentUploads[uploadId];
-                    $('body').html(response.responseText);
-                },
-                xhr: () => {
-                    let xhr = new window.XMLHttpRequest();
-                    xhr.upload.addEventListener("progress", evt => {
-                        if (evt.lengthComputable) {
-                            this.currentUploads[uploadId] = Math.ceil(evt.loaded / evt.total * 100);
-                            this.updateProgress();
-                        }
-                    }, false);
-
-                    return xhr;
+            this.upload(ajaxData, this.getPath()).then(result => {
+                if (result.status === 'error') {
+                    alert(this.info.language.UPLOAD_FAILED);
                 }
+                else if (result.status === 'confirm') {
+                    let message = this.info.language.CONFIRM_OVERWRITE + ' ' + result.name + '?';
+                    this.confirm(message, e => {
+                        this.fetch('POST', 'Upload', 'Confirmoverwrite', {
+                            newId : result.newId,
+                            oldId : result.oldId
+                        }).then(overwriteResult => {
+                            if (overwriteResult.error) {
+                                alert(overwriteResult.error);
+                            }
+                            this.list();
+                        });
+                    });
+                }
+
+                this.list();
             });
         });
-    }
-
-    /**
-     * Updates the upload progress bar
-     */
-    updateProgress() {
-        let combinedProgress = 0;
-        let uploads = 0;
-
-        for (let percent in this.currentUploads) {
-            uploads++;
-            combinedProgress += this.currentUploads[percent];
-        }
-
-        if (uploads > 0) {
-            combinedProgress /= uploads;
-        }
-
-        $('#Progress').css('width', combinedProgress + '%');
     }
 
     /**

@@ -56,6 +56,25 @@ let aFileAjax = {
         }
     },
 
+    async upload(ajaxData, location) {
+        this.showLoading(true);
+
+        let response = await fetch('ajax.php?do=Upload&location=' + location, {
+            method : 'POST',
+            credentials : 'same-origin',
+            body : ajaxData
+        });
+
+        this.showLoading(false);
+
+        if (response.ok) {
+            let content = await response.json();
+            return content;
+        }
+
+        return false;
+    },
+
     showLoading(show) {
         let el = document.querySelector('#Loading');
 

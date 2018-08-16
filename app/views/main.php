@@ -4,8 +4,6 @@ $lang = \lib\Translation::getInstance();
 
 <div id="Loading" class="view"><?= $lang->translate('LOADING') ?></div>
 
-<div id="Progress" class="bg-success"></div>
-
 <div id="Main" class="view">
 
     <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">

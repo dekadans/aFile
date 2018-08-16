@@ -2,15 +2,7 @@ html, body, #AppContainer {
     height: 100%;
 }
 
-.navbar {
-    /*margin-bottom: 0;*/
-}
-
 /* VIEWS */
-
-.wrap {
-    display: inline;
-}
 
 #Loading {
     position: fixed;
@@ -81,10 +73,6 @@ html, body, #AppContainer {
     z-index: 100;
 }
 
-#FileButtons button:disabled {
-    /*cursor: default;*/
-}
-
 #ListContainer {
     padding-top: 185px;
 }
@@ -98,59 +86,12 @@ html, body, #AppContainer {
     user-select: none; /* Non-prefixed version, currently
                                   supported by Chrome and Opera */
 }
-/*.listItem {
-    border-bottom: 1px solid #dddddd;
-    cursor:pointer;
-}
-
-.listItem > td:first-child {
-    position: relative;
-    width: 60px;
-}
-.listItem > td:nth-child(2) {
-    width: 70%;
-}
-
-.listItem > td:last-child {
-    text-align: right;
-    padding-right: 10px;
-}
-
-.listItemActive {
-    background-color: #dddddd5c;
-}*/
-
-.fileName,.fileInfo {
-
-}
-
-/*.fileIcon, .directoryIcon {
-    position: relative;
-    z-index: 50;
-}*/
 
 .directoryIcon {
     width: 30px;
     margin-left: 5px;
     margin-bottom: 14px;
     margin-top: 14px;
-}
-
-/*.hasToken {
-    position: absolute;
-    left: -20px;
-    top: 20px;
-    cursor: default;
-}*/
-
-#Progress {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 0%;
-    height: 5px;
-    background: green;
-    z-index: 2000;
 }
 
 #Editor {
@@ -166,9 +107,6 @@ html, body, #AppContainer {
 }
 
 /* MISC */
-/*.right {
-    float: right;
-}*/
 
 .jumbotron {
     background-color: #FFFFFF;
@@ -187,11 +125,11 @@ html, body, #AppContainer {
 
 #EditorTextarea {
     width: 100%;
-    height: 95%;
+    height: 99%;
     border: 0;
     margin: 0;
     outline: none;
     padding: 0;
     font-family: monospace;
-    font-size: 16px;
+    font-size: 14px;
 }
