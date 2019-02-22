@@ -5,6 +5,8 @@ Dev branch. The project is very much in progress and not very functional.
 
 
 ## Todo
+"sign out everywhere"  
+Ta bort gamla tokens som gått ut när man loggar in
 
 afile-script  
 * byta lösenord   
@@ -25,8 +27,6 @@ keepalive ajax
 bättre clipboard. rutan följer inte med scroll. bökigt med Ctrl-X
 
 klickbart i breadcrumbs
-
-"sign out everywhere"
 
 länkar
 
