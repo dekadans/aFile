@@ -45,23 +45,38 @@ $lang = \lib\Translation::getInstance();
                         <button id="Download" type="button" class="btn btn-outline-dark"><i class="fas fa-cloud-download-alt"></i></button>
                     </div>
 
-                    <div class="btn-group" role="group" aria-label="..." style="float:right;">
-                        <button id="CreateDirectory" type="button" class="btn btn-outline-dark"><i class="fas fa-folder-open"></i></button>
-                        <button id="OpenEditor" type="button" class="btn btn-outline-dark"><i class="fas fa-font"></i></button>
-
-                        <div class="btn-group" role="group">
-                            <button id="SortMenu" type="button" class="btn btn-outline-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="fas fa-sort-amount-down"></i>
+                    <div style="float:right;">
+                        <div id="ClipboardButtons" class="btn-group" role="group">
+                            <button id="ClipboardMenu" type="button" class="btn btn-outline-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-clipboard"></i>
                             </button>
-                            <div class="dropdown-menu" aria-labelledby="SortMenu">
-                                <a class="dropdown-item sortby <?= ($currentSorting === \lib\Sort::COLUMN_NAME ? 'active' : '') ?>" href="#" data-column="<?= \lib\Sort::COLUMN_NAME ?>"><?= $lang->translate('SORT_NAME') ?></a>
-                                <a class="dropdown-item sortby <?= ($currentSorting === \lib\Sort::COLUMN_SIZE ? 'active' : '') ?>" href="#" data-column="<?= \lib\Sort::COLUMN_SIZE ?>"><?= $lang->translate('SORT_SIZE') ?></a>
+                            <div class="dropdown-menu" aria-labelledby="ClipboardMenu">
+                                <a href="#" id="ClipboardPaste" class="dropdown-item text-success"><?= $lang->translate('CLIPBOARD_PASTE') ?></a>
+                                <a href="#" id="ClipboardDelete" class="dropdown-item text-danger"><?= $lang->translate('CLIPBOARD_DELETE') ?></a>
+                                <a href="#" id="ClipboardDismiss" class="dropdown-item"><?= $lang->translate('CANCEL') ?></a>
+                                <div class="dropdown-divider"></div>
+                                <span id="ClipboardFileList"></span>
+                            </div>
+                        </div>
 
-                                <?php if (\lib\Config::getInstance()->presentation->upload_date_in_list): ?>
-                                <a class="dropdown-item sortby <?= ($currentSorting === \lib\Sort::COLUMN_DATE_UPLOAD ? 'active' : '') ?>" href="#" data-column="<?= \lib\Sort::COLUMN_DATE_UPLOAD ?>"><?= $lang->translate('SORT_DATE') ?></a>
-                                <?php else: ?>
-                                <a class="dropdown-item sortby <?= ($currentSorting === \lib\Sort::COLUMN_DATE_EDIT ? 'active' : '') ?>" href="#" data-column="<?= \lib\Sort::COLUMN_DATE_EDIT ?>"><?= $lang->translate('SORT_DATE') ?></a>
-                                <?php endif; ?>
+                        <div class="btn-group" role="group" aria-label="...">
+                            <button id="CreateDirectory" type="button" class="btn btn-outline-dark"><i class="fas fa-folder-open"></i></button>
+                            <button id="OpenEditor" type="button" class="btn btn-outline-dark"><i class="fas fa-font"></i></button>
+
+                            <div class="btn-group" role="group">
+                                <button id="SortMenu" type="button" class="btn btn-outline-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fas fa-sort-amount-down"></i>
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="SortMenu">
+                                    <a class="dropdown-item sortby <?= ($currentSorting === \lib\Sort::COLUMN_NAME ? 'active' : '') ?>" href="#" data-column="<?= \lib\Sort::COLUMN_NAME ?>"><?= $lang->translate('SORT_NAME') ?></a>
+                                    <a class="dropdown-item sortby <?= ($currentSorting === \lib\Sort::COLUMN_SIZE ? 'active' : '') ?>" href="#" data-column="<?= \lib\Sort::COLUMN_SIZE ?>"><?= $lang->translate('SORT_SIZE') ?></a>
+
+                                    <?php if (\lib\Config::getInstance()->presentation->upload_date_in_list): ?>
+                                    <a class="dropdown-item sortby <?= ($currentSorting === \lib\Sort::COLUMN_DATE_UPLOAD ? 'active' : '') ?>" href="#" data-column="<?= \lib\Sort::COLUMN_DATE_UPLOAD ?>"><?= $lang->translate('SORT_DATE') ?></a>
+                                    <?php else: ?>
+                                    <a class="dropdown-item sortby <?= ($currentSorting === \lib\Sort::COLUMN_DATE_EDIT ? 'active' : '') ?>" href="#" data-column="<?= \lib\Sort::COLUMN_DATE_EDIT ?>"><?= $lang->translate('SORT_DATE') ?></a>
+                                    <?php endif; ?>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -70,13 +85,6 @@ $lang = \lib\Translation::getInstance();
         </div>
     </div>
     <div class="container" id="ListContainer">
-        <div class="alert alert-info" id="Clipboard">
-            <button id="ClipboardDismiss" type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <span id="ClipboardText"><?= $lang->translate('CLIPBOARD') ?></span>
-            <button id="ClipboardPaste" class="btn btn-sm btn-success"><?= $lang->translate('CLIPBOARD_PASTE') ?></button>
-            <button id="ClipboardDelete" class="btn btn-sm btn-danger"><?= $lang->translate('CLIPBOARD_DELETE') ?></button>
-        </div>
-
         <div id="List">
         </div>
     </div>

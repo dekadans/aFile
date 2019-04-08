@@ -558,21 +558,23 @@ class aFile {
      * Displays/hides the clipboard info
      */
     displayClipboard() {
+        let $clipboard = $('#ClipboardButtons');
+
         if (this.clipboard.length) {
-            let infotext = this.info.language.CLIPBOARD;
-            let filelist = '';
+            $clipboard.find('.clipboard-item').remove();
 
             for (let i = 0; i < this.clipboard.length; i++) {
-                filelist += this.clipboard[i].name + "<br>";
+                let $fileitem = $('<span>');
+                $fileitem.addClass('dropdown-item-text clipboard-item');
+                $fileitem.text(this.clipboard[i].name);
+
+                $clipboard.find('#ClipboardFileList').append($fileitem);
             }
 
-            infotext = infotext.replace('%files%', this.clipboard.length);
-
-            $('#ClipboardText').html(infotext).find('strong').attr('title', filelist).tooltip({html : true});
-            $('#Clipboard').show();
+            $('#ClipboardButtons').css('display', 'inline-flex');
         }
         else {
-            $('#Clipboard').hide();
+            $('#ClipboardButtons').hide();
         }
     }
 

@@ -17,7 +17,9 @@ mobilanspassa
 
 refaktorera js
 
-bättre clipboard. rutan följer inte med scroll. bökigt med Ctrl-X
+clipboard  
+* animationer
+* knapp ist utöver ctrl+x
 
 klickbart i breadcrumbs
 

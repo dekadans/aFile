@@ -46,7 +46,6 @@
     "NO_FILES" : "Nothing here. Drag and drop a file to upload it.",
     "NO_FILES_SEARCH" : "No files found. Try searching for something else.",
 
-    "CLIPBOARD" : "There are currently <strong>%files% file(s)</strong> in the clipboard",
     "CLIPBOARD_DELETE" : "Delete",
     "CLIPBOARD_PASTE" : "Paste",
     "FILES" : " file(s)",
