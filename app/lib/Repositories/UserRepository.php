@@ -104,6 +104,11 @@ class UserRepository
         return $result;
     }
 
+    public function deleteExpiredAuthenticationTokens()
+    {
+        $this->pdo->exec('DELETE FROM auth WHERE expires < NOW();');
+    }
+
     /**
      * @param string $selector
      * @return AuthenticationToken
@@ -123,6 +128,20 @@ class UserRepository
                 strtotime($row['expires'])
             );
         }
+    }
+
+    /**
+     * @param string $selector
+     * @param int $newExpiresTimestamp
+     * @return bool
+     */
+    public function refreshAuthenticationToken(string $selector, int $newExpiresTimestamp)
+    {
+        $statement = $this->pdo->prepare('UPDATE auth SET expires = :newExpiresDate WHERE selector = :selector;');
+        $statement->bindValue(':newExpiresDate', date('Y-m-d H:i:s', $newExpiresTimestamp));
+        $statement->bindValue(':selector', $selector);
+
+        return $statement->execute();
     }
 
     /**

@@ -108,7 +108,12 @@ class Authentication
 
                         $password = Crypto::decrypt($authenticationToken->getEncryptedPassword(), $encryptionKey);
 
-                        $this->signInUser($authenticationToken->getUser(), $password);
+                        $result = $this->signInUser($authenticationToken->getUser(), $password);
+
+                        if ($result) {
+                            $newExpiresDate = strtotime('+ 1 MONTH');
+                            $this->userRepository->refreshAuthenticationToken($authenticationToken->getSelector(), $newExpiresDate);
+                        }
                         return;
                     } catch (\Exception $e) {
                         die('Encryption error error for "remind me" cookie. Clear cookies to login.');
@@ -202,6 +207,8 @@ class Authentication
                 session_regenerate_id();
 
                 self::$signedInUser = $user;
+
+                $this->userRepository->deleteExpiredAuthenticationTokens();
 
                 return true;
             }
