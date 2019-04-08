@@ -6,6 +6,7 @@ class aFile {
         this.selected = null;
         this.clipboard = [];
         this.clickLock = false;
+        this.keepAliveInterval = null;
 
         this.keybindings();
         this.check();
@@ -15,6 +16,10 @@ class aFile {
      * Fetches config and session info from the server.
      */
     async check() {
+        if (this.keepAliveInterval) {
+            clearInterval(this.keepAliveInterval);
+        }
+
         this.info = await this.fetch('GET', 'Check');
 
         if (this.info.login) {
@@ -24,6 +29,14 @@ class aFile {
         else {
             document.querySelector('body').innerHTML = await this.fetch('GET', 'Login', 'form');
             this.loginView();
+        }
+    }
+
+    async keepalive() {
+        let result = await this.fetch('GET', 'Keepalive');
+
+        if (result.status !== 'ok') {
+            this.check();
         }
     }
 
@@ -224,6 +237,10 @@ class aFile {
         this.initiateDropZone();
 
         this.initiateClipboard();
+
+        this.keepAliveInterval = setInterval(() => {
+            this.keepalive();
+        }, 900000);
     }
 
     /**
