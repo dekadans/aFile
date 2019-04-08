@@ -1,13 +1,11 @@
 <?php
 require_once '../app/init.php';
 
-// Dev user info: username: tomas password: aabbcc
-
 $request = \GuzzleHttp\Psr7\ServerRequest::fromGlobals();
 $queryParams = $request->getQueryParams();
 
-if (isset($_GET['do']) && !empty($_GET['do'])) {
-    $do = '\\controllers\\' . $_GET['do'];
+if (isset($queryParams['do']) && !empty($queryParams['do'])) {
+    $do = '\\controllers\\' . $queryParams['do'];
 
     if (class_exists($do)) {
         /** @var \controllers\AbstractController $controller */
