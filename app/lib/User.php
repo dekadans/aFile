@@ -53,41 +53,4 @@ class User {
     {
         return $this->hashedPassword;
     }
-
-    /**
-     * Creates a new user, unless the username already exists.
-     * @param string $username
-     * @param string $password
-     *
-     * @return User | boolean
-     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
-     */
-    public static function create($username, $password) {
-        $checkName = Database::getInstance()->getPDO()->prepare('SELECT * FROM users WHERE username = ?');
-        $checkName->execute([$username]);
-
-        if (!$checkName->fetch()) {
-            $pwhash = password_hash($password, PASSWORD_DEFAULT);
-
-            $key = \Defuse\Crypto\KeyProtectedByPassword::createRandomPasswordProtectedKey($password);
-            $keyAscii = $key->saveToAsciiSafeString();
-
-            $addUser = Database::getInstance()->getPDO()->prepare('INSERT INTO users (username, password, encryption_key) VALUES (?,?,?)');
-
-            try {
-                if ($addUser->execute([$username, $pwhash, $keyAscii])) {
-                    return new self(Database::getInstance()->getPDO()->lastInsertId());
-                }
-                else {
-                    return false;
-                }
-            }
-            catch (\PDOException $e) {
-                return false;
-            }
-        }
-        else {
-            return false;
-        }
-    }
 }
