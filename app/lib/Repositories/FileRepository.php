@@ -14,12 +14,23 @@ use lib\User;
 
 class FileRepository
 {
+    const TYPE_FILE = 'FILE';
+    const TYPE_DIRECTORY = 'DIRECTORY';
+
     /** @var \PDO */
     private $pdo;
+
+    /** @var UserRepository */
+    private $userRepository;
+
+    /** @var Encryption */
+    private $encryption;
 
     public function __construct()
     {
         $this->pdo = Database::getInstance()->getPDO();
+        $this->userRepository = new UserRepository(Database::getInstance());
+        $this->encryption = new Encryption();
     }
 
     /**
@@ -39,7 +50,7 @@ class FileRepository
         if ($file) {
             $file->setPlainTextPath($temporaryPath);
             if (!$file->write()) {
-                $file->delete();
+                $this->deleteFile($file->getId());
                 throw new \Exception('Could not write file. Check directory permissions.');
             }
         }
@@ -124,6 +135,95 @@ class FileRepository
         $checkFile = $this->pdo->prepare('SELECT * FROM files WHERE user_id = ? AND name = ? AND parent_id '. (is_null($location) ? 'is' : '=') .' ?');
         $checkFile->execute([$user->getId(), $name, $location]);
         return $checkFile->fetch() ? true : false;
+    }
+
+    /**
+     * @param int $fileId
+     * @return bool
+     */
+    public function deleteFile(int $fileId)
+    {
+        $file = $this->find($fileId);
+
+        $deleteFile = $this->pdo->prepare('DELETE FROM files WHERE id = ?');
+
+        if ($deleteFile->execute([$file->getId()])) {
+            if ($file instanceof File) {
+                @unlink($file->getFilePath());
+            }
+
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function renameFile(int $fileId, string $newName) : bool
+    {
+        $file = $this->find($fileId);
+
+        if (!$file->isset()) {
+            return false;
+        }
+
+        if ($file->getName() === $newName) {
+            return true;
+        }
+
+        if (!$this->exists($file->getUser(), $newName, $file->getLocation())) {
+            return $this->updateFileProperties($file->getId(), ['name' => $newName]);
+        } else {
+            return false;
+        }
+    }
+
+    public function updateFileMimeType(int $fileId, string $mimeType) : bool
+    {
+        return $this->updateFileProperties($fileId, ['mime' => $mimeType]);
+    }
+
+    public function updateFileLocation(int $fileId, string $newLocation = null)
+    {
+        $file = $this->find($fileId);
+
+        if (!$file->isset()) {
+            return false;
+        }
+
+        if ($file->getLocation() === $newLocation) {
+            return true;
+        }
+
+        if (!$this->exists($file->getUser(), $file->getName(), $newLocation)) {
+            return $this->updateFileProperties($file->getId(), ['parent_id' => $newLocation]);
+        } else {
+            return false;
+        }
+    }
+
+    private function updateFileProperties(int $fileId, array $data) : bool
+    {
+        $sets = [];
+        foreach ($data as $column => $value) {
+            if (!is_int($value) && !is_null($value)) {
+                $value = "'" . $value . "'";
+            }
+            else if (is_null($value)) {
+                $value = 'NULL';
+            }
+
+            $sets[] = $column . '=' . $value;
+        }
+        $sets = implode(', ',$sets);
+
+        $sql = 'UPDATE files SET ' . $sets . ' WHERE id = ?';
+        $updateFile = $this->pdo->prepare($sql);
+        try {
+            return $updateFile->execute([$fileId]);
+        }
+        catch (\PDOException $e) {
+            return false;
+        }
     }
 
     /**
@@ -227,14 +327,14 @@ class FileRepository
         if ($fileData) {
             if ($fileData['type'] === 'FILE') {
                 $encryption = new Encryption();
-                $file = new File($fileData, $encryption);
+                $file = new File($this, $this->userRepository, $fileData, $encryption);
             }
             else if ($fileData['type'] === 'DIRECTORY') {
-                $file = new Directory($fileData);
+                $file = new Directory($this, $this->userRepository, $fileData);
             }
         }
         else {
-            $file = new File();
+            $file = new File($this, $this->userRepository);
         }
 
         return $file;

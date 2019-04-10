@@ -26,7 +26,7 @@ class Paste extends AbstractController
             foreach ($fileIds as $id) {
                 $file = $fileRepository->find($id);
                 if ($file->isset() && Acl::checkFileAccess($file)) {
-                    $result[] = $file->move($newLocation);
+                    $result[] = $fileRepository->updateFileLocation($id, $newLocation);
                 }
             }
         }

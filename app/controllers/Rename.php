@@ -34,7 +34,7 @@ class Rename extends AbstractController
             ]);
         }
 
-        if ($file->getName() === $newName || $file->rename($newName)) {
+        if ($this->fileRepository->renameFile($id, $newName)) {
             return $this->outputJSON([
                 'status' => 'ok'
             ]);

@@ -2,6 +2,9 @@
 
 namespace lib;
 
+use lib\Repositories\FileRepository;
+use lib\Repositories\UserRepository;
+
 class File extends AbstractFile {
     protected $tmpPath;
 
@@ -11,9 +14,9 @@ class File extends AbstractFile {
     /** @var Encryption */
     private $encryptionService;
 
-    public function __construct($data = null, Encryption $encryptionService = null)
+    public function __construct(FileRepository $fileRepository, UserRepository $userRepository, $data = null, Encryption $encryptionService = null)
     {
-        parent::__construct($data);
+        parent::__construct($fileRepository, $userRepository, $data);
         $this->encryptionService = $encryptionService;
     }
 
@@ -124,10 +127,10 @@ class File extends AbstractFile {
         $shareData = $shareQuery->fetch();
 
         if ($shareData) {
-            return FileToken::createFromArray($shareData);
+            return FileToken::createFromArray($shareData, $this->fileRepository);
         }
         else {
-            return FileToken::createFromArray(['id' => null, 'file_id' => $this->id]);
+            return FileToken::createFromArray(['id' => null, 'file_id' => $this->id], $this->fileRepository);
         }
     }
 
@@ -158,12 +161,6 @@ class File extends AbstractFile {
     public function openFileInNewTab()
     {
         return in_array($this->getMime(), Config::getInstance()->files->inline_download) || in_array($this->getMime(), Config::getInstance()->files->editor);
-    }
-
-    public function delete() : bool
-    {
-        @unlink($this->getFilePath());
-        return $this->deleteFileFromDatabase();
     }
 
     /**

@@ -47,6 +47,7 @@ class FileToken
 
     /**
      * FileToken constructor.
+     * @param FileRepository $fileRepository
      * @param int $id
      * @param int $fileId
      * @param string $openToken
@@ -56,10 +57,8 @@ class FileToken
      * @param string $encryptionKey
      * @param string $activeTo
      */
-    private function __construct($id, int $fileId, $openToken, $passwordToken, $active, $password, $encryptionKey, $activeTo)
+    private function __construct(FileRepository $fileRepository, $id, int $fileId, $openToken, $passwordToken, $active, $password, $encryptionKey, $activeTo)
     {
-        $fileRepository = new FileRepository();
-
         $this->id = $id;
         $this->file = $fileRepository->find($fileId);
         $this->openToken = $openToken;
@@ -298,9 +297,10 @@ class FileToken
      * @param array $data
      * @return FileToken
      */
-    public static function createFromArray(array $data)
+    public static function createFromArray(array $data, FileRepository $fileRepository)
     {
         return new self(
+            $fileRepository,
             $data['id'],
             $data['file_id'],
             $data['open_token'] ?? null,

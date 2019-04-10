@@ -42,7 +42,7 @@ class Delete extends AbstractController {
         $fileRepository = new FileRepository();
         $file = $fileRepository->find($id);
         if ($file->isset() && Acl::checkFileAccess($file)) {
-            return $file->delete();
+            return $fileRepository->deleteFile($id);
         }
         return true;
     }

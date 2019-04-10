@@ -21,10 +21,13 @@ abstract class AbstractFile {
 
     /** @var FileRepository */
     protected $fileRepository;
+    /** @var UserRepository*/
+    protected $userRepository;
 
-    public function __construct($data = null)
+    public function __construct(FileRepository $fileRepository, UserRepository $userRepository, $data = null)
     {
-        $this->fileRepository = new FileRepository();
+        $this->fileRepository = $fileRepository;
+        $this->userRepository = $userRepository;
 
         if ($data) {
             $this->setData($data);
@@ -34,7 +37,7 @@ abstract class AbstractFile {
         }
     }
 
-    protected function setData($fileData)
+    private function setData($fileData)
     {
         if ($fileData) {
             $this->id = $fileData['id'];
@@ -59,41 +62,8 @@ abstract class AbstractFile {
         return $this->id == '0' ? false : true;
     }
 
-    abstract public function delete() : bool;
     abstract public function read($returnPathToContent = false);
     abstract public function write($pathToContent = null) : bool;
-
-    /**
-    * Deletes the File
-    * @return boolean
-    */
-    protected function deleteFileFromDatabase() : bool
-    {
-        $deleteFile = Database::getInstance()->getPDO()->prepare('DELETE FROM files WHERE id = ?');
-
-        if ($deleteFile->execute([$this->id])) {
-            $this->id = null;
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
-
-    /**
-     * Renames the file, if another file with that user/name/location combo doesn't exist
-     * @param  string $newName
-     * @return boolean
-     */
-    public function rename($newName) : bool
-    {
-        if (!$this->fileRepository->exists($this->getUser(), $newName, $this->location)) {
-            return $this->update(['name' => $newName]);
-        }
-        else {
-            return false;
-        }
-    }
 
     /**
      * @param string $newMime
@@ -101,10 +71,8 @@ abstract class AbstractFile {
      */
     public function setMime($newMime) : bool
     {
-        if ($this->type === 'FILE') {
-            $result = $this->update([
-                'mime' => $newMime
-            ]);
+        if ($this->type === FileRepository::TYPE_FILE) {
+            $result = $this->fileRepository->updateFileMimeType($this->id, $newMime);
         }
         else {
             $result = false;
@@ -115,25 +83,6 @@ abstract class AbstractFile {
         }
 
         return $result;
-    }
-
-    /**
-     * Moves a file to a new location
-     * @param string $newLocation
-     * @return bool
-     */
-    public function move($newLocation) : bool
-    {
-        if ($newLocation === $this->location) {
-            return true;
-        }
-
-        if (!$this->fileRepository->exists($this->getUser(), $this->name, $newLocation)) {
-            return $this->update(['parent_id' => $newLocation]);
-        }
-        else {
-            return false;
-        }
     }
 
     /**
@@ -185,8 +134,7 @@ abstract class AbstractFile {
     public function getUser()
     {
         if (is_null($this->user)) {
-            $repository = new UserRepository(Database::getInstance());
-            $this->user = $repository->getUserById($this->user_id);
+            $this->user = $this->userRepository->getUserById($this->user_id);
         }
 
         return $this->user;
@@ -270,11 +218,6 @@ abstract class AbstractFile {
     public function getEncryption()
     {
         return $this->encryption;
-    }
-
-    public function setEncryption($encryptionType)
-    {
-        $this->update(['encryption' => $encryptionType]);
     }
 
     /**

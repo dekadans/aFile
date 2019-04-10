@@ -71,37 +71,6 @@ class Editor extends AbstractController
         }
     }
 
-    public function actionRead()
-    {
-        if ($this->file->isset() && $this->file->isFile()) {
-            if (preg_match('/^text\//', $this->file->getMime())) {
-                $content = $this->file->read();
-
-                if ($content) {
-                    return $this->outputJSON([
-                        'filename' => $this->file->getName(),
-                        'content' => $content
-                    ]);
-                }
-                else {
-                    return $this->outputJSON([
-                        'error' => 'EDITOR_READ_ERROR'
-                    ]);
-                }
-            }
-            else {
-                return $this->outputJSON([
-                    'error' => Translation::getInstance()->translate('EDITOR_TYPE_ERROR')
-                ]);
-            }
-        }
-        else {
-            return $this->outputJSON([
-                'error' => Translation::getInstance()->translate('NO_FILE')
-            ]);
-        }
-    }
-
     public function actionWrite()
     {
         if ($this->file->isset() && $this->file->isFile()) {

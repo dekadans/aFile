@@ -92,7 +92,7 @@ class Upload extends AbstractController {
                 $oldFile->write($newContentPath);
 
                 @unlink($newContentPath);
-                $newFile->delete();
+                $this->fileRepository->deleteFile($newFile->getId());
 
                 return $this->outputJSON([
                     'status' => 'ok'
