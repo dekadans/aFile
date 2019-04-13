@@ -1,6 +1,6 @@
 <?php
 /**
- * @var \lib\File $file
+ * @var \lib\DataTypes\File $file
  * @var bool $editable
  */
 $lang = \lib\Translation::getInstance();

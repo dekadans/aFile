@@ -4,10 +4,10 @@ namespace lib\Repositories;
 
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use Defuse\Crypto\KeyProtectedByPassword;
-use lib\AuthenticationToken;
+use lib\DataTypes\AuthenticationToken;
 use lib\Config;
 use lib\Database;
-use lib\User;
+use lib\DataTypes\User;
 
 class UserRepository
 {

@@ -8,8 +8,10 @@ use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use Defuse\Crypto\Exception\WrongKeyOrModifiedCiphertextException;
 use Defuse\Crypto\Key;
 use Defuse\Crypto\KeyProtectedByPassword;
+use lib\DataTypes\AuthenticationToken;
 use lib\Repositories\UserRepository;
 use Psr\Http\Message\ServerRequestInterface;
+use lib\DataTypes\User;
 
 class Authentication
 {

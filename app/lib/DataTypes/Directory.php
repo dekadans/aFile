@@ -1,5 +1,5 @@
 <?php
-namespace lib;
+namespace lib\DataTypes;
 
 class Directory extends AbstractFile
 {

@@ -3,14 +3,12 @@
 namespace controllers;
 
 use lib\Acl;
-use lib\File;
+use lib\DataTypes\File;
 use lib\Repositories\EncryptionKeyRepository;
 use lib\Repositories\FileRepository;
 
 class Share extends AbstractController {
-    /**
-     * @var File
-     */
+    /** @var File */
     private $file;
 
     /** @var EncryptionKeyRepository */
@@ -48,9 +46,7 @@ class Share extends AbstractController {
 
     public function actionCreate()
     {
-        $token = $this->encryptionKeyRepository->findAccessTokenForFile($this->file);
-
-        $result = $token->enableOpen();
+        $result = $this->encryptionKeyRepository->createAccessTokenForFile($this->file);
 
         if ($result) {
             return $this->outputJSON([
@@ -66,18 +62,17 @@ class Share extends AbstractController {
 
     public function actionDestroy()
     {
-        $token = $this->encryptionKeyRepository->findAccessTokenForFile($this->file);
-        if ($token->exists()) {
-            if ($token->destroy()) {
-                return $this->outputJSON([
-                    'status' => 'ok'
-                ]);
-            }
-        }
+        $result = $this->encryptionKeyRepository->removeAccessTokenForFile($this->file);
 
-        return $this->outputJSON([
-            'error' => 'COULD_NOT_DESTROY_TOKEN'
-        ]);
+        if ($result) {
+            return $this->outputJSON([
+                'status' => 'ok'
+            ]);
+        } else {
+            return $this->outputJSON([
+                'error' => 'COULD_NOT_DESTROY_TOKEN'
+            ]);
+        }
     }
 
     public function actionPanel()

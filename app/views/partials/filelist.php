@@ -1,6 +1,7 @@
 <ul class="list-group list-group-flush">
 <?php
-/** @var \lib\FileList $fileList */
+/** @var \lib\DataTypes\FileList $fileList */
+
 foreach ($fileList as $file): ?>
     <?php if ($file->isFile()): ?>
 
@@ -17,7 +18,7 @@ foreach ($fileList as $file): ?>
                     <span class="fileName align-middle"><?= $file->getName() ?></span>
                 </div>
                 <div class="col-1 text-right">
-                    <?php if ($file->getEncryption() === \lib\File::ENCRYPTION_TOKEN): ?>
+                    <?php if ($file->getEncryption() === lib\Repositories\EncryptionKeyRepository::ENCRYPTION_TOKEN): ?>
                         <span class="badge badge-secondary badge-pill"><i class="fas fa-share-alt"></i></span>
                     <?php endif; ?>
                 </div>

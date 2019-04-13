@@ -1,9 +1,7 @@
 <?php
 namespace lib\HTTP;
 
-use lib\Config;
-use lib\File;
-use lib\Repositories\FileRepository;
+use lib\DataTypes\File;
 
 class DownloadResponse extends Response
 {

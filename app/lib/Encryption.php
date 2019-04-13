@@ -1,11 +1,8 @@
 <?php
 namespace lib;
 
-/*
-https://paragonie.com/white-paper/2015-secure-php-data-encryption
-https://paragonie.com/blog/2015/05/if-you-re-typing-word-mcrypt-into-your-code-you-re-doing-it-wrong
-https://github.com/defuse/php-encryption
-*/
+use lib\DataTypes\File;
+
 class Encryption
 {
     private $key;
@@ -34,7 +31,6 @@ class Encryption
 
     public function decryptFile(File $file) {
         $tempFile = tempnam(sys_get_temp_dir(), 'afile');
-        $file->setPlainTextPath($tempFile);
 
         if ($file->isset()) {
             try {

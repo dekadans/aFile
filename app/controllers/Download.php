@@ -5,7 +5,7 @@ namespace controllers;
 use lib\Acl;
 use lib\Authentication;
 use lib\Config;
-use lib\File;
+use lib\DataTypes\File;
 use lib\HTTP\DownloadResponse;
 use lib\HTTP\HTMLResponse;
 use lib\HTTP\Response;
@@ -62,8 +62,7 @@ class Download extends AbstractController {
                 $openInline = in_array($this->file->getMime(), Config::getInstance()->files->inline_download);
                 return (new DownloadResponse($this->file, $openInline))->psr7();
             }
-        }
-        else {
+        } else {
             return (new Response('Could not download file', 500))->psr7();
         }
     }

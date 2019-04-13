@@ -5,7 +5,7 @@ namespace controllers;
 use lib\Acl;
 use lib\Authentication;
 use lib\Config;
-use lib\File;
+use lib\DataTypes\File;
 use lib\Repositories\FileRepository;
 use lib\Translation;
 use Psr\Http\Message\UploadedFileInterface;

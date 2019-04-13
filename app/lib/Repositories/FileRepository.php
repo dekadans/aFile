@@ -1,17 +1,17 @@
 <?php
 namespace lib\Repositories;
 
-use lib\AbstractFile;
+use lib\DataTypes\AbstractFile;
 use lib\Config;
 use lib\Database;
-use lib\Directory;
+use lib\DataTypes\Directory;
 use lib\Encryption;
-use lib\File;
-use lib\FileContent;
-use lib\FileList;
+use lib\DataTypes\File;
+use lib\DataTypes\FileContent;
+use lib\DataTypes\FileList;
 use lib\SearchEngine;
 use lib\Sort;
-use lib\User;
+use lib\DataTypes\User;
 
 class FileRepository
 {
@@ -44,12 +44,12 @@ class FileRepository
      * @param int $location
      * @param string $mime
      * @param string $temporaryPath
-     * @return File
-     * @throws \Exception
+     * @return \lib\DataTypes\File
+     * @throws CouldNotLocateEncryptionKeyException
      */
     public function createFile(User $user, string $name, $location, string $mime, string $temporaryPath)
     {
-        /** @var File $file */
+        /** @var \lib\DataTypes\File $file */
         $file = $this->create($user, $name, $location, $mime, 'FILE', 'PERSONAL');
 
         if ($file) {
@@ -266,6 +266,27 @@ class FileRepository
         }
     }
 
+    public function changeEncryptionKeyForFile(File $file, string $newEncryptionKey, string $encryptionType) : bool
+    {
+        $currentEncryptionKey = $this->encryptionKeyRepository->getEncryptionKeyForFile($file);
+        $this->encryption->setKey($currentEncryptionKey);
+
+        $pathToPlaintext = $this->encryption->decryptFile($file);
+
+        if ($pathToPlaintext) {
+            $this->encryption->setKey($newEncryptionKey);
+            if ($this->encryption->encryptFile($file, $pathToPlaintext)) {
+                @unlink($pathToPlaintext);
+                $this->updateFileProperties($file->getId(), [
+                    'encryption' => $encryptionType
+                ]);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     /**
      * @param integer $id
      * @return AbstractFile
@@ -365,11 +386,10 @@ class FileRepository
     private function createFileObject($fileData)
     {
         if ($fileData) {
-            if ($fileData['type'] === 'FILE') {
-                $encryption = new Encryption();
-                $file = new File($this, $this->userRepository, $fileData, $encryption);
+            if ($fileData['type'] === self::TYPE_FILE) {
+                $file = new File($this, $this->userRepository, $fileData);
             }
-            else if ($fileData['type'] === 'DIRECTORY') {
+            else if ($fileData['type'] === self::TYPE_DIRECTORY) {
                 $file = new Directory($this, $this->userRepository, $fileData);
             }
         }

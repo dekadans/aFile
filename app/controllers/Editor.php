@@ -4,7 +4,7 @@ namespace controllers;
 
 use lib\Acl;
 use lib\Authentication;
-use lib\File;
+use lib\DataTypes\File;
 use lib\Repositories\FileRepository;
 use lib\Translation;
 

@@ -1,9 +1,11 @@
 <?php
 
-namespace lib;
+namespace lib\DataTypes;
 
+use lib\Config;
 use lib\Repositories\FileRepository;
 use lib\Repositories\UserRepository;
+use lib\Translation;
 
 abstract class AbstractFile {
     protected $id;
@@ -80,37 +82,6 @@ abstract class AbstractFile {
         }
 
         return $result;
-    }
-
-    /**
-     * Updates columns in files database
-     * @TODO Move this to repository
-     * @param  array $data
-     * @return boolean
-     */
-    protected function update($data) : bool
-    {
-        $sets = [];
-        foreach ($data as $column => $value) {
-            if (!is_int($value) && !is_null($value)) {
-                $value = "'" . $value . "'";
-            }
-            else if (is_null($value)) {
-                $value = 'NULL';
-            }
-
-            $sets[] = $column . '=' . $value;
-        }
-        $sets = implode(', ',$sets);
-
-        $sql = 'UPDATE files SET ' . $sets . ' WHERE id = ?';
-        $updateFile = Database::getInstance()->getPDO()->prepare($sql);
-        try {
-            return $updateFile->execute([$this->id]);
-        }
-        catch (\PDOException $e) {
-            return false;
-        }
     }
 
     /**
@@ -267,11 +238,11 @@ abstract class AbstractFile {
 
     public function isFile() : bool
     {
-        return ($this->type === 'FILE');
+        return ($this->type === FileRepository::TYPE_FILE);
     }
 
     public function isDirectory() : bool
     {
-        return ($this->type === 'DIRECTORY');
+        return ($this->type === FileRepository::TYPE_DIRECTORY);
     }
 }

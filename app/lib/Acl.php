@@ -3,6 +3,9 @@
 namespace lib;
 
 use \controllers\AbstractController;
+use lib\DataTypes\AbstractFile;
+use lib\DataTypes\File;
+use lib\DataTypes\FileToken;
 use lib\Repositories\EncryptionKeyRepository;
 use lib\Repositories\FileRepository;
 
@@ -52,7 +55,7 @@ class Acl {
             $encryptionKeyRepository = new EncryptionKeyRepository($fileRepository);
             $fileToken = $encryptionKeyRepository->findAccessTokenForFile($file);
 
-            if ($fileToken->exists() && in_array($fileToken->getActiveState(), [FileToken::STATE_OPEN, FileToken::STATE_BOTH]) && $fileToken->getOpenToken() === $linkToken) {
+            if ($fileToken && $fileToken->getActiveState() === FileToken::STATE_OPEN && $fileToken->getToken() === $linkToken) {
                 return true;
             }
         }
@@ -66,7 +69,6 @@ class Acl {
      */
     public static function checkFileAccess(AbstractFile $file) : bool
     {
-        /** @var User $user */
         $user = Authentication::getUser();
 
         if ($user && $user->getId() === $file->getUser()->getId()) {

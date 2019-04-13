@@ -1,6 +1,6 @@
 <?php
 
-namespace lib;
+namespace lib\DataTypes;
 
 class FileList implements \Iterator, \Countable {
 
@@ -14,6 +14,8 @@ class FileList implements \Iterator, \Countable {
     private $isSearchResult;
 
     private $location = null;
+
+    /** @var User */
     private $user;
 
     /**

@@ -1,13 +1,13 @@
 <?php
-/** @var \lib\FileToken $token */
-/** @var \lib\File $file */
+/** @var \lib\DataTypes\FileToken $token */
+/** @var \lib\DataTypes\File $file */
 /** @var array $L */
 $lang = \lib\Translation::getInstance();
 ?>
 
-<?php if ($token->exists()):
+<?php if ($token):
 $skipExtension = \lib\Config::getInstance()->files->skip_dl_php_extension;
-$link = AFILE_LOCATION . 'dl'. ($skipExtension ? '' : '.php') .'/' . $file->getStringId() . '/' . $token->getOpenToken();
+$link = AFILE_LOCATION . 'dl'. ($skipExtension ? '' : '.php') .'/' . $file->getStringId() . '/' . $token->getToken();
 ?>
     <input type="text" onClick="this.select();" class="form-control" value="<?= $link ?>" spellcheck="false">
     <hr>
