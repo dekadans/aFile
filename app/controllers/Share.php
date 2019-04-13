@@ -4,6 +4,7 @@ namespace controllers;
 
 use lib\Acl;
 use lib\File;
+use lib\Repositories\EncryptionKeyRepository;
 use lib\Repositories\FileRepository;
 
 class Share extends AbstractController {
@@ -11,6 +12,9 @@ class Share extends AbstractController {
      * @var File
      */
     private $file;
+
+    /** @var EncryptionKeyRepository */
+    private $encryptionKeyRepository;
 
     public function getAccessLevel()
     {
@@ -20,6 +24,8 @@ class Share extends AbstractController {
     public function init()
     {
         $fileRepository = new FileRepository();
+        $this->encryptionKeyRepository = new EncryptionKeyRepository($fileRepository);
+
         $fileId = $this->param('id');
         $this->file = $fileRepository->find($fileId);
 
@@ -42,16 +48,9 @@ class Share extends AbstractController {
 
     public function actionCreate()
     {
-        $password = $this->param('password');
-        $validUntil = $this->param('valid');
-        $token = $this->file->getToken();
+        $token = $this->encryptionKeyRepository->findAccessTokenForFile($this->file);
 
-        if (isset($password)) {
-            $result = $token->enablePassword($password, $validUntil);
-        }
-        else {
-            $result = $token->enableOpen($validUntil);
-        }
+        $result = $token->enableOpen();
 
         if ($result) {
             return $this->outputJSON([
@@ -67,7 +66,7 @@ class Share extends AbstractController {
 
     public function actionDestroy()
     {
-        $token = $this->file->getToken();
+        $token = $this->encryptionKeyRepository->findAccessTokenForFile($this->file);
         if ($token->exists()) {
             if ($token->destroy()) {
                 return $this->outputJSON([
@@ -83,7 +82,7 @@ class Share extends AbstractController {
 
     public function actionPanel()
     {
-        $token = $this->file->getToken();
+        $token = $this->encryptionKeyRepository->findAccessTokenForFile($this->file);
         return $this->parseView('partials/sharepanel', ['token' => $token, 'file' => $this->file]);
     }
 }

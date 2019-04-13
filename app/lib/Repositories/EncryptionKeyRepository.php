@@ -41,7 +41,7 @@ class EncryptionKeyRepository
         }
     }
 
-    private function findAccessTokenForFile(File $file) : FileToken
+    public function findAccessTokenForFile(File $file) : FileToken
     {
         $shareQuery = Database::getInstance()->getPDO()->prepare('SELECT * FROM share WHERE file_id = ?');
         $shareQuery->execute([$file->getId()]);

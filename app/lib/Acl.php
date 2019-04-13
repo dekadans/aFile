@@ -3,6 +3,8 @@
 namespace lib;
 
 use \controllers\AbstractController;
+use lib\Repositories\EncryptionKeyRepository;
+use lib\Repositories\FileRepository;
 
 class Acl {
 
@@ -37,7 +39,7 @@ class Acl {
     /**
      * Checks access to a requested download
      * @param File $file
-     * @param string $token
+     * @param string $linkToken
      * @return boolean
      */
     public static function checkDownloadAccess(File $file, string $linkToken = '') : bool
@@ -46,7 +48,9 @@ class Acl {
             return true;
         }
         else {
-            $fileToken = $file->getToken();
+            $fileRepository = new FileRepository();
+            $encryptionKeyRepository = new EncryptionKeyRepository($fileRepository);
+            $fileToken = $encryptionKeyRepository->findAccessTokenForFile($file);
 
             if ($fileToken->exists() && in_array($fileToken->getActiveState(), [FileToken::STATE_OPEN, FileToken::STATE_BOTH]) && $fileToken->getOpenToken() === $linkToken) {
                 return true;
