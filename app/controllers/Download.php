@@ -14,6 +14,8 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 class Download extends AbstractController {
+    /** @var FileRepository  */
+    private $fileRepository;
     /** @var File */
     protected $file;
     /** @var string */
@@ -30,8 +32,8 @@ class Download extends AbstractController {
         $pathInfo = substr($pathInfo, 1) . '/';
         list($id, $token) = explode('/', $pathInfo);
 
-        $fileRepository = new FileRepository();
-        $this->file = $fileRepository->findByUniqueString($id);
+        $this->fileRepository = new FileRepository();
+        $this->file = $this->fileRepository->findByUniqueString($id);
         $this->id = $id;
         $this->token = $token ?? '';
     }

@@ -4,7 +4,8 @@
  * @var bool $editable
  */
 $lang = \lib\Translation::getInstance();
-$text = $file->read();
+
+$text = $file->getContent()->getAsText();
 
 $preview = false;
 

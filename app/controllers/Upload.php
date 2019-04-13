@@ -5,6 +5,7 @@ namespace controllers;
 use lib\Acl;
 use lib\Authentication;
 use lib\Config;
+use lib\File;
 use lib\Repositories\FileRepository;
 use lib\Translation;
 use Psr\Http\Message\UploadedFileInterface;
@@ -83,15 +84,18 @@ class Upload extends AbstractController {
 
     public function actionConfirmoverwrite()
     {
+        /** @var File $oldFile */
         $oldFile = $this->fileRepository->find($this->param('oldId'));
+        /** @var File $newFile */
         $newFile = $this->fileRepository->find($this->param('newId'));
 
         if (Acl::checkFileAccess($oldFile) && Acl::checkFileAccess($newFile)) {
             try {
-                $newContentPath = $newFile->read(true);
-                $this->fileRepository->writeFileContent($oldFile, $newContentPath);
+                $newContent = $newFile->getContent();
 
-                @unlink($newContentPath);
+                $this->fileRepository->writeFileContent($oldFile, $newContent->getPath());
+
+                unset($newContent);
                 $this->fileRepository->deleteFile($newFile->getId());
 
                 return $this->outputJSON([

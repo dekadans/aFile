@@ -62,8 +62,6 @@ abstract class AbstractFile {
         return $this->id == '0' ? false : true;
     }
 
-    abstract public function read($returnPathToContent = false);
-
     /**
      * @param string $newMime
      * @return bool

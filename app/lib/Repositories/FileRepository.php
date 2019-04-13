@@ -7,6 +7,7 @@ use lib\Database;
 use lib\Directory;
 use lib\Encryption;
 use lib\File;
+use lib\FileContent;
 use lib\FileList;
 use lib\SearchEngine;
 use lib\Sort;
@@ -249,6 +250,20 @@ class FileRepository
         }
 
         return (boolean) $result;
+    }
+
+    public function readFileContent(File $file)
+    {
+        $key = $this->encryptionKeyRepository->getEncryptionKeyForFile($file);
+        $this->encryption->setKey($key);
+
+        $path = $this->encryption->decryptFile($file);
+
+        if ($path) {
+            return new FileContent($path);
+        } else {
+            return false;
+        }
     }
 
     /**

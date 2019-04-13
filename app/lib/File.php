@@ -20,51 +20,9 @@ class File extends AbstractFile {
         $this->encryptionService = $encryptionService;
     }
 
-    /**
-     * FILE OPERATIONS
-     */
-
-    /**
-     * Reads and returns the contents of the File
-     * @param bool $returnPathToContent
-     * @return string|bool
-     */
-    public function read($returnPathToContent = false)
+    public function getContent()
     {
-        $encryptionKey = $this->getEncryptionKey();
-
-        if ($encryptionKey) {
-            $this->encryptionService->setKey($encryptionKey);
-
-            $tempFile = $this->encryptionService->decryptFile($this);
-
-            if ($tempFile) {
-                if ($returnPathToContent) {
-                    return $tempFile;
-                }
-                else {
-                    $content = file_get_contents($tempFile);
-                    @unlink($tempFile);
-                    return $content;
-                }
-            }
-            else {
-                return false;
-            }
-        }
-        else {
-            return false;
-        }
-    }
-
-    /**
-     * More or less an alias for read(true)
-     * Decrypts and sets the temporary path
-     * @return bool
-     */
-    public function decrypt()
-    {
-        return (bool) $this->read(true);
+        return $this->fileRepository->readFileContent($this);
     }
 
     /*

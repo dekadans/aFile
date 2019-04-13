@@ -3,6 +3,7 @@ namespace lib\HTTP;
 
 use lib\Config;
 use lib\File;
+use lib\Repositories\FileRepository;
 
 class DownloadResponse extends Response
 {
@@ -26,8 +27,9 @@ class DownloadResponse extends Response
         $this->addHeader('Content-Disposition', $this->disposition . '; filename="'. $this->file->getName() .'"');
         $this->disableCache();
 
-        $this->file->decrypt();
-        $fileResource = fopen($this->file->getPlainTextPath(), 'r');
+        $fileContent = $this->file->getContent();
+
+        $fileResource = fopen($fileContent->getPath(), 'r');
         $this->body = $fileResource;
     }
 
