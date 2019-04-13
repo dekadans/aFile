@@ -89,7 +89,7 @@ class Upload extends AbstractController {
         if (Acl::checkFileAccess($oldFile) && Acl::checkFileAccess($newFile)) {
             try {
                 $newContentPath = $newFile->read(true);
-                $oldFile->write($newContentPath);
+                $this->fileRepository->writeFileContent($oldFile, $newContentPath);
 
                 @unlink($newContentPath);
                 $this->fileRepository->deleteFile($newFile->getId());

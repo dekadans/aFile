@@ -17,10 +17,10 @@ class Encryption
         }
     }
 
-    public function encryptFile(File $file) {
+    public function encryptFile(File $file, string $pathToPlainText) {
         if ($file->isset()) {
             try {
-                \Defuse\Crypto\File::encryptFile($file->getPlainTextPath(), $file->getFilePath(), $this->key);
+                \Defuse\Crypto\File::encryptFile($pathToPlainText, $file->getFilePath(), $this->key);
                 return true;
             }
             catch (\Defuse\Crypto\Exception\IOException $ex) {

@@ -63,7 +63,6 @@ abstract class AbstractFile {
     }
 
     abstract public function read($returnPathToContent = false);
-    abstract public function write($pathToContent = null) : bool;
 
     /**
      * @param string $newMime

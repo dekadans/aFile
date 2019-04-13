@@ -78,7 +78,7 @@ class Editor extends AbstractController
             $tempFileWritten = file_put_contents($tempFile, $this->content);
 
             if ($tempFileWritten !== false) {
-                $fileWritten = $this->file->write($tempFile);
+                $fileWritten = $this->fileRepository->writeFileContent($this->file, $tempFile);
                 @unlink($tempFile);
 
                 if ($fileWritten) {

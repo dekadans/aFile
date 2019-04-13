@@ -67,37 +67,6 @@ class File extends AbstractFile {
         return (bool) $this->read(true);
     }
 
-    /**
-     * Writes data to the file
-     * @param  string $pathToContent
-     * @return boolean
-     */
-    public function write($pathToContent = null) : bool
-    {
-        if (!is_null($pathToContent)) {
-            $this->tmpPath = $pathToContent;
-        }
-
-        $encryptionKey = $this->getEncryptionKey();
-
-        if (empty($encryptionKey)) {
-            return false;
-        }
-
-        $this->encryptionService->setKey($encryptionKey);
-
-        $result = $this->encryptionService->encryptFile($this);
-
-        if ($result && is_file($this->getFilePath())) {
-            $this->update([
-                'size' => filesize($this->getFilePath()),
-                'last_edit' => date('Y-m-d H:i:s')
-            ]);
-        }
-
-        return (boolean) $result;
-    }
-
     /*
     Encryption and sharing
      */
@@ -147,7 +116,7 @@ class File extends AbstractFile {
         if ($unencryptedFile) {
             $this->encryptionService->setKey($encryptionKey);
 
-            if ($this->encryptionService->encryptFile($this)) {
+            if ($this->encryptionService->encryptFile($this, $this->getPlainTextPath())) {
                 @unlink($this->getPlainTextPath());
                 $this->update([
                     'encryption' => $type

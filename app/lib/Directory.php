@@ -7,9 +7,4 @@ class Directory extends AbstractFile
     {
         return '';
     }
-
-    public function write($pathToContent = null) : bool
-    {
-        return true;
-    }
 }

@@ -26,11 +26,15 @@ class FileRepository
     /** @var Encryption */
     private $encryption;
 
+    /** @var EncryptionKeyRepository */
+    private $encryptionKeyRepository;
+
     public function __construct()
     {
         $this->pdo = Database::getInstance()->getPDO();
         $this->userRepository = new UserRepository(Database::getInstance());
         $this->encryption = new Encryption();
+        $this->encryptionKeyRepository = new EncryptionKeyRepository($this);
     }
 
     /**
@@ -48,8 +52,7 @@ class FileRepository
         $file = $this->create($user, $name, $location, $mime, 'FILE', 'PERSONAL');
 
         if ($file) {
-            $file->setPlainTextPath($temporaryPath);
-            if (!$file->write()) {
+            if (!$this->writeFileContent($file, $temporaryPath)) {
                 $this->deleteFile($file->getId());
                 throw new \Exception('Could not write file. Check directory permissions.');
             }
@@ -224,6 +227,28 @@ class FileRepository
         catch (\PDOException $e) {
             return false;
         }
+    }
+
+    /**
+     * @param File $file
+     * @param string $pathToContent
+     * @return bool
+     * @throws CouldNotLocateEncryptionKeyException
+     */
+    public function writeFileContent(File $file, string $pathToContent)
+    {
+        $key = $this->encryptionKeyRepository->getEncryptionKeyForFile($file);
+        $this->encryption->setKey($key);
+        $result = $this->encryption->encryptFile($file, $pathToContent);
+
+        if ($result && is_file($file->getFilePath())) {
+            $this->updateFileProperties($file->getId(), [
+                'size' => filesize($file->getFilePath()),
+                'last_edit' => date('Y-m-d H:i:s')
+            ]);
+        }
+
+        return (boolean) $result;
     }
 
     /**
