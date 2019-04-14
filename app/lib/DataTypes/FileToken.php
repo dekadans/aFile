@@ -4,6 +4,7 @@ namespace lib\DataTypes;
 class FileToken
 {
     const STATE_OPEN = 'OPEN';
+    const STATE_RESTRICTED = 'RESTRICTED';
     const STATE_NONE = 'NONE';
 
     /** @var int */
@@ -15,6 +16,8 @@ class FileToken
     /** @var string */
     private $active;
     /** @var string */
+    private $password;
+    /** @var string */
     private $encryptionKey;
 
     /**
@@ -23,14 +26,16 @@ class FileToken
      * @param int $fileId
      * @param string $openToken
      * @param string $active
+     * @param $password
      * @param string $encryptionKey
      */
-    private function __construct($id, int $fileId, $openToken, $active, $encryptionKey)
+    private function __construct($id, int $fileId, $openToken, $active, $password, $encryptionKey)
     {
         $this->id = $id;
         $this->fileId = $fileId;
         $this->token = $openToken;
         $this->active = $active;
+        $this->password = $password;
         $this->encryptionKey = $encryptionKey;
     }
 
@@ -61,6 +66,14 @@ class FileToken
     /**
      * @return string
      */
+    public function getPasswordHash()
+    {
+        return $this->password;
+    }
+
+    /**
+     * @return string
+     */
     public function getEncryptionKey()
     {
         return $this->encryptionKey;
@@ -77,6 +90,7 @@ class FileToken
             $data['file_id'],
             $data['open_token'] ?? null,
             $data['active'] ?? null,
+            $data['password'] ?? null,
             $data['encryption_key'] ?? null
         );
     }

@@ -11,6 +11,10 @@ use lib\Repositories\FileRepository;
 
 class Acl {
 
+    const DOWNLOAD_ACCESS_APPROVED = 1;
+    const DOWNLOAD_ACCESS_PASSWORD = 2;
+    const DOWNLOAD_ACCESS_DENIED = 3;
+
     /**
      * @param  AbstractController $controller
      * @return boolean
@@ -42,25 +46,34 @@ class Acl {
     /**
      * Checks access to a requested download
      * @param File $file
-     * @param string $linkToken
-     * @return boolean
+     * @param string $urlToken
+     * @param string $password
+     * @return int
      */
-    public static function checkDownloadAccess(File $file, string $linkToken = '') : bool
+    public static function checkDownloadAccess(File $file, string $urlToken = '', string $password = '') : int
     {
         if (Authentication::isSignedIn() && Authentication::getUser()->getId() == $file->getUser()->getId()) {
-            return true;
+            return self::DOWNLOAD_ACCESS_APPROVED;
         }
         else {
             $fileRepository = new FileRepository();
             $encryptionKeyRepository = new EncryptionKeyRepository($fileRepository);
             $fileToken = $encryptionKeyRepository->findAccessTokenForFile($file);
 
-            if ($fileToken && $fileToken->getActiveState() === FileToken::STATE_OPEN && $fileToken->getToken() === $linkToken) {
-                return true;
+            if ($fileToken && $fileToken->getToken() === $urlToken) {
+                if ($fileToken->getActiveState() === FileToken::STATE_OPEN) {
+                    return self::DOWNLOAD_ACCESS_APPROVED;
+                } else if ($fileToken->getActiveState() === FileToken::STATE_RESTRICTED && !empty($fileToken->getPasswordHash())) {
+                    if (!empty($password) && password_verify($password, $fileToken->getPasswordHash())) {
+                        return self::DOWNLOAD_ACCESS_APPROVED;
+                    } else {
+                        return self::DOWNLOAD_ACCESS_PASSWORD;
+                    }
+                }
             }
         }
 
-        return false;
+        return self::DOWNLOAD_ACCESS_DENIED;
     }
 
     /**

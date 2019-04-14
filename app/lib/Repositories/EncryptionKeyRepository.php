@@ -28,6 +28,11 @@ class EncryptionKeyRepository
         $this->user = Authentication::getUser();
     }
 
+    /**
+     * @param File $file
+     * @return string
+     * @throws CouldNotLocateEncryptionKeyException
+     */
     public function getEncryptionKeyForFile(File $file) : string
     {
         if ($file->getEncryption() === self::ENCRYPTION_PERSONAL && isset($this->user) && $file->getUser()->getId() === $this->user->getId()) {
@@ -44,6 +49,10 @@ class EncryptionKeyRepository
         }
     }
 
+    /**
+     * @param File $file
+     * @return FileToken|null
+     */
     public function findAccessTokenForFile(File $file)
     {
         $shareQuery = $this->pdo->prepare('SELECT * FROM share WHERE file_id = ?');
@@ -58,6 +67,12 @@ class EncryptionKeyRepository
         }
     }
 
+    /**
+     * @param File $file
+     * @return bool|FileToken|null
+     * @throws CouldNotLocateEncryptionKeyException
+     * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
+     */
     public function createAccessTokenForFile(File $file)
     {
         $token = $this->findAccessTokenForFile($file);
@@ -89,6 +104,11 @@ class EncryptionKeyRepository
         }
     }
 
+    /**
+     * @param File $file
+     * @return bool
+     * @throws CouldNotLocateEncryptionKeyException
+     */
     public function removeAccessTokenForFile(File $file)
     {
         $token = $this->findAccessTokenForFile($file);
@@ -110,13 +130,17 @@ class EncryptionKeyRepository
         }
     }
 
+    /**
+     * @param File $file
+     * @return bool|string
+     */
     public function flipTokenActiveState(File $file)
     {
         $token = $this->findAccessTokenForFile($file);
 
         if ($token) {
             if ($token->getActiveState() === FileToken::STATE_OPEN) {
-                $newState = FileToken::STATE_NONE;
+                $newState = FileToken::STATE_RESTRICTED;
             } else {
                 $newState = FileToken::STATE_OPEN;
             }
@@ -133,6 +157,53 @@ class EncryptionKeyRepository
         return false;
     }
 
+    /**
+     * @param File $file
+     * @param string $password
+     * @return bool
+     */
+    public function setTokenPasswordForFile(File $file, string $password)
+    {
+        $token = $this->findAccessTokenForFile($file);
+        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+
+        if ($token && $token->getActiveState() === FileToken::STATE_RESTRICTED) {
+            $updateStatement = $this->pdo->prepare("UPDATE share SET password = :password WHERE id = :tokenId");
+            $updateStatement->bindValue(':password', $hashedPassword);
+            $updateStatement->bindValue(':tokenId', $token->getId());
+
+            if ($updateStatement->execute()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @param File $file
+     * @return bool
+     */
+    public function clearTokenPasswordForFile(File $file)
+    {
+        $token = $this->findAccessTokenForFile($file);
+
+        if ($token && !empty($token->getPasswordHash())) {
+            $updateStatement = $this->pdo->prepare("UPDATE share SET password = NULL WHERE id = :tokenId");
+            $updateStatement->bindValue(':tokenId', $token->getId());
+
+            if ($updateStatement->execute()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @return string
+     * @throws \Exception
+     */
     private function generateToken()
     {
         return sha1(random_bytes(32));

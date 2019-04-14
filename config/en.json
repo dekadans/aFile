@@ -20,7 +20,11 @@
     "SHARE" : "Share",
     "SHARE_CREATE" : "Create a shareable link",
     "SHARE_DESTROY" : "Destroy link",
-    "SHARE_DISABLE" : "Disable link access temporarily",
+    "SHARE_DISABLE" : "Restrict link access",
+    "SHARE_PASSWORD" : "Select a password",
+    "SHARE_PASSWORD_SAVED" : "A password has been saved",
+    "SHARE_PASSWORD_SAVE" : "Save",
+    "SHARE_PASSWORD_CLEAR" : "Clear",
     "EDITOR" : "Editor",
     "EDITOR_NAME" : "Create a new text file",
     "EDITOR_CLOSE" : "Close",
@@ -53,6 +57,9 @@
 
     "TODAY" : "Today",
 
+    "DOWNLOAD_PASSWORD_TITLE" : "Download file",
+    "DOWNLOAD_PASSWORD_TEXT" : "Enter password to download the file",
+    "DOWNLOAD_PASSWORD_BUTTON" : "Download file",
     "403_FORBIDDEN" : "Forbidden",
     "403_FORBIDDEN_TEXT" : "You don't have access to the requested file.",
     "404_NOT_FOUND" : "Not Found",

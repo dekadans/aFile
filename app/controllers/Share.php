@@ -91,6 +91,27 @@ class Share extends AbstractController {
         }
     }
 
+    public function actionPassword()
+    {
+        $password = $this->param('password');
+
+        if (is_null($password)) {
+            $result = $this->encryptionKeyRepository->clearTokenPasswordForFile($this->file);
+        } else {
+            $result = $this->encryptionKeyRepository->setTokenPasswordForFile($this->file, $password);
+        }
+
+        if ($result) {
+            return $this->outputJSON([
+                'status' => 'ok'
+            ]);
+        } else {
+            return $this->outputJSON([
+                'error' => Translation::getInstance()->translate('FAILED')
+            ]);
+        }
+    }
+
     public function actionPanel()
     {
         $token = $this->encryptionKeyRepository->findAccessTokenForFile($this->file);

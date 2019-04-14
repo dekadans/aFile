@@ -377,40 +377,7 @@ class aFile {
                     $('#Modal').modal('hide');
                 });
 
-                let fetchData = {
-                    id : this.selected.data('id')
-                };
-
-                let loadShareDialog = () => {
-                    this.fetch('GET', 'Share', 'Panel', fetchData).then(html => {
-                        $('#ModalBody').html(html);
-                        $('#Modal').modal('show');
-
-                        $('#CreateToken').click(e => {
-                            this.fetch('GET', 'Share', 'Create', fetchData).then(result => {
-                                loadShareDialog();
-                                this.list();
-                            });
-                        });
-
-                        $('#DestroyToken').click(e => {
-                            this.fetch('GET', 'Share', 'Destroy', fetchData).then(result => {
-                                loadShareDialog();
-                                this.list();
-                            });
-                        });
-
-                        $('#TokenActive').change(e => {
-                            this.fetch('GET', 'Share', 'Active', fetchData).then(result => {
-                                if (result.error) {
-                                    alert(result.error);
-                                }
-                            });
-                        });
-                    });
-                };
-
-                loadShareDialog();
+                this.loadShareDialog(this.selected.data('id'));
             }
         });
 
@@ -661,4 +628,5 @@ class aFile {
     }
 }
 
+Object.assign(aFile.prototype, aFileShare);
 Object.assign(aFile.prototype, aFileAjax);

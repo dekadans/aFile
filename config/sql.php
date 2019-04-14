@@ -47,11 +47,9 @@ CONSTRAINT `FK_files_users` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON
 `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 `file_id` int(10) unsigned NOT NULL DEFAULT '0',
 `open_token` varchar(50) DEFAULT NULL,
-`password_token` varchar(50) DEFAULT NULL,
-`active` enum('OPEN','PASSWORD','BOTH','NONE') NOT NULL DEFAULT 'NONE',
+`active` enum('OPEN','RESTRICTED','NONE') NOT NULL DEFAULT 'NONE',
 `password` varchar(255) DEFAULT NULL,
 `encryption_key` varchar(512) DEFAULT NULL,
-`active_to` date DEFAULT NULL,
 PRIMARY KEY (`id`),
 UNIQUE KEY `file_id` (`file_id`),
 CONSTRAINT `FK_links_files` FOREIGN KEY (`file_id`) REFERENCES `files` (`id`) ON DELETE CASCADE ON UPDATE CASCADE

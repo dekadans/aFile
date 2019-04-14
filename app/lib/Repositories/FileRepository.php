@@ -73,6 +73,15 @@ class FileRepository
         return $this->create($user, $name, $location, '', 'DIRECTORY', 'NONE');
     }
 
+    /**
+     * @param User $user
+     * @param $name
+     * @param $location
+     * @param $mime
+     * @param $type
+     * @param $encryption
+     * @return bool|AbstractFile
+     */
     private function create(User $user, $name, $location, $mime, $type, $encryption)
     {
         if (!$this->exists($user, $name, $location)) {
@@ -106,6 +115,9 @@ class FileRepository
         }
     }
 
+    /**
+     * @return string
+     */
     private function getUniqueStringId() : string
     {
         $fileQuery = $this->pdo->prepare('SELECT id FROM files WHERE string_id = ?');
@@ -162,6 +174,11 @@ class FileRepository
         }
     }
 
+    /**
+     * @param int $fileId
+     * @param string $newName
+     * @return bool
+     */
     public function renameFile(int $fileId, string $newName) : bool
     {
         $file = $this->find($fileId);
@@ -181,11 +198,21 @@ class FileRepository
         }
     }
 
+    /**
+     * @param int $fileId
+     * @param string $mimeType
+     * @return bool
+     */
     public function updateFileMimeType(int $fileId, string $mimeType) : bool
     {
         return $this->updateFileProperties($fileId, ['mime' => $mimeType]);
     }
 
+    /**
+     * @param int $fileId
+     * @param string|null $newLocation
+     * @return bool
+     */
     public function updateFileLocation(int $fileId, string $newLocation = null)
     {
         $file = $this->find($fileId);
@@ -205,6 +232,11 @@ class FileRepository
         }
     }
 
+    /**
+     * @param int $fileId
+     * @param array $data
+     * @return bool
+     */
     private function updateFileProperties(int $fileId, array $data) : bool
     {
         $sets = [];
@@ -252,6 +284,12 @@ class FileRepository
         return (boolean) $result;
     }
 
+    /**
+     * @param File $file
+     * @return bool|FileContent
+     * @throws CouldNotLocateEncryptionKeyException
+     * @throws \lib\DataTypes\CouldNotReadFileException
+     */
     public function readFileContent(File $file)
     {
         $key = $this->encryptionKeyRepository->getEncryptionKeyForFile($file);
@@ -266,6 +304,13 @@ class FileRepository
         }
     }
 
+    /**
+     * @param File $file
+     * @param string $newEncryptionKey
+     * @param string $encryptionType
+     * @return bool
+     * @throws CouldNotLocateEncryptionKeyException
+     */
     public function changeEncryptionKeyForFile(File $file, string $newEncryptionKey, string $encryptionType) : bool
     {
         $currentEncryptionKey = $this->encryptionKeyRepository->getEncryptionKeyForFile($file);

@@ -21,7 +21,9 @@ class Download extends AbstractController {
     /** @var string */
     private $id;
     /** @var string */
-    private $token;
+    private $urlToken;
+    /** @var string */
+    private $password;
 
     public function __construct(ServerRequestInterface $request)
     {
@@ -30,12 +32,14 @@ class Download extends AbstractController {
         $pathInfo = $this->request->getServerParams()['PATH_INFO'] ?? '';
 
         $pathInfo = substr($pathInfo, 1) . '/';
-        list($id, $token) = explode('/', $pathInfo);
+        list($id, $urlToken) = explode('/', $pathInfo);
 
         $this->fileRepository = new FileRepository();
         $this->file = $this->fileRepository->findByUniqueString($id);
         $this->id = $id;
-        $this->token = $token ?? '';
+        $this->urlToken = $urlToken ?? '';
+
+        $this->password = $this->param('password') ?? '';
     }
 
     /**
@@ -47,23 +51,26 @@ class Download extends AbstractController {
             return (new HTMLResponse('fileNotFound', [], 404))->psr7();
         }
 
-        if (!Acl::checkDownloadAccess($this->file, $this->token)) {
-            return (new HTMLResponse('accessDenied', [], 403))->psr7();
-        }
+        $access = Acl::checkDownloadAccess($this->file, $this->urlToken, $this->password);
 
-        if ($this->file->isFile() && file_exists($this->file->getFilePath())) {
-            if (in_array($this->file->getMime(), Config::getInstance()->files->editor)) {
-                return (new HTMLResponse('editor', [
-                    'file' => $this->file,
-                    'editable' => Authentication::isSignedIn() && $this->file->getUser()->getId() === Authentication::getUser()->getId()
-                ]))->psr7();
-            }
-            else {
-                $openInline = in_array($this->file->getMime(), Config::getInstance()->files->inline_download);
-                return (new DownloadResponse($this->file, $openInline))->psr7();
-            }
+        if ($access === Acl::DOWNLOAD_ACCESS_DENIED) {
+            return (new HTMLResponse('accessDenied', [], 403))->psr7();
+        } else if ($access === Acl::DOWNLOAD_ACCESS_PASSWORD) {
+            return (new HTMLResponse('filePassword', ['file' => $this->file]))->psr7();
         } else {
-            return (new Response('Could not download file', 500))->psr7();
+            if ($this->file->isFile() && file_exists($this->file->getFilePath())) {
+                if (in_array($this->file->getMime(), Config::getInstance()->files->editor)) {
+                    return (new HTMLResponse('editor', [
+                        'file' => $this->file,
+                        'editable' => Authentication::isSignedIn() && $this->file->getUser()->getId() === Authentication::getUser()->getId()
+                    ]))->psr7();
+                } else {
+                    $openInline = in_array($this->file->getMime(), Config::getInstance()->files->inline_download);
+                    return (new DownloadResponse($this->file, $openInline))->psr7();
+                }
+            } else {
+                return (new Response('Could not download file', 500))->psr7();
+            }
         }
     }
 
