@@ -195,7 +195,7 @@ class aFile {
      */
     mainView() {
         this.fileButtons();
-        
+
         this.drawPath();
         this.list();
 
@@ -626,10 +626,29 @@ class aFile {
             pathElement.append(directory);
         }
         else {
+            let count = 0;
+            let tempPath = [];
             for (let directoryObject of this.path) {
-                let directory = $('<li class="breadcrumb-item">');
-                directory.addClass('directory').text(directoryObject.name);
+                let directory = $('<li class="breadcrumb-item directory">');
+                tempPath.push(directoryObject);
+
+                if (count === this.path.length-1) {
+                    directory.text(directoryObject.name);
+                } else {
+                    let directoryLink = $('<a href="#">');
+                    directoryLink.text(directoryObject.name);
+                    directoryLink.data('path', JSON.stringify(tempPath));
+                    directoryLink.click(e => {
+                        e.preventDefault();
+                        this.path = JSON.parse($(e.target).data('path'));
+                        this.drawPath();
+                        this.list();
+                    });
+                    directory.append(directoryLink);
+                }
+
                 pathElement.append(directory);
+                count++;
             }
         }
     }
