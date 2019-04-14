@@ -1,12 +1,17 @@
 class aFile {
     constructor() {
         this.info = null; // Data fetched from the server
-        this.path = [];
         this.currentSearch = '';
         this.selected = null;
         this.clipboard = [];
         this.clickLock = false;
         this.keepAliveInterval = null;
+
+        if (typeof window.sessionStorage.aFile_Path !== 'undefined') {
+            this.path = JSON.parse(window.sessionStorage.aFile_Path);
+        } else {
+            this.path = [];
+        }
 
         this.keybindings();
         this.check();
@@ -190,7 +195,8 @@ class aFile {
      */
     mainView() {
         this.fileButtons();
-
+        
+        this.drawPath();
         this.list();
 
         $('#PathHome, #BrandHome').click(e => {
@@ -286,7 +292,6 @@ class aFile {
                 }
 
                 if (this.selected.hasClass('directory')) {
-                    //this.path.push(this.selected.find('.fileName').text());
                     this.path.push({
                         name : this.selected.find('.fileName').text(),
                         id : this.selected.data('id')
@@ -610,6 +615,8 @@ class aFile {
      * Draws breadcrumbs of the current path
      */
     drawPath() {
+        window.sessionStorage.setItem('aFile_Path', JSON.stringify(this.path));
+
         let pathElement = $('#Path');
         pathElement.find('.directory').remove();
 
