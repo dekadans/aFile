@@ -20,6 +20,7 @@
     "SHARE" : "Share",
     "SHARE_CREATE" : "Create a shareable link",
     "SHARE_DESTROY" : "Destroy link",
+    "SHARE_DISABLE" : "Disable link access temporarily",
     "EDITOR" : "Editor",
     "EDITOR_NAME" : "Create a new text file",
     "EDITOR_CLOSE" : "Close",

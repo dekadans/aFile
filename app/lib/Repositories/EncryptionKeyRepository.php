@@ -110,6 +110,29 @@ class EncryptionKeyRepository
         }
     }
 
+    public function flipTokenActiveState(File $file)
+    {
+        $token = $this->findAccessTokenForFile($file);
+
+        if ($token) {
+            if ($token->getActiveState() === FileToken::STATE_OPEN) {
+                $newState = FileToken::STATE_NONE;
+            } else {
+                $newState = FileToken::STATE_OPEN;
+            }
+
+            $updateStatement = $this->pdo->prepare("UPDATE share SET active = :state WHERE id = :tokenId");
+            $updateStatement->bindValue(':state', $newState);
+            $updateStatement->bindValue(':tokenId', $token->getId());
+
+            if ($updateStatement->execute()) {
+                return $newState;
+            }
+        }
+
+        return false;
+    }
+
     private function generateToken()
     {
         return sha1(random_bytes(32));

@@ -11,8 +11,6 @@ afile-script
 * byta lösenord   
 * ta bort användare+filer?
 
-Refaktorera tokens
-
 mobilanspassa  
 
 refaktorera js

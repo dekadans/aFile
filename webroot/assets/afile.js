@@ -399,6 +399,14 @@ class aFile {
                                 this.list();
                             });
                         });
+
+                        $('#TokenActive').change(e => {
+                            this.fetch('GET', 'Share', 'Active', fetchData).then(result => {
+                                if (result.error) {
+                                    alert(result.error);
+                                }
+                            });
+                        });
                     });
                 };
 

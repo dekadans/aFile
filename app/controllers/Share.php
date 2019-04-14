@@ -6,6 +6,7 @@ use lib\Acl;
 use lib\DataTypes\File;
 use lib\Repositories\EncryptionKeyRepository;
 use lib\Repositories\FileRepository;
+use lib\Translation;
 
 class Share extends AbstractController {
     /** @var File */
@@ -71,6 +72,21 @@ class Share extends AbstractController {
         } else {
             return $this->outputJSON([
                 'error' => 'COULD_NOT_DESTROY_TOKEN'
+            ]);
+        }
+    }
+
+    public function actionActive()
+    {
+        $result = $this->encryptionKeyRepository->flipTokenActiveState($this->file);
+
+        if ($result) {
+            return $this->outputJSON([
+                'status' => 'ok'
+            ]);
+        } else {
+            return $this->outputJSON([
+                'error' => Translation::getInstance()->translate('FAILED')
             ]);
         }
     }
