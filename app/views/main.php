@@ -59,7 +59,9 @@ $lang = \lib\Translation::getInstance();
                             </div>
                         </div>
 
+
                         <div class="btn-group" role="group" aria-label="...">
+                            <button id="Gallery" type="button" class="btn btn-outline-dark"><i class="fas fa-images"></i></button>
                             <button id="CreateDirectory" type="button" class="btn btn-outline-dark"><i class="fas fa-folder-open"></i></button>
                             <button id="OpenEditor" type="button" class="btn btn-outline-dark"><i class="fas fa-font"></i></button>
 

@@ -133,7 +133,7 @@ class Upload extends AbstractController {
         $extension = explode('.', $filename);
         $extension = array_pop($extension);
 
-        if (in_array($extension, Config::getInstance()->files->code)) {
+        if (in_array($extension, Config::getInstance()->type_groups->code)) {
             return 'text/plain';
         }
 

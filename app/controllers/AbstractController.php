@@ -65,7 +65,7 @@ abstract class AbstractController {
      * @param  array $data
      * @return ResponseInterface
      */
-    protected function outputJSON(array $data) {
+    protected function outputJSON($data) {
         $response = new JsonResponse($data);
         return $response->psr7();
     }

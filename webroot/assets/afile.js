@@ -399,6 +399,9 @@ class aFile {
             }
         });
 
+        $('#Gallery').click(e => {
+            this.openGallery();
+        });
 
         $('#CreateDirectory').click(e => {
             this.input(this.info.language.CREATE_DIRECTORY, value => {
@@ -655,4 +658,5 @@ class aFile {
 }
 
 Object.assign(aFile.prototype, aFileShare);
+Object.assign(aFile.prototype, aFileGallery);
 Object.assign(aFile.prototype, aFileAjax);

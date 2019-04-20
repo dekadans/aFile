@@ -32,6 +32,8 @@ totalstorleksgräns/räknare??
 
 ### Kom ihåg
 
+https://github.com/sachinchoolur/lightgallery.js
+https://fancyapps.com/fancybox/3/
 https://javascript.info/async-await  
 https://dzone.com/articles/top-javascript-libraries-for-making-ajax-calls  
 http://youmightnotneedjquery.com/  

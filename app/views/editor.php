@@ -9,7 +9,7 @@ $text = $file->getContent()->getAsText();
 
 $preview = false;
 
-if (in_array($file->getFileExtension(), \lib\Config::getInstance()->files->code)) {
+if (in_array($file->getFileExtension(), \lib\Config::getInstance()->type_groups->code)) {
     $preview = 'code';
 }
 else if ($file->getFileExtension() === 'md') {
