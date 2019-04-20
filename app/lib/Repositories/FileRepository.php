@@ -408,12 +408,20 @@ class FileRepository
 
     public function findByFileExtension(User $user, $location, array $fileExtensions)
     {
+        $sort = Sort::getInstance();
+
         $in  = str_repeat('?,', count($fileExtensions) - 1) . '?';
 
         $params = array_merge([$user->getId(), $location ?? null], $fileExtensions);
         $files = [];
 
-        $SQL = "SELECT *, SUBSTRING_INDEX(name, '.', -1) AS ext FROM files WHERE user_id = ? AND parent_id ". (is_null($location) ? 'is' : '=') ." ? AND type = 'FILE' HAVING ext IN ($in)";
+        $SQL = "SELECT *, SUBSTRING_INDEX(name, '.', -1) AS ext 
+                FROM files
+                WHERE user_id = ? AND parent_id ". (is_null($location) ? 'is' : '=') ." ? AND
+                type = 'FILE'
+                HAVING ext IN ($in)
+                ORDER BY " .  $sort->getSortBy() . ' ' . $sort->getDirection();
+
         $statement = $this->pdo->prepare($SQL);
         $statement->execute($params);
         $result = $statement->fetchAll();
