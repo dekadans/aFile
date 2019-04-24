@@ -5,6 +5,10 @@ let aFileAjax = {
 
         if (document.location.pathname.match(/\/dl(.php|\/)/)) {
             url = '../' +  url;
+
+            if (document.location.pathname.match(/[a-f0-9]{40}/)) {
+                url = '../' +  url;
+            }
         }
 
         let body = null;
