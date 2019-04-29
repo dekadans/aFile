@@ -14,6 +14,7 @@
     <script type="text/javascript" src="assets/afile-ajax.js"></script>
     <script type="text/javascript" src="assets/afile-share.js"></script>
     <script type="text/javascript" src="assets/afile-gallery.js"></script>
+    <script type="text/javascript" src="assets/afile-navigation.js"></script>
     <script type="text/javascript" src="assets/afile.js"></script>
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery.js@1.1.3/dist/css/lightgallery.css">
@@ -23,7 +24,8 @@
 
     <script type="text/javascript">
         $(function(){
-            let f = new aFile();
+            let n = new aFileNavigation();
+            let f = new aFile(n);
         });
     </script>
 </head>

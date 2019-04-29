@@ -1,6 +1,6 @@
 let aFileGallery = {
     openGallery() {
-        this.fetch('GET', 'ListFiles', 'Images', {location : this.getPath()}).then(list => {
+        this.fetch('GET', 'ListFiles', 'Images', {location : this.nav.getCurrentLocation()}).then(list => {
             if (list.length > 0) {
                 $('#Gallery').blur();
                 $('#GalleryContainer').remove();

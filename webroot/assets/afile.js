@@ -1,17 +1,18 @@
 class aFile {
-    constructor() {
+    constructor(/* aFileNavigation */ navigation) {
         this.info = null; // Data fetched from the server
-        this.currentSearch = '';
         this.selected = null;
         this.clipboard = [];
         this.clickLock = false;
         this.keepAliveInterval = null;
 
-        if (typeof window.sessionStorage.aFile_Path !== 'undefined') {
+        this.nav = navigation;
+
+        /*if (typeof window.sessionStorage.aFile_Path !== 'undefined') {
             this.path = JSON.parse(window.sessionStorage.aFile_Path);
         } else {
             this.path = [];
-        }
+        }*/
 
         this.keybindings();
         this.check();
@@ -135,13 +136,13 @@ class aFile {
                     }
                 }
                 else if (e.which === 8) {
-                    if (this.currentSearch.length) {
-                        this.currentSearch = '';
+                    if (this.nav.isSearching()) {
+                        this.nav.setSearchString('');
                         this.drawPath();
                         this.list();
                     }
-                    else if (this.path.length > 0) {
-                        this.path.pop();
+                    else if (!this.nav.isAtRoot()) {
+                        this.nav.popDirectory();
                         this.drawPath();
                         this.list();
                     }
@@ -200,9 +201,9 @@ class aFile {
         this.list();
 
         $('#PathHome, #BrandHome').click(e => {
+            $(e.target).blur();
             e.preventDefault();
-            this.currentSearch = '';
-            this.path = [];
+            this.nav.reset();
             this.drawPath();
             this.list();
         });
@@ -225,7 +226,7 @@ class aFile {
         });
 
         $('#Search').click(e => {
-            this.currentSearch = $('#SearchInput').val();
+            this.nav.setSearchString( $('#SearchInput').val());
             this.drawPath();
             this.list();
         });
@@ -256,13 +257,13 @@ class aFile {
         this.selectItem(null);
         let action, data;
 
-        if (this.currentSearch.length) {
+        if (this.nav.isSearching()) {
             action = 'search';
-            data = {search : this.currentSearch};
+            data = {search : this.nav.getSearchString()};
         }
         else {
             action = 'list';
-            data = {location : this.getPath()};
+            data = {location : this.nav.getCurrentLocation()};
         }
 
         this.fetch('POST', 'ListFiles', action, data).then(html => {
@@ -292,10 +293,8 @@ class aFile {
                 }
 
                 if (this.selected.hasClass('directory')) {
-                    this.path.push({
-                        name : this.selected.find('.fileName').text(),
-                        id : this.selected.data('id')
-                    });
+                    let directory = new aFileDirectory(this.selected.data('id'), this.selected.find('.fileName').text());
+                    this.nav.pushDirectory(directory);
                     this.drawPath();
                     this.selectItem(null);
                     this.list();
@@ -406,7 +405,7 @@ class aFile {
         $('#CreateDirectory').click(e => {
             this.input(this.info.language.CREATE_DIRECTORY, value => {
                 this.fetch('POST', 'Create', 'Directory', {
-                    location : this.getPath(),
+                    location : this.nav.getCurrentLocation(),
                     name : value
                 }).then(data => {
                     this.list();
@@ -418,7 +417,7 @@ class aFile {
             this.input(this.info.language.EDITOR_NAME, value => {
                 this.fetch('POST', 'Editor', 'Create', {
                     filename : value,
-                    location : this.getPath()
+                    location : this.nav.getCurrentLocation()
                 }).then(jsonResponse => {
                     this.list();
                 });
@@ -462,7 +461,7 @@ class aFile {
                 });
             }
 
-            this.upload(ajaxData, this.getPath()).then(result => {
+            this.upload(ajaxData, this.nav.getCurrentLocation()).then(result => {
                 if (result.status === 'error') {
                     alert(this.info.language.UPLOAD_FAILED);
                 }
@@ -505,7 +504,7 @@ class aFile {
 
             this.fetch('POST', 'Paste', '', {
                 id : idsToPaste,
-                location : this.getPath()
+                location : this.nav.getCurrentLocation()
             }).then(data => {
                 this.clipboard = [];
                 this.displayClipboard();
@@ -601,57 +600,24 @@ class aFile {
     }
 
     /**
-     * Returns the current base64-encoded path
-     * @returns {string}
-     */
-    getPath() {
-        if (this.path.length) {
-            let path = this.path[this.path.length-1];
-            return path.id;
-        }
-        else {
-            return null;
-        }
-    }
-
-    /**
      * Draws breadcrumbs of the current path
      */
     drawPath() {
-        window.sessionStorage.setItem('aFile_Path', JSON.stringify(this.path));
-
+        //window.sessionStorage.setItem('aFile_Path', JSON.stringify(this.path));
         let pathElement = $('#Path');
         pathElement.find('.directory').remove();
 
-        if (this.currentSearch.length) {
+        if (this.nav.isSearching()) {
             let directory = $('<li class="breadcrumb-item">');
             directory.addClass('directory').text(this.info.language.SEARCH_RESULT);
             pathElement.append(directory);
         }
         else {
-            let count = 0;
-            let tempPath = [];
-            for (let directoryObject of this.path) {
+            let path = this.nav.getPathStack();
+            for (let directoryObject of path) {
                 let directory = $('<li class="breadcrumb-item directory">');
-                tempPath.push(directoryObject);
-
-                if (count === this.path.length-1) {
-                    directory.text(directoryObject.name);
-                } else {
-                    let directoryLink = $('<a href="#">');
-                    directoryLink.text(directoryObject.name);
-                    directoryLink.data('path', JSON.stringify(tempPath));
-                    directoryLink.click(e => {
-                        e.preventDefault();
-                        this.path = JSON.parse($(e.target).data('path'));
-                        this.drawPath();
-                        this.list();
-                    });
-                    directory.append(directoryLink);
-                }
-
+                directory.text(directoryObject.getName());
                 pathElement.append(directory);
-                count++;
             }
         }
     }
