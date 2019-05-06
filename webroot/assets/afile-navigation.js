@@ -1,15 +1,20 @@
 class aFileNavigation {
     constructor() {
-        this.state = {};
-        this.reset();
+        if (typeof window.sessionStorage.aFile_Navigation_State !== 'undefined') {
+            let savedState = JSON.parse(window.sessionStorage.aFile_Navigation_State);
+            this.loadState(savedState);
+        } else {
+            this.state = {
+                path : [],
+                search : ''
+            };
+        }
+        history.replaceState(this.state, '');
     }
 
-    pushDirectory(/* aFileDirectory */ directory) {
+    pushDirectory(directory) {
         this.state.path.push(directory);
-    }
-
-    popDirectory() {
-        return this.state.path.pop();
+        this.saveState();
     }
 
     getCurrentLocation() {
@@ -17,7 +22,7 @@ class aFileNavigation {
 
         if (pathLength > 0) {
             let lastDirectoryInPath = this.state.path[pathLength-1];
-            return lastDirectoryInPath.getId();
+            return lastDirectoryInPath.id;
         }
 
         return null;
@@ -27,12 +32,9 @@ class aFileNavigation {
         return this.state.path;
     }
 
-    setPathStack(stack) {
-        this.state.path = stack;
-    }
-
     setSearchString(searchString) {
         this.state.search = searchString;
+        this.saveState();
     }
 
     getSearchString() {
@@ -47,25 +49,23 @@ class aFileNavigation {
         return (this.state.path.length === 0);
     }
 
-    reset() {
+    goToRoot() {
         this.state = {
             path : [],
             search : ''
         };
-    }
-}
-
-class aFileDirectory {
-    constructor(id, name) {
-        this.id = id;
-        this.name = name;
+        this.saveState();
     }
 
-    getId() {
-        return this.id;
+    saveState() {
+        history.pushState(this.state, '');
+        window.sessionStorage.setItem('aFile_Navigation_State', JSON.stringify(this.state));
     }
 
-    getName() {
-        return this.name;
+    loadState(state) {
+        if (state !== null) {
+            this.state = state;
+            window.sessionStorage.setItem('aFile_Navigation_State', JSON.stringify(this.state));
+        }
     }
 }

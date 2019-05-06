@@ -8,11 +8,13 @@ class aFile {
 
         this.nav = navigation;
 
-        /*if (typeof window.sessionStorage.aFile_Path !== 'undefined') {
-            this.path = JSON.parse(window.sessionStorage.aFile_Path);
-        } else {
-            this.path = [];
-        }*/
+        window.onpopstate = event => {
+            if (this.info.login && event.state !== null) {
+                this.nav.loadState(event.state);
+                this.drawPath();
+                this.list();
+            }
+        };
 
         this.keybindings();
         this.check();
@@ -136,15 +138,12 @@ class aFile {
                     }
                 }
                 else if (e.which === 8) {
-                    if (this.nav.isSearching()) {
-                        this.nav.setSearchString('');
-                        this.drawPath();
-                        this.list();
-                    }
-                    else if (!this.nav.isAtRoot()) {
-                        this.nav.popDirectory();
-                        this.drawPath();
-                        this.list();
+                    if (!this.nav.isSearching()) {
+                        if (this.nav.getCurrentLocation() !== null) {
+                            history.go(-1);
+                        }
+                    } else {
+                        history.go(-1);
                     }
                 }
                 else if (e.which === 83) { // S
@@ -203,7 +202,7 @@ class aFile {
         $('#PathHome, #BrandHome').click(e => {
             $(e.target).blur();
             e.preventDefault();
-            this.nav.reset();
+            this.nav.goToRoot();
             this.drawPath();
             this.list();
         });
@@ -293,8 +292,10 @@ class aFile {
                 }
 
                 if (this.selected.hasClass('directory')) {
-                    let directory = new aFileDirectory(this.selected.data('id'), this.selected.find('.fileName').text());
-                    this.nav.pushDirectory(directory);
+                    this.nav.pushDirectory({
+                        id : this.selected.data('id'),
+                        name : this.selected.find('.fileName').text()
+                    });
                     this.drawPath();
                     this.selectItem(null);
                     this.list();
@@ -603,7 +604,6 @@ class aFile {
      * Draws breadcrumbs of the current path
      */
     drawPath() {
-        //window.sessionStorage.setItem('aFile_Path', JSON.stringify(this.path));
         let pathElement = $('#Path');
         pathElement.find('.directory').remove();
 
@@ -616,7 +616,7 @@ class aFile {
             let path = this.nav.getPathStack();
             for (let directoryObject of path) {
                 let directory = $('<li class="breadcrumb-item directory">');
-                directory.text(directoryObject.getName());
+                directory.text(directoryObject.name);
                 pathElement.append(directory);
             }
         }
