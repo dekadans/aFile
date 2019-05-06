@@ -25,15 +25,19 @@ länkar
 
 hjälp-popup med kortkomandon samt sökhjälp
 
-galleri?  
-kolla på Drive. lightbox för bilderna i aktiv mapp. bara delbara en och en. 
-
 totalstorleksgräns/räknare??
+
+editor refactor  
+* Varning vid ej sparat
+
+Refaktorera sök  
+* Flytta filtypssök till conf?
+* Filtypssök för delade filer, typ type:shared
+* sök på "type:" eller "type:foobar" ger alla filer
+* Sök endast nedåt i trädet. Bör gå med lokala variabler-magi.
 
 ### Kom ihåg
 
-https://github.com/sachinchoolur/lightgallery.js
-https://fancyapps.com/fancybox/3/
 https://javascript.info/async-await  
 https://dzone.com/articles/top-javascript-libraries-for-making-ajax-calls  
 http://youmightnotneedjquery.com/  
