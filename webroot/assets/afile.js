@@ -202,9 +202,11 @@ class aFile {
         $('#PathHome, #BrandHome').click(e => {
             $(e.target).blur();
             e.preventDefault();
-            this.nav.goToRoot();
-            this.drawPath();
-            this.list();
+            if (this.nav.getCurrentLocation() !== null) {
+                this.nav.goToRoot();
+                this.drawPath();
+                this.list();
+            }
         });
 
         $('#Logout').click(e => {
