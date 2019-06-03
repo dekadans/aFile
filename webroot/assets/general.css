@@ -104,6 +104,12 @@ html, body, #AppContainer {
     display: none;
 }
 
+@media (max-width: 575px) {
+    #ButtonBar button {
+        font-size: 12px;
+    }
+}
+
 /* MISC */
 
 .jumbotron {

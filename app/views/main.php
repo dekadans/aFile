@@ -37,7 +37,7 @@ $lang = \lib\Translation::getInstance();
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-12" id="ButtonBar">
                     <div id="FileButtons" class="btn-group" role="group" aria-label="...">
                         <button id="Delete" type="button" class="btn btn-outline-dark"><i class="fas fa-trash-alt"></i></button>
                         <button id="Rename" type="button" class="btn btn-outline-dark"><i class="fas fa-edit"></i></button>
