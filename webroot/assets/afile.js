@@ -202,7 +202,7 @@ class aFile {
         $('#PathHome, #BrandHome').click(e => {
             $(e.target).blur();
             e.preventDefault();
-            if (this.nav.getCurrentLocation() !== null) {
+            if (this.nav.getCurrentLocation() !== null || this.nav.isSearching()) {
                 this.nav.goToRoot();
                 this.drawPath();
                 this.list();
@@ -609,12 +609,13 @@ class aFile {
         let pathElement = $('#Path');
         pathElement.find('.directory').remove();
 
-        if (this.nav.isSearching()) {
+        if (this.nav.isSearching() || this.nav.isFromSearchResult()) {
             let directory = $('<li class="breadcrumb-item">');
             directory.addClass('directory').text(this.info.language.SEARCH_RESULT);
             pathElement.append(directory);
         }
-        else {
+
+        if (!this.nav.isSearching()) {
             let path = this.nav.getPathStack();
             for (let directoryObject of path) {
                 let directory = $('<li class="breadcrumb-item directory">');

@@ -433,16 +433,61 @@ class FileRepository
         return new FileList($files);
     }
 
-    /**
-     * @param User $user
-     * @param string $searchString
-     * @return FileList
-     */
-    public function search(User $user, string $searchString = '')
+    public function searchForFile(User $user, string $fileNameSearch, array $fileExtensions, string $fileType, bool $onlyShared)
     {
         $files = [];
-        $engine = new SearchEngine($this->pdo, Sort::getInstance());
-        $searchResult = $engine->search($searchString, $user->getId());
+        $sort = Sort::getInstance();
+
+        $whereCriteria = [];
+        $parametersToBind = [];
+
+        if (!empty($fileNameSearch)) {
+            $whereCriteria[] = ' f.name LIKE :fileName ';
+            $parametersToBind[':fileName'] = '%'. $fileNameSearch .'%';
+        }
+
+        if (!empty($fileExtensions)) {
+            $extensionsWheres = [];
+
+            foreach ($fileExtensions as $extension) {
+                $extensionsWheres[] = ' f.name LIKE ' . $this->pdo->quote('%.' . $extension);
+            }
+
+            $whereCriteria[] = ' ('. implode(' OR ', $extensionsWheres) .') ';
+        }
+
+        if (!empty($fileType)) {
+            $whereCriteria[] = ' f.type = :fileType ';
+            $parametersToBind[':fileType'] = $fileType;
+        }
+
+        if ($onlyShared) {
+            $whereCriteria[] = ' s.id IS NOT NULL ';
+        }
+
+        $whereCriteria[] = ' f.user_id = :userId ';
+        $parametersToBind[':userId'] = $user->getId();
+
+        $where = implode('AND', $whereCriteria);
+
+        $SQL = "SELECT f.* from files f
+                LEFT JOIN share s on f.id = s.file_id
+                WHERE {$where}
+                ORDER BY (
+                CASE
+                    WHEN type = 'DIRECTORY' THEN 1
+                    WHEN type = 'SPECIAL' THEN 2
+                    ELSE 4
+                END), " .  $sort->getSortBy() . ' ' . $sort->getDirection();
+
+        $searchStatement = $this->pdo->prepare($SQL);
+
+        foreach ($parametersToBind as $key => $param) {
+            $searchStatement->bindValue($key, $param);
+        }
+
+        $searchStatement->execute();
+        $searchResult = $searchStatement->fetchAll();
 
         foreach ($searchResult as $file) {
             $files[] = $this->createFileObject($file);

@@ -31,9 +31,6 @@ editor refactor
 * Varning vid ej sparat
 
 Refaktorera sök  
-* Flytta filtypssök till conf?
-* Filtypssök för delade filer, typ type:shared
-* sök på "type:" eller "type:foobar" ger alla filer
 * Sök endast nedåt i trädet. Bör gå med lokala variabler-magi.
 
 ### Kom ihåg

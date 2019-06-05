@@ -68,3 +68,9 @@ image[] = jpeg
 image[] = png
 image[] = gif
 image[] = svg
+
+document[] = pdf
+document[] = docx
+document[] = doc
+document[] = odt
+document[] = rtf

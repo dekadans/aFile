@@ -50,6 +50,7 @@
     "SORT_DATE" : "Date",
     "NO_FILES" : "Nothing here. Drag and drop a file to upload it.",
     "NO_FILES_SEARCH" : "No files found. Try searching for something else.",
+    "NO_CRITERIA_SEARCH" : "No valid search criteria was given.",
 
     "CLIPBOARD_DELETE" : "Delete",
     "CLIPBOARD_PASTE" : "Paste",

@@ -7,6 +7,7 @@ use lib\Config;
 use lib\DataTypes\File;
 use lib\HTTP\Response;
 use lib\Repositories\FileRepository;
+use lib\Search;
 use lib\Sort;
 use lib\Translation;
 
@@ -48,9 +49,13 @@ class ListFiles extends AbstractController {
     public function actionSearch()
     {
         $searchString = $this->param('search');
+        $search = new Search(Authentication::getUser(), $this->fileRepository);
 
-        $fileList = $this->fileRepository->search(Authentication::getUser(), $searchString);
-        if (count($fileList)) {
+        $fileList = $search->search($searchString);
+
+        if ($fileList === false) {
+            return $this->parseView('partials/nofiles', ['message' => Translation::getInstance()->translate('NO_CRITERIA_SEARCH')]);
+        } else if (count($fileList)) {
             return $this->parseView('partials/filelist', ['fileList' => $fileList]);
         }
         else {

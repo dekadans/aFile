@@ -6,7 +6,8 @@ class aFileNavigation {
         } else {
             this.state = {
                 path : [],
-                search : ''
+                search : '',
+                fromSearch : false
             };
         }
         history.replaceState(this.state, '');
@@ -14,6 +15,13 @@ class aFileNavigation {
 
     pushDirectory(directory) {
         this.state.path.push(directory);
+
+        if (this.state.fromSearch === false && this.isSearching()) {
+            this.state.fromSearch = true;
+        }
+
+        this.state.search = '';
+
         this.saveState();
     }
 
@@ -33,6 +41,7 @@ class aFileNavigation {
     }
 
     setSearchString(searchString) {
+        this.state.path = [];
         this.state.search = searchString;
         this.saveState();
     }
@@ -45,6 +54,10 @@ class aFileNavigation {
         return (this.state.search !== '');
     }
 
+    isFromSearchResult() {
+        return this.state.fromSearch;
+    }
+
     isAtRoot() {
         return (this.state.path.length === 0);
     }
@@ -52,7 +65,8 @@ class aFileNavigation {
     goToRoot() {
         this.state = {
             path : [],
-            search : ''
+            search : '',
+            fromSearch : false
         };
         this.saveState();
     }
