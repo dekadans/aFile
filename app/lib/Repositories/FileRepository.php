@@ -441,6 +441,9 @@ class FileRepository
         $whereCriteria = [];
         $parametersToBind = [];
 
+        $whereCriteria[] = ' f.user_id = :userId ';
+        $parametersToBind[':userId'] = $user->getId();
+
         if (!empty($fileNameSearch)) {
             $whereCriteria[] = ' f.name LIKE :fileName ';
             $parametersToBind[':fileName'] = '%'. $fileNameSearch .'%';
@@ -462,16 +465,12 @@ class FileRepository
         }
 
         if ($onlyShared) {
-            $whereCriteria[] = ' s.id IS NOT NULL ';
+            $whereCriteria[] = ' f.encryption = "TOKEN" ';
         }
-
-        $whereCriteria[] = ' f.user_id = :userId ';
-        $parametersToBind[':userId'] = $user->getId();
 
         $where = implode('AND', $whereCriteria);
 
         $SQL = "SELECT f.* from files f
-                LEFT JOIN share s on f.id = s.file_id
                 WHERE {$where}
                 ORDER BY (
                 CASE

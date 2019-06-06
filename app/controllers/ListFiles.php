@@ -81,4 +81,9 @@ class ListFiles extends AbstractController {
 
         return $this->outputJSON($images);
     }
+
+    public function actionHelp()
+    {
+        return $this->parseView('partials/help');
+    }
 }

@@ -16,6 +16,9 @@ $lang = \lib\Translation::getInstance();
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item">
+                        <a class="nav-link" id="Help" href="#"><i class="far fa-question-circle"></i></a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" id="Logout" href="#"><?= $lang->translate('LOGOUT') ?></a>
                     </li>
                 </ul>
@@ -102,7 +105,7 @@ $lang = \lib\Translation::getInstance();
                 </div>
                 <div class="modal-body" id="ModalBody"></div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal"><?= $lang->translate('CANCEL') ?></button>
+                    <button type="button" class="btn btn-secondary" id="ModalCancel" data-dismiss="modal"><?= $lang->translate('CANCEL') ?></button>
                     <button type="button" class="btn btn-primary" id="ModalOk"><?= $lang->translate('OK') ?></button>
                 </div>
             </div>

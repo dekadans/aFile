@@ -151,6 +151,9 @@ class aFile {
                         $('#SearchInput').focus();
                     }, 100);
                 }
+                else if (e.which === 72) { // H
+                    $('#PathHome').click();
+                }
             }
         });
     }
@@ -209,6 +212,23 @@ class aFile {
             }
         });
 
+
+        $('#Help').click(e => {
+            e.preventDefault();
+            let $m = $('#Modal');
+
+            this.fetch('GET', 'ListFiles', 'Help').then(html => {
+                $m.find('.modal-dialog').addClass('modal-xl');
+                $m.find('#ModalTitle').text(this.info.language.HELP);
+                $m.find('#ModalBody').html(html);
+                $m.find('#ModalCancel').hide();
+                $m.find('#ModalOk').off('click').on('click', e => {
+                    $m.modal('hide');
+                });
+                $m.modal('show');
+            });
+        });
+
         $('#Logout').click(e => {
             e.preventDefault();
             this.fetch('GET', 'Logout').then(data => {
@@ -241,6 +261,7 @@ class aFile {
             }
         }).on('hidden.bs.modal', e => {
             $('#ModalCancel').show();
+            $('.modal-dialog').removeClass('modal-xl');
         });
         this.initiateDropZone();
 

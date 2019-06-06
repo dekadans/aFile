@@ -64,5 +64,32 @@
     "403_FORBIDDEN" : "Forbidden",
     "403_FORBIDDEN_TEXT" : "You don't have access to the requested file.",
     "404_NOT_FOUND" : "Not Found",
-    "404_NOT_FOUND_TEXT" : "Nothing here, sorry."
+    "404_NOT_FOUND_TEXT" : "Nothing here, sorry.",
+
+
+    "HELP" : "Help",
+    "HELP_KEY" : "Keybindings",
+    "HELP_KEY_BACK" : "BACKSPACE",
+    "HELP_KEY_BACK_INFO" : "Go back",
+    "HELP_KEY_DELETE" : "DELETE",
+    "HELP_KEY_DELETE_INFO" : "Delete selected file",
+    "HELP_KEY_R" : "R",
+    "HELP_KEY_R_INFO" : "Rename selected file",
+    "HELP_KEY_CTRLX" : "Ctrl/Cmd+X",
+    "HELP_KEY_CTRLX_INFO" : "Add selected file to clipboard",
+    "HELP_KEY_S" : "S",
+    "HELP_KEY_S_INFO" : "Change focus to search field",
+    "HELP_KEY_H" : "H",
+    "HELP_KEY_H_INFO" : "Go back home",
+    "HELP_SEARCH" : "Advanced search",
+    "HELP_SEARCH_IMAGE" : "content:image",
+    "HELP_SEARCH_IMAGE_INFO" : "Limit result to images",
+    "HELP_SEARCH_DOCUMENT" : "content:document",
+    "HELP_SEARCH_DOCUMENT_INFO" : "Limit result to documents",
+    "HELP_SEARCH_CODE" : "content:code",
+    "HELP_SEARCH_CODE_INFO" : "Limit result to code",
+    "HELP_SEARCH_SHARED" : "shared:true",
+    "HELP_SEARCH_SHARED_INFO" : "Limit result to shared files",
+    "HELP_SEARCH_TYPE" : "type:file / type:directory",
+    "HELP_SEARCH_TYPE_INFO" : "Limit result to only files or directories"
 }
