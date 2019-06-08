@@ -60,8 +60,16 @@ let aFileAjax = {
         }
     },
 
-    async upload(ajaxData, location) {
+    async upload(fileList, location) {
         this.showLoading(true);
+
+        let ajaxData = new FormData();
+
+        if (fileList) {
+            $.each( fileList, function(i, file) {
+                ajaxData.append('fileinput'+i, file );
+            });
+        }
 
         let response = await fetch('ajax.php?do=Upload&location=' + location, {
             method : 'POST',
@@ -73,10 +81,34 @@ let aFileAjax = {
 
         if (response.ok) {
             let content = await response.json();
+
+            if (content.status === 'error') {
+                alert(this.info.language.UPLOAD_FAILED);
+            }
+            else if (content.status === 'confirm') {
+                this.confirmOverwrite(content);
+            }
+
             return content;
         }
 
         return false;
+    },
+
+    confirmOverwrite(uploadResult) {
+        let message = this.info.language.CONFIRM_OVERWRITE + ' ' + uploadResult.name + '?';
+
+        this.modal.confirm(this.info.language.ARE_YOU_SURE, message, e => {
+            this.fetch('POST', 'Upload', 'Confirmoverwrite', {
+                newId : uploadResult.newId,
+                oldId : uploadResult.oldId
+            }).then(overwriteResult => {
+                if (overwriteResult.error) {
+                    alert(overwriteResult.error);
+                }
+                this.list();
+            });
+        });
     },
 
     showLoading(show) {

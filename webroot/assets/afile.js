@@ -1,12 +1,13 @@
 class aFile {
-    constructor(/* aFileNavigation */ navigation) {
+    constructor() {
         this.info = null; // Data fetched from the server
         this.selected = null;
         this.clipboard = [];
         this.clickLock = false;
         this.keepAliveInterval = null;
 
-        this.nav = navigation;
+        this.nav = new aFileNavigation();
+        this.modal = new aFileModal();
 
         window.onpopstate = event => {
             if (this.info.login && event.state !== null) {
@@ -53,7 +54,7 @@ class aFile {
      */
     keybindings() {
         $(document).keydown(e => {
-            if (!$('#Modal').is(':visible') && !$('#SearchInput').is(':focus')) {
+            if (!this.modal.getModal().is(':visible') && !$('#SearchInput').is(':focus')) {
                 if (this.selected) {
                     if (e.which === 46) { // Delete
                         $('#Delete').click();
@@ -68,7 +69,7 @@ class aFile {
                         this.selectItem(null);
                     }
                     else if (e.which === 77 && this.selected.hasClass('file')) { // M
-                        this.input(this.selected.data('mime'), value => {
+                        this.modal.input(this.selected.data('mime'), value => {
                             this.fetch('GET', 'Rename', 'Changemime', {
                                 id : this.selected.data('id'),
                                 mime : value
@@ -215,17 +216,16 @@ class aFile {
 
         $('#Help').click(e => {
             e.preventDefault();
-            let $m = $('#Modal');
 
             this.fetch('GET', 'ListFiles', 'Help').then(html => {
-                $m.find('.modal-dialog').addClass('modal-xl');
-                $m.find('#ModalTitle').text(this.info.language.HELP);
-                $m.find('#ModalBody').html(html);
-                $m.find('#ModalCancel').hide();
-                $m.find('#ModalOk').off('click').on('click', e => {
-                    $m.modal('hide');
+                this.modal.setSizeXl();
+                this.modal.hideCancel();
+                this.modal.setTitle(this.info.language.HELP);
+                this.modal.setBody(html);
+                this.modal.setOkCallback(e => {
+                    this.modal.hide();
                 });
-                $m.modal('show');
+                this.modal.show();
             });
         });
 
@@ -252,20 +252,11 @@ class aFile {
             this.list();
         });
 
-        $('#Modal').on('shown.bs.modal', e => {
-            if ($('#Modal').find('#ModalInput').length) {
-                $('#ModalInput').focus();
-            }
-            else {
-                $('#ModalOk').focus();
-            }
-        }).on('hidden.bs.modal', e => {
-            $('#ModalCancel').show();
-            $('.modal-dialog').removeClass('modal-xl');
-        });
         this.initiateDropZone();
 
         this.initiateClipboard();
+
+        this.modal.init();
 
         this.keepAliveInterval = setInterval(() => {
             this.keepalive();
@@ -361,7 +352,7 @@ class aFile {
         $('#Delete').click(e => {
             if (this.selected) {
                 let message = this.info.language.CONFIRM_DELETE + ' ' + this.selected.find('.fileName').text() + '?';
-                this.confirm(message, e => {
+                this.modal.confirm(this.info.language.ARE_YOU_SURE, message, e => {
                     let id = this.selected.data('id');
 
                     let selectNextInList = this.selected.next();
@@ -386,7 +377,7 @@ class aFile {
             if (this.selected) {
                 let currentNameElement = this.selected.find('.fileName');
 
-                this.input(this.info.language.RENAME, value => {
+                this.modal.input(this.info.language.RENAME, value => {
                     this.fetch('POST', 'Rename', '', {
                         id : this.selected.data('id'),
                         name : value
@@ -399,10 +390,10 @@ class aFile {
 
         $('#Share').click(e => {
             if (this.selected) {
-                $('#ModalTitle').text(this.info.language.SHARE);
-                $('#ModalCancel').hide();
-                $('#ModalOk').off('click').on('click', e => {
-                    $('#Modal').modal('hide');
+                this.modal.setTitle(this.info.language.SHARE);
+                this.modal.hideCancel();
+                this.modal.setOkCallback(e => {
+                    this.modal.hide();
                 });
 
                 this.loadShareDialog(this.selected.data('id'));
@@ -426,8 +417,29 @@ class aFile {
             this.openGallery();
         });
 
+        $('#Upload').click(e => {
+            e.preventDefault();
+            this.modal.setTitle(this.info.language.UPLOAD);
+            this.modal.setBody('<input type="file" id="ManualUpload" multiple>');
+            this.modal.setOkCallback(e => {
+                let filesToUpload = document.getElementById('ManualUpload').files;
+
+                if (filesToUpload.length) {
+                    this.upload(filesToUpload, this.nav.getCurrentLocation()).then(result => {
+                        this.modal.hide();
+                        this.list();
+                    });
+                } else {
+                    this.modal.hide();
+                }
+            });
+
+            this.modal.show();
+        });
+
         $('#CreateDirectory').click(e => {
-            this.input(this.info.language.CREATE_DIRECTORY, value => {
+            e.preventDefault();
+            this.modal.input(this.info.language.CREATE_DIRECTORY, value => {
                 this.fetch('POST', 'Create', 'Directory', {
                     location : this.nav.getCurrentLocation(),
                     name : value
@@ -438,7 +450,8 @@ class aFile {
         });
 
         $('#OpenEditor').click(e => {
-            this.input(this.info.language.EDITOR_NAME, value => {
+            e.preventDefault();
+            this.modal.input(this.info.language.EDITOR_NAME, value => {
                 this.fetch('POST', 'Editor', 'Create', {
                     filename : value,
                     location : this.nav.getCurrentLocation()
@@ -477,35 +490,11 @@ class aFile {
         .on('drop', e => {
             let filesToUpload = e.originalEvent.dataTransfer.files;
 
-            let ajaxData = new FormData();
-
-            if (filesToUpload) {
-                $.each( filesToUpload, function(i, file) {
-                    ajaxData.append('fileinput'+i, file );
+            if (filesToUpload.length) {
+                this.upload(filesToUpload, this.nav.getCurrentLocation()).then(result => {
+                    this.list();
                 });
             }
-
-            this.upload(ajaxData, this.nav.getCurrentLocation()).then(result => {
-                if (result.status === 'error') {
-                    alert(this.info.language.UPLOAD_FAILED);
-                }
-                else if (result.status === 'confirm') {
-                    let message = this.info.language.CONFIRM_OVERWRITE + ' ' + result.name + '?';
-                    this.confirm(message, e => {
-                        this.fetch('POST', 'Upload', 'Confirmoverwrite', {
-                            newId : result.newId,
-                            oldId : result.oldId
-                        }).then(overwriteResult => {
-                            if (overwriteResult.error) {
-                                alert(overwriteResult.error);
-                            }
-                            this.list();
-                        });
-                    });
-                }
-
-                this.list();
-            });
         });
     }
 
@@ -543,7 +532,7 @@ class aFile {
                         + this.clipboard.length
                         + this.info.language.FILES
                         + '?';
-            this.confirm(message, e => {
+            this.modal.confirm(this.info.language.ARE_YOU_SURE, message, e => {
                 this.fetch('POST', 'Delete', '', {
                     id : idsToDelete
                 }).then(data => {
@@ -582,45 +571,6 @@ class aFile {
         else {
             $('#ClipboardButtons').hide();
         }
-    }
-
-    /**
-     * Displays a confirm modal
-     * @param message
-     * @param callback
-     */
-    confirm(message, callback) {
-        $('#ModalTitle').text(this.info.language.ARE_YOU_SURE);
-        $('#ModalBody').text(message);
-        $('#ModalOk').off('click').on('click', e => {
-            callback(e);
-            $('#Modal').modal('hide');
-        });
-        $('#Modal').modal('show');
-    }
-
-    /**
-     * Displays a text input modal
-     * @param title
-     * @param callback
-     * @param defaultValue
-     */
-    input(title, callback, defaultValue = '') {
-        $('#ModalTitle').text(title);
-        $('#ModalBody').html('<input type="text" class="form-control" spellcheck="false" id="ModalInput">');
-        $('#ModalInput').val(defaultValue).keyup(e => {
-            if (e.which === 13) {
-                $('#ModalOk').click();
-            }
-        });
-        $('#ModalOk').off('click').on('click', e => {
-            let value = $('#ModalInput').val().trim();
-            if (value !== '') {
-                callback(value);
-                $('#Modal').modal('hide');
-            }
-        });
-        $('#Modal').modal('show');
     }
 
     /**

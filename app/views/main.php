@@ -1,4 +1,7 @@
 <?php
+/**
+ * @var string $currentSorting
+ */
 $lang = \lib\Translation::getInstance();
 ?>
 
@@ -65,8 +68,18 @@ $lang = \lib\Translation::getInstance();
 
                         <div class="btn-group" role="group" aria-label="...">
                             <button id="Gallery" type="button" class="btn btn-outline-dark"><i class="fas fa-images"></i></button>
-                            <button id="CreateDirectory" type="button" class="btn btn-outline-dark"><i class="fas fa-folder-open"></i></button>
-                            <button id="OpenEditor" type="button" class="btn btn-outline-dark"><i class="fas fa-font"></i></button>
+
+                            <div class="btn-group" role="group">
+                                <button id="CreateMenu" type="button" class="btn btn-outline-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fas fa-plus-circle"></i>
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="CreateMenu">
+                                    <a class="dropdown-item" id="Upload" href="#"><i class="fas fa-cloud-upload-alt"></i> Upload</a>
+                                    <a class="dropdown-item" id="CreateDirectory" href="#"><i class="fas fa-folder-open"></i> New directory</a>
+                                    <a class="dropdown-item" id="OpenEditor" href="#"><i class="fas fa-font"></i> New text file</a>
+                                </div>
+
+                            </div>
 
                             <div class="btn-group" role="group">
                                 <button id="SortMenu" type="button" class="btn btn-outline-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

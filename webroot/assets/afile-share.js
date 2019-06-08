@@ -1,10 +1,10 @@
 let aFileShare = {
     loadShareDialog(fileId) {
-        let $m = $('#Modal');
+        let $m = this.modal.getModal();
 
         this.fetch('GET', 'Share', 'Panel', {id : fileId}).then(html => {
-            $m.find('#ModalBody').html(html);
-            $m.modal('show');
+            this.modal.setBody(html);
+            this.modal.show();
 
             $m.find('#CreateToken').click(e => {
                 this.fetch('GET', 'Share', 'Create', {id : fileId}).then(result => {
