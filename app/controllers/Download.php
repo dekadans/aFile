@@ -3,8 +3,6 @@
 namespace controllers;
 
 use lib\Acl;
-use lib\Authentication;
-use lib\Config;
 use lib\DataTypes\File;
 use lib\HTTP\DownloadResponse;
 use lib\HTTP\HTMLResponse;
@@ -24,6 +22,8 @@ class Download extends AbstractController {
     private $urlToken;
     /** @var string */
     private $password;
+    /** @var bool */
+    private $forceDownload = false;
 
     public function __construct(ServerRequestInterface $request)
     {
@@ -40,6 +40,8 @@ class Download extends AbstractController {
         $this->urlToken = $urlToken ?? '';
 
         $this->password = $this->param('password') ?? '';
+
+        $this->forceDownload = ($this->param('fdl') === '1');
     }
 
     /**
@@ -59,18 +61,22 @@ class Download extends AbstractController {
             return (new HTMLResponse('filePassword', ['file' => $this->file]))->psr7();
         } else {
             if ($this->file->isFile() && file_exists($this->file->getFilePath())) {
-                if (in_array($this->file->getMime(), Config::getInstance()->files->editor)) {
-                    return (new HTMLResponse('editor', [
-                        'file' => $this->file,
-                        'editable' => Authentication::isSignedIn() && $this->file->getUser()->getId() === Authentication::getUser()->getId()
-                    ]))->psr7();
-                } else {
-                    $openInline = in_array($this->file->getMime(), Config::getInstance()->files->inline_download);
-                    return (new DownloadResponse($this->file, $openInline))->psr7();
-                }
+                return $this->download();
             } else {
                 return (new Response('Could not download file', 500))->psr7();
             }
+        }
+    }
+
+    private function download()
+    {
+        if ($this->forceDownload) {
+            return (new DownloadResponse($this->file, false))->psr7();
+        } else if ($editableFile = $this->file->isEditable()) {
+            $editableFile->setUrlToken($this->urlToken);
+            return (new HTMLResponse('editor', ['editableFile' => $editableFile]))->psr7();
+        } else {
+            return (new DownloadResponse($this->file, $this->file->isInlineDownload()))->psr7();
         }
     }
 

@@ -1,6 +1,13 @@
 class aFileEditor {
-    constructor(markdownConverter) {
-        this.markdownConverter = markdownConverter;
+    constructor() {
+        this.markdownConverter = new showdown.Converter({
+            simplifiedAutoLink : true,
+            excludeTrailingPunctuationFromURLs : true,
+            simpleLineBreaks : true,
+            openLinksInNewWindow : true,
+            emoji : true
+        });
+
         this.markdown = false;
         this.code = false;
 
@@ -29,12 +36,7 @@ class aFileEditor {
     }
 
     togglePreview() {
-        if (this.markdown) {
-            this.parseMarkdown();
-        }
-        else if (this.code) {
-            this.highlightCode();
-        }
+        this.parsePreview();
 
         document.querySelector('.editor-preview').classList.toggle('d-none');
         document.querySelector('#EditorContainer').classList.toggle('d-none');
@@ -42,6 +44,14 @@ class aFileEditor {
         let saveButton = document.querySelector('#EditorSave');
         if (saveButton) {
             saveButton.classList.toggle('d-none');
+        }
+    }
+
+    parsePreview() {
+        if (this.markdown) {
+            this.parseMarkdown();
+        } else if (this.code) {
+            this.highlightCode();
         }
     }
 
@@ -57,8 +67,7 @@ class aFileEditor {
                 setTimeout(() => {
                     message.classList.add('d-none');
                 }, 3000);
-            }
-            else {
+            } else {
                 alert('Failed');
             }
         });
@@ -85,19 +94,16 @@ class aFileEditor {
 
                 e.target.selectionStart = e.target.selectionEnd = start + 1;
                 e.preventDefault();
-            }
-            else if (e.which === 13) {
+            } else if (e.which === 13) {
                 e.preventDefault();
 
                 let countTabs = 0;
                 for (let i = start-1; i>=0; i--) {
                     if (value.charAt(i) === "\t") {
                         countTabs++;
-                    }
-                    else if (value.charAt(i) === "\n") {
+                    } else if (value.charAt(i) === "\n") {
                         break;
-                    }
-                    else {
+                    } else {
                         countTabs = 0;
                     }
                 }
@@ -120,7 +126,7 @@ class aFileEditor {
             });
 
             document.addEventListener('keydown', e => {
-                if (e.which === 83 && (e.ctrlKey || e.metaKey)) {
+                if ((e.key === 's' || e.key === 'S') && (e.ctrlKey || e.metaKey)) {
                     e.preventDefault();
                     this.saveContent();
                 }

@@ -57,15 +57,10 @@ function printResponse(\Psr\Http\Message\ResponseInterface $response)
     }
 
     $stream = $response->getBody();
-    $streamUri = $stream->getMetadata()['uri'] ?? null;
 
     while (!$stream->eof()) {
         echo $stream->read(100000);
     }
 
     $stream->close();
-
-    if (is_file($streamUri)) {
-        @unlink($streamUri);
-    }
 }

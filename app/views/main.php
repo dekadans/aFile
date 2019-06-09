@@ -19,10 +19,10 @@ $lang = \lib\Translation::getInstance();
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item">
-                        <a class="nav-link" id="Help" href="#"><i class="far fa-question-circle"></i></a>
+                        <a class="nav-link" id="Help" href="#"><i class="far fa-question-circle"></i> <?= $lang->translate('HELP') ?></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="Logout" href="#"><?= $lang->translate('LOGOUT') ?></a>
+                        <a class="nav-link" id="Logout" href="#"><i class="fas fa-sign-out-alt"></i> <?= $lang->translate('LOGOUT') ?></a>
                     </li>
                 </ul>
                 <div class="form-inline my-2 my-lg-0">

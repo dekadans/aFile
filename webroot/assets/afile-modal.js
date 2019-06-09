@@ -48,6 +48,7 @@ class aFileModal {
 
     /**
      * Displays a confirm modal
+     * @param title
      * @param message
      * @param callback
      */

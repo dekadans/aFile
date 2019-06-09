@@ -32,6 +32,7 @@
     "EDITOR_SAVE" : "Save",
     "EDITOR_SAVED" : "Saved",
     "EDITOR_TOGGLE_PREVIEW" : "Toggle preview",
+    "EDITOR_DOWNLOAD" : "Download",
     "EDITOR_TYPE_ERROR" : "The editor is not enabled for this file type",
 
     "BRAND" : "aFile",

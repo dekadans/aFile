@@ -11,9 +11,18 @@ class File extends AbstractFile {
         return $this->fileRepository->readFileContent($this);
     }
 
-    public function openFileInNewTab()
+    public function isInlineDownload()
     {
-        return in_array($this->getMime(), Config::getInstance()->files->inline_download) || in_array($this->getMime(), Config::getInstance()->files->editor);
+        return in_array($this->getMime(), Config::getInstance()->files->inline_download);
+    }
+
+    public function isEditable()
+    {
+        if (in_array($this->getMime(), Config::getInstance()->files->editor)) {
+            return new EditableFile($this);
+        } else {
+            return false;
+        }
     }
 
     public function getFilePath() : string

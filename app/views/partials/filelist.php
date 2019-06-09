@@ -7,7 +7,7 @@ foreach ($fileList as $file): ?>
 
         <li class="list-group-item py-0 listItem file"
             data-id="<?= $file->getId() ?>"
-            data-newtab="<?= $file->openFileInNewTab() ?>"
+            data-newtab="<?= ($file->isInlineDownload() || $file->isEditable()) ?>"
             data-stringid="<?= $file->getStringId() ?>"
             data-mime="<?= $file->getMime() ?>">
             <div class="row align-items-center">
