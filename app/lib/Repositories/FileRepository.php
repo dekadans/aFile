@@ -495,6 +495,19 @@ class FileRepository
         return new FileList($files, true);
     }
 
+    public function findTotalSizeForUser(User $user)
+    {
+        $SQL = "SELECT SUM(size) as sizeSum FROM files WHERE user_id = ?";
+        $statement = $this->pdo->prepare($SQL);
+
+        if ($statement->execute([$user->getId()])) {
+            $result = $statement->fetch();
+            return $result['sizeSum'] ?? 0;
+        } else {
+            return false;
+        }
+    }
+
     /**
      * @param array $fileData
      * @return AbstractFile
@@ -514,5 +527,26 @@ class FileRepository
         }
 
         return $file;
+    }
+
+    public static function convertBytesToReadable(int $bytes, int $precision = 0)
+    {
+        $siPrefix = Config::getInstance()->presentation->siprefix;
+        $thresh = $siPrefix ? 1000 : 1024;
+
+        if ($bytes < $thresh) {
+            return $bytes . ' B';
+        }
+
+        $units = $siPrefix ? ['kB','MB','GB','TB','PB','EB','ZB','YB'] : ['KiB','MiB','GiB','TiB','PiB','EiB','ZiB','YiB'];
+
+        $u = -1;
+
+        do {
+            $bytes /= $thresh;
+            $u++;
+        } while ($bytes >= $thresh && $u < count($units) - 1);
+
+        return round($bytes, $precision) . ' ' . $units[$u];
     }
 }

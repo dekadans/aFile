@@ -138,24 +138,7 @@ abstract class AbstractFile {
      */
     public function getSizeReadable() : string
     {
-        $siPrefix = Config::getInstance()->presentation->siprefix;
-        $thresh = $siPrefix ? 1000 : 1024;
-        $bytes = (int)$this->size;
-
-        if ($bytes < $thresh) {
-            return $this->size . ' B';
-        }
-
-        $units = $siPrefix ? ['kB','MB','GB','TB','PB','EB','ZB','YB'] : ['KiB','MiB','GiB','TiB','PiB','EiB','ZiB','YiB'];
-
-        $u = -1;
-
-        do {
-            $bytes /= $thresh;
-            $u++;
-        } while ($bytes >= $thresh && $u < count($units) - 1);
-
-        return round($bytes) . ' ' . $units[$u];
+        return FileRepository::convertBytesToReadable($this->size);
     }
 
     /**

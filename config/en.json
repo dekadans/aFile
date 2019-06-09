@@ -40,6 +40,8 @@
     "SEARCH" : "Search for files",
     "SEARCH_RESULT" : "Search results",
     "LOGOUT" : "Sign out",
+    "SIZE" : "Size",
+    "SIZE_TITLE" : "Total size of your files on disk",
     "HOME" : "Home",
 
     "ARE_YOU_SURE" : "Are you sure?",

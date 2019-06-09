@@ -213,15 +213,28 @@ class aFile {
             }
         });
 
-
         $('#Help').click(e => {
             e.preventDefault();
 
-            this.fetch('GET', 'ListFiles', 'Help').then(html => {
+            this.fetch('GET', 'Info', 'Help').then(html => {
                 this.modal.setSizeXl();
                 this.modal.hideCancel();
                 this.modal.setTitle(this.info.language.HELP);
                 this.modal.setBody(html);
+                this.modal.setOkCallback(e => {
+                    this.modal.hide();
+                });
+                this.modal.show();
+            });
+        });
+
+        $('#Size').click(e => {
+            e.preventDefault();
+
+            this.fetch('GET', 'Info', 'Size').then(json => {
+                this.modal.hideCancel();
+                this.modal.setTitle(this.info.language.SIZE_TITLE);
+                this.modal.setBody('<strong>' + json.h + '</strong> (' + json.b + ')');
                 this.modal.setOkCallback(e => {
                     this.modal.hide();
                 });

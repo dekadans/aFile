@@ -22,6 +22,9 @@ $lang = \lib\Translation::getInstance();
                         <a class="nav-link" id="Help" href="#"><i class="far fa-question-circle"></i> <?= $lang->translate('HELP') ?></a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" id="Size" href="#"><i class="fas fa-database"></i> <?= $lang->translate('SIZE') ?></a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" id="Logout" href="#"><i class="fas fa-sign-out-alt"></i> <?= $lang->translate('LOGOUT') ?></a>
                     </li>
                 </ul>
