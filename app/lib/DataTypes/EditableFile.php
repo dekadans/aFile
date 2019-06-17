@@ -37,14 +37,9 @@ class EditableFile
         return Acl::checkFileAccess($this->file);
     }
 
-    public function getId()
+    public function getFile() : File
     {
-        return $this->file->getId();
-    }
-
-    public function getName()
-    {
-        return $this->file->getName();
+        return $this->file;
     }
 
     public function getText()

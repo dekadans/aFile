@@ -3,10 +3,12 @@ class aFileEditor {
         this.markdownConverter = new showdown.Converter({
             simplifiedAutoLink : true,
             excludeTrailingPunctuationFromURLs : true,
-            simpleLineBreaks : true,
+            //simpleLineBreaks : true,
             openLinksInNewWindow : true,
             emoji : true
         });
+
+        this.edited = false;
 
         this.markdown = false;
         this.code = false;
@@ -24,11 +26,11 @@ class aFileEditor {
 
     parseMarkdown() {
         let html = this.markdownConverter.makeHtml(this.getText());
-        document.querySelector('.editor-preview').innerHTML = html;
+        document.querySelector('#EditorPreview').innerHTML = html;
     }
 
     highlightCode() {
-        let previewElement = document.querySelector('.editor-preview');
+        let previewElement = document.querySelector('#EditorPreview');
         let code = this.getText();
         code = code.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
         previewElement.innerHTML = '<pre><code class="editorCode">'+ code +'</code></pre>';
@@ -61,6 +63,7 @@ class aFileEditor {
             id : this.getFileId()
         }).then(jsonResponse => {
             if (jsonResponse.status === 'ok') {
+                this.edited = false;
                 let message = document.querySelector('#EditorSavedMessage');
 
                 message.classList.remove('d-none');
@@ -74,15 +77,24 @@ class aFileEditor {
     }
 
     bindEvents() {
-        let preview = document.querySelector('#EditorPreviewToggle');
+        let preview = document.querySelector('.preview-toggle');
         if (preview) {
             preview.addEventListener('click', e => {
+                e.preventDefault();
+                this.togglePreview();
+            });
+
+            document.querySelector('#EditorClose').addEventListener('click', e => {
                 e.preventDefault();
                 this.togglePreview();
             });
         }
 
         document.querySelector('#EditorTextarea').addEventListener('keydown', e => {
+            if (e.key !== 'F5') {
+                this.edited = true;
+            }
+
             let start = e.target.selectionStart;
             let end = e.target.selectionEnd;
             let value = e.target.value;
@@ -132,6 +144,8 @@ class aFileEditor {
                 }
             });
         }
+
+        window.onbeforeunload = e => this.edited ? '' : null;
     }
 }
 
