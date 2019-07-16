@@ -19,19 +19,16 @@ clipboard
 * animationer
 * knapp ist utöver ctrl+x
 
-klickbart i breadcrumbs
-
 länkar
-
-hjälp-popup med kortkomandon samt sökhjälp
-
-totalstorleksgräns/räknare??
-
-editor refactor  
-* Varning vid ej sparat
 
 Refaktorera sök  
 * Sök endast nedåt i trädet. Bör gå med lokala variabler-magi.
+
+Ny Auhthentication
+* Nyckel sparas i Cookie
+* Användar-ID sparas i Session
+* Om någon saknas = utloggad (rensa allt)
+* "Kom ihåg mig" = Nyckelcookie lever längre, plus authtoken i annan cookie
 
 ### Kom ihåg
 

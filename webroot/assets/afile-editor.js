@@ -91,7 +91,7 @@ class aFileEditor {
         }
 
         document.querySelector('#EditorTextarea').addEventListener('keydown', e => {
-            if (e.key !== 'F5') {
+            if (e.key.length === 1) {
                 this.edited = true;
             }
 
