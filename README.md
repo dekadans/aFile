@@ -27,8 +27,15 @@ Refaktorera sök
 Ny Auhthentication
 * Nyckel sparas i Cookie
 * Användar-ID sparas i Session
-* Om någon saknas = utloggad (rensa allt)
-* "Kom ihåg mig" = Nyckelcookie lever längre, plus authtoken i annan cookie
+* Om ID i session saknas, logga in med cookie
+* "Kom ihåg mig" är alltid aktivt, cookie sparas länge
+* Om något går fel, eller användare loggar ut, rensa allt
+* Option för att ställa in cookies levnadslängd, 0 = ej "kom ihåg"?
+* Visa varning om HTTPS ej används? Möjligt att stänga av inlogg över HTTP?
+
+Krypterad fil sparas på disk  
+Nyckel krypterat med lösenord sparas i databasen  
+När användaren loggar in hämtas nyckeln ur DB och sparas i Cookie  
 
 ### Kom ihåg
 
