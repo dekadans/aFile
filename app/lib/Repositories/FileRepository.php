@@ -5,6 +5,7 @@ use lib\DataTypes\AbstractFile;
 use lib\Config;
 use lib\Database;
 use lib\DataTypes\Directory;
+use lib\DataTypes\Link;
 use lib\Encryption;
 use lib\DataTypes\File;
 use lib\DataTypes\FileContent;
@@ -17,6 +18,7 @@ class FileRepository
 {
     const TYPE_FILE = 'FILE';
     const TYPE_DIRECTORY = 'DIRECTORY';
+    const TYPE_LINK = 'LINK';
 
     /** @var \PDO */
     private $pdo;
@@ -517,12 +519,12 @@ class FileRepository
         if ($fileData) {
             if ($fileData['type'] === self::TYPE_FILE) {
                 $file = new File($this, $this->userRepository, $fileData);
-            }
-            else if ($fileData['type'] === self::TYPE_DIRECTORY) {
+            } else if ($fileData['type'] === self::TYPE_DIRECTORY) {
                 $file = new Directory($this, $this->userRepository, $fileData);
+            } else if ($fileData['type'] === self::TYPE_LINK) {
+                $file = new Link($this, $this->userRepository, $fileData);
             }
-        }
-        else {
+        } else {
             $file = new File($this, $this->userRepository);
         }
 

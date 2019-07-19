@@ -28,7 +28,7 @@ class Share extends AbstractController {
         $fileId = $this->param('id');
         $this->file = $fileRepository->find($fileId);
 
-        if (!$this->file->isset() && $this->file->isFile()) {
+        if (!$this->file->isset() || !$this->file->isDownloadable()) {
             return $this->outputJSON([
                 'error' => 'NO_FILE'
             ]);

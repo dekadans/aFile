@@ -35,6 +35,10 @@
     "EDITOR_DOWNLOAD" : "Download",
     "EDITOR_TYPE_ERROR" : "The editor is not enabled for this file type",
 
+    "LINK_CONFIRM" : "Confirm redirect",
+    "LINK_TARGET" : "Target",
+    "LINK_FOLLOW" : "Follow link",
+
     "BRAND" : "aFile",
     "SEARCH_SHORT" : "Search",
     "SEARCH" : "Search for files",

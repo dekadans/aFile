@@ -13,7 +13,12 @@ if (isset($queryParams['do']) && !empty($queryParams['do'])) {
 
         if (\lib\Acl::checkControllerAccess($controller)) {
             if (method_exists($controller, 'init')) {
-                $controller->init();
+                $response = $controller->init();
+
+                if ($response instanceof \Psr\Http\Message\ResponseInterface) {
+                    printResponse($response);
+                    die;
+                }
             }
 
             $action = $queryParams['action'] ?? null;

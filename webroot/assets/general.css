@@ -87,7 +87,7 @@ html, body, #AppContainer {
                                   supported by Chrome and Opera */
 }
 
-.directoryIcon {
+.directoryIcon, .linkIcon {
     width: 30px;
     margin-left: 5px;
     margin-bottom: 14px;
