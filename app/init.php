@@ -13,7 +13,7 @@ require __DIR__ . '/autoload.php';
  * Set up basic error handling
  */
 set_exception_handler(function (\Throwable $ex){
-    $response = new \lib\HTTP\HTMLResponse('exceptionError', ['exception' => $ex], 500);
+    $response = new \lib\HTTP\HTMLResponse('partials/exceptionError', ['exception' => $ex], 500);
     printResponse($response->psr7());
     die;
 });

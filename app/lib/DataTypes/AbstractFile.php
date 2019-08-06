@@ -228,4 +228,14 @@ abstract class AbstractFile {
     {
         return ($this->type === FileRepository::TYPE_DIRECTORY);
     }
+
+    public function isLink() : bool
+    {
+        return ($this->type === FileRepository::TYPE_LINK);
+    }
+
+    public function isDownloadable() : bool
+    {
+        return ($this->isFile() || $this->isLink());
+    }
 }

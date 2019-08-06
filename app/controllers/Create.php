@@ -3,6 +3,7 @@ namespace controllers;
 
 use lib\Authentication;
 use lib\Repositories\FileRepository;
+use lib\Services\CreateFileService;
 use lib\Translation;
 
 class Create extends AbstractController
@@ -18,9 +19,10 @@ class Create extends AbstractController
         $name = $this->param('name');
         $location = $this->param('location');
         $fileRepository = new FileRepository();
+        $createFileService = new CreateFileService($fileRepository);
 
         if (!empty($name)) {
-            $result = $fileRepository->createDirectory($user, $name, $location);
+            $result = $createFileService->createDirectory($user, $name, $location);
 
             if ($result) {
                 return $this->outputJSON([

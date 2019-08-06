@@ -5,6 +5,7 @@ use lib\DataTypes\AbstractFile;
 use lib\Config;
 use lib\Database;
 use lib\DataTypes\Directory;
+use lib\DataTypes\Link;
 use lib\Encryption;
 use lib\DataTypes\File;
 use lib\DataTypes\FileContent;
@@ -17,6 +18,7 @@ class FileRepository
 {
     const TYPE_FILE = 'FILE';
     const TYPE_DIRECTORY = 'DIRECTORY';
+    const TYPE_LINK = 'LINK';
 
     /** @var \PDO */
     private $pdo;
@@ -40,41 +42,6 @@ class FileRepository
 
     /**
      * @param User $user
-     * @param string $name
-     * @param int $location
-     * @param string $mime
-     * @param string $temporaryPath
-     * @return \lib\DataTypes\File
-     * @throws CouldNotLocateEncryptionKeyException
-     */
-    public function createFile(User $user, string $name, $location, string $mime, string $temporaryPath)
-    {
-        /** @var \lib\DataTypes\File $file */
-        $file = $this->create($user, $name, $location, $mime, 'FILE', 'PERSONAL');
-
-        if ($file) {
-            if (!$this->writeFileContent($file, $temporaryPath)) {
-                $this->deleteFile($file->getId());
-                throw new \Exception('Could not write file. Check directory permissions.');
-            }
-        }
-
-        return $file;
-    }
-
-    /**
-     * @param User $user
-     * @param string $name
-     * @param int $location
-     * @return bool|Directory
-     */
-    public function createDirectory(User $user, string $name, $location)
-    {
-        return $this->create($user, $name, $location, '', 'DIRECTORY', 'NONE');
-    }
-
-    /**
-     * @param User $user
      * @param $name
      * @param $location
      * @param $mime
@@ -82,7 +49,7 @@ class FileRepository
      * @param $encryption
      * @return bool|AbstractFile
      */
-    private function create(User $user, $name, $location, $mime, $type, $encryption)
+    public function create(User $user, $name, $location, $mime, $type, $encryption)
     {
         if (!$this->exists($user, $name, $location)) {
             $stringId = $this->getUniqueStringId();
@@ -264,15 +231,15 @@ class FileRepository
 
     /**
      * @param File $file
-     * @param string $pathToContent
+     * @param string $fileContent
      * @return bool
      * @throws CouldNotLocateEncryptionKeyException
      */
-    public function writeFileContent(File $file, string $pathToContent)
+    public function writeFileContent(File $file, FileContent $fileContent)
     {
         $key = $this->encryptionKeyRepository->getEncryptionKeyForFile($file);
         $this->encryption->setKey($key);
-        $result = $this->encryption->encryptFile($file, $pathToContent);
+        $result = $this->encryption->encryptFile($file, $fileContent->getPath());
 
         if ($result && is_file($file->getFilePath())) {
             $this->updateFileProperties($file->getId(), [
@@ -377,7 +344,7 @@ class FileRepository
                 ORDER BY (
                 CASE
                     WHEN type = 'DIRECTORY' THEN 1
-                    WHEN type = 'SPECIAL' THEN 2
+                    WHEN type = 'LINK' THEN 2
                     ELSE 4
                 END), " . $sort->getSortBy() . ' ' . $sort->getDirection();
 
@@ -475,7 +442,7 @@ class FileRepository
                 ORDER BY (
                 CASE
                     WHEN type = 'DIRECTORY' THEN 1
-                    WHEN type = 'SPECIAL' THEN 2
+                    WHEN type = 'LINK' THEN 2
                     ELSE 4
                 END), " .  $sort->getSortBy() . ' ' . $sort->getDirection();
 
@@ -517,12 +484,12 @@ class FileRepository
         if ($fileData) {
             if ($fileData['type'] === self::TYPE_FILE) {
                 $file = new File($this, $this->userRepository, $fileData);
-            }
-            else if ($fileData['type'] === self::TYPE_DIRECTORY) {
+            } else if ($fileData['type'] === self::TYPE_DIRECTORY) {
                 $file = new Directory($this, $this->userRepository, $fileData);
+            } else if ($fileData['type'] === self::TYPE_LINK) {
+                $file = new Link($this, $this->userRepository, $fileData);
             }
-        }
-        else {
+        } else {
             $file = new File($this, $this->userRepository);
         }
 

@@ -3,7 +3,7 @@
 /** @var \lib\DataTypes\FileList $fileList */
 
 foreach ($fileList as $file): ?>
-    <?php if ($file->isFile()): ?>
+    <?php if ($file->isFile() || $file->isLink()): ?>
 
         <li class="list-group-item py-0 listItem file"
             data-id="<?= $file->getId() ?>"
@@ -12,7 +12,11 @@ foreach ($fileList as $file): ?>
             data-mime="<?= $file->getMime() ?>">
             <div class="row align-items-center">
                 <div class="col-1 pl-0 pl-sm-3">
-                    <span class="flaticon-<?= $file->getFileExtension() ?> flaticon-blank fileIcon"></span>
+                    <?php if ($file->isFile()): ?>
+                        <span class="flaticon-<?= $file->getFileExtension() ?> flaticon-blank fileIcon"></span>
+                    <?php elseif ($file->isLink()): ?>
+                        <img class="linkIcon" src="assets/filetypes/link.svg" alt="Link">
+                    <?php endif; ?>
                 </div>
                 <div class="col-7 col-sm-8 pl-3 pl-md-0">
                     <span class="fileName align-middle"><?= $file->getName() ?></span>

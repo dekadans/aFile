@@ -18,7 +18,7 @@ class File extends AbstractFile {
 
     public function isEditable()
     {
-        if (in_array($this->getMime(), Config::getInstance()->files->editor)) {
+        if ($this->isFile() && in_array($this->getMime(), Config::getInstance()->files->editor)) {
             return new EditableFile($this);
         } else {
             return false;
