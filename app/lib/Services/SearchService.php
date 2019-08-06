@@ -1,10 +1,11 @@
 <?php
-namespace lib;
+namespace lib\Services;
 
+use lib\Config;
 use lib\DataTypes\User;
 use lib\Repositories\FileRepository;
 
-class Search
+class SearchService
 {
     private $fileName = '';
     private $fileExtensions = [];
@@ -64,6 +65,9 @@ class Search
                 break;
             case FileRepository::TYPE_DIRECTORY:
                 $this->fileType = FileRepository::TYPE_DIRECTORY;
+                break;
+            case FileRepository::TYPE_LINK:
+                $this->fileType = FileRepository::TYPE_LINK;
                 break;
             default:
                 $this->fileType = '';

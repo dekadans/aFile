@@ -5,7 +5,9 @@ namespace controllers;
 use lib\Acl;
 use lib\Authentication;
 use lib\DataTypes\File;
+use lib\DataTypes\FileContent;
 use lib\Repositories\FileRepository;
+use lib\Services\CreateFileService;
 use lib\Translation;
 
 class Editor extends AbstractController
@@ -52,10 +54,13 @@ class Editor extends AbstractController
 
     public function actionCreate()
     {
+        $createFileService = new CreateFileService($this->fileRepository);
+
         $tempFile = tempnam(sys_get_temp_dir(), 'afile');
         file_put_contents($tempFile, $this->content);
+        $fileContent = new FileContent($tempFile);
 
-        $file = $this->fileRepository->createFile(Authentication::getUser(), $this->filename, $this->location, 'text/plain', $tempFile);
+        $file = $createFileService->createFile(Authentication::getUser(), $this->filename, $this->location, 'text/plain', $fileContent);
         @unlink($tempFile);
 
         if ($file) {
@@ -76,9 +81,10 @@ class Editor extends AbstractController
         if ($this->file->isset() && $this->file->isFile()) {
             $tempFile = tempnam(sys_get_temp_dir(), 'afile');
             $tempFileWritten = file_put_contents($tempFile, $this->content);
+            $content = new FileContent($tempFile);
 
             if ($tempFileWritten !== false) {
-                $fileWritten = $this->fileRepository->writeFileContent($this->file, $tempFile);
+                $fileWritten = $this->fileRepository->writeFileContent($this->file, $content);
                 @unlink($tempFile);
 
                 if ($fileWritten) {

@@ -6,7 +6,9 @@ use lib\Acl;
 use lib\Authentication;
 use lib\Config;
 use lib\DataTypes\File;
+use lib\DataTypes\FileContent;
 use lib\Repositories\FileRepository;
+use lib\Services\CreateFileService;
 use lib\Translation;
 use Psr\Http\Message\UploadedFileInterface;
 
@@ -32,6 +34,8 @@ class Upload extends AbstractController {
         $this->location = $this->param('location');
         $this->user = Authentication::getUser();
 
+        $createFileService = new CreateFileService($this->fileRepository);
+
         $previousFileWithSameName = null;
 
         $maxsize = Config::getInstance()->files->maxsize;
@@ -54,8 +58,9 @@ class Upload extends AbstractController {
 
             $temporaryFile = tempnam(sys_get_temp_dir(), 'afile_upload');
             $file->moveTo($temporaryFile);
+            $fileContent = new FileContent($temporaryFile);
 
-            $result = $this->fileRepository->createFile($this->user, $name, $this->location, $mime, $temporaryFile);
+            $result = $createFileService->createFile($this->user, $name, $this->location, $mime, $fileContent);
             $results[] = $result;
         }
 
@@ -93,7 +98,7 @@ class Upload extends AbstractController {
             try {
                 $newContent = $newFile->getContent();
 
-                $this->fileRepository->writeFileContent($oldFile, $newContent->getPath());
+                $this->fileRepository->writeFileContent($oldFile, $newContent);
 
                 unset($newContent);
                 $this->fileRepository->deleteFile($newFile->getId());

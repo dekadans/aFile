@@ -5,9 +5,8 @@ namespace controllers;
 use lib\Authentication;
 use lib\Config;
 use lib\DataTypes\File;
-use lib\HTTP\Response;
 use lib\Repositories\FileRepository;
-use lib\Search;
+use lib\Services\SearchService;
 use lib\Sort;
 use lib\Translation;
 
@@ -49,7 +48,7 @@ class ListFiles extends AbstractController {
     public function actionSearch()
     {
         $searchString = $this->param('search');
-        $search = new Search(Authentication::getUser(), $this->fileRepository);
+        $search = new SearchService(Authentication::getUser(), $this->fileRepository);
 
         $fileList = $search->search($searchString);
 

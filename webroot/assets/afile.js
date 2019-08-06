@@ -474,6 +474,36 @@ class aFile {
             });
         });
 
+        $('#CreateLink').click(e => {
+            e.preventDefault();
+            let modalBody = '<p><input type="text" class="form-control focusOnShow" spellcheck="false" id="ModalInputName" placeholder="Name"></p>';
+            modalBody += '<p><input type="text" class="form-control confirmOnEnter" spellcheck="false" id="ModalInputUrl" placeholder="URL"></p>';
+
+            this.modal.setTitle('Create link');
+            this.modal.setBody(modalBody);
+            this.modal.setOkCallback(e => {
+                let m = this.modal.getModal();
+                let name = m.find('#ModalInputName').val();
+                let url = m.find('#ModalInputUrl').val();
+
+                try {
+                    new URL(url);
+                } catch (_) {
+                    alert(this.info.language.LINK_ERROR);
+                    return false;
+                }
+
+                this.fetch('POST', 'Link', 'Create', {
+                    name : name,
+                    url : url,
+                    location : this.nav.getCurrentLocation()
+                }).then(data => {
+                    this.list();
+                });
+            });
+            this.modal.show();
+        });
+
         $('.sortby').click(e => {
             e.preventDefault();
             let column = $(e.target).data('column');

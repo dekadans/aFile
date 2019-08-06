@@ -11,6 +11,7 @@
     "UPLOAD_FAILED" : "One or more files failed to upload.",
     "CONFIRM_OVERWRITE" : "Overwrite",
     "DELETE_FAILED" : "Could not delete file or directory.",
+    "DIRECTORY" : "Directory",
     "CREATE_DIRECTORY" : "Create directory",
     "CREATE_DIRECTORY_FAILED" : "Could not create directory.",
     "RENAME" : "Rename",
@@ -27,6 +28,7 @@
     "SHARE_PASSWORD_SAVE" : "Save",
     "SHARE_PASSWORD_CLEAR" : "Clear",
     "EDITOR" : "Editor",
+    "TEXTFILE" : "Text file",
     "EDITOR_NAME" : "Create a new text file",
     "EDITOR_CLOSE" : "Close",
     "EDITOR_SAVE" : "Save",
@@ -35,9 +37,11 @@
     "EDITOR_DOWNLOAD" : "Download",
     "EDITOR_TYPE_ERROR" : "The editor is not enabled for this file type",
 
+    "LINK" : "Link",
     "LINK_CONFIRM" : "Confirm redirect",
     "LINK_TARGET" : "Target",
     "LINK_FOLLOW" : "Follow link",
+    "LINK_ERROR" : "Could not create link. Make sure that the URL starts with http:// or https://",
 
     "BRAND" : "aFile",
     "SEARCH_SHORT" : "Search",

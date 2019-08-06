@@ -3,12 +3,18 @@ class aFileModal {
         this.modal = $('#Modal');
 
         this.modal.on('shown.bs.modal', e => {
-            if (this.modal.find('#ModalInput').length) {
-                this.modal.find('#ModalInput').focus();
+            if (this.modal.find('.focusOnShow').length === 1) {
+                this.modal.find('.focusOnShow').focus();
             }
             else {
                 this.modal.find('#ModalOk').focus();
             }
+
+            this.modal.find('.confirmOnEnter').keyup(e => {
+                if (e.which === 13) {
+                    this.modal.find('#ModalOk').click();
+                }
+            });
         }).on('hidden.bs.modal', e => {
             this.modal.find('#ModalCancel').show();
             this.modal.find('.modal-dialog').removeClass('modal-xl');
@@ -67,12 +73,9 @@ class aFileModal {
      */
     input(title, callback, defaultValue = '') {
         this.setTitle(title);
-        this.setBody('<input type="text" class="form-control" spellcheck="false" id="ModalInput">');
-        this.modal.find('#ModalInput').val(defaultValue).keyup(e => {
-            if (e.which === 13) {
-                this.modal.find('#ModalOk').click();
-            }
-        });
+        this.setBody('<input type="text" class="form-control confirmOnEnter focusOnShow" spellcheck="false" id="ModalInput">');
+
+        this.modal.find('#ModalInput').val(defaultValue);
 
         let validateInput = (e) => {
             let value = this.modal.find('#ModalInput').val().trim();
