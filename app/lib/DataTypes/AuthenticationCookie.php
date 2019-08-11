@@ -35,6 +35,17 @@ class AuthenticationCookie
         }
     }
 
+    public function set(int $expires)
+    {
+        $cookie = $this->selector . ':' . $this->token . ':' . $this->encryptionKey;
+        setcookie(self::COOKIE_NAME, $cookie, $expires, '/');
+    }
+
+    public function clear()
+    {
+        setcookie(self::COOKIE_NAME, null, -1, '/');
+    }
+
     /**
      * @return string
      */
