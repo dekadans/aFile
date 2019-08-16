@@ -91,7 +91,6 @@ class aFileEditor {
         }
 
         document.querySelector('#EditorTextarea').addEventListener('keydown', e => {
-            console.log(e.key);
             if (e.key.length === 1 && !e.metaKey) {
                 this.edited = true;
             }
