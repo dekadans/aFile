@@ -2,7 +2,6 @@
 
 namespace lib\Services;
 
-use Defuse\Crypto\Key;
 use Defuse\Crypto\KeyProtectedByPassword;
 use lib\DataTypes\AuthenticationCookie;
 use lib\DataTypes\AuthenticationToken;
@@ -13,8 +12,6 @@ use Psr\Http\Message\ServerRequestInterface;
 
 class AuthenticationService
 {
-    const USER_SESSION_NAME = 'aFile_User';
-
     /** @var User|null */
     private $signedInUser = null;
 

@@ -8,6 +8,8 @@ Dev branch. The project is very much in progress and not very functional.
 "sign out everywhere"  
 
 afile-script  
+* Skriv om till Symfony console?
+* Ta bort remember me från installation
 * byta lösenord   
 * ta bort användare+filer?
 
@@ -19,19 +21,15 @@ clipboard
 * animationer
 * knapp ist utöver ctrl+x
 
-länkar
-
 Refaktorera sök  
 * Sök endast nedåt i trädet. Bör gå med lokala variabler-magi.
 
 Ny Auhthentication
-* Nyckel sparas i Cookie
-* Användar-ID sparas i Session
-* Om ID i session saknas, logga in med cookie
-* "Kom ihåg mig" är alltid aktivt, cookie sparas länge
-* Om något går fel, eller användare loggar ut, rensa allt
 * Option för att ställa in cookies levnadslängd, 0 = ej "kom ihåg"?
 * Visa varning om HTTPS ej används? Möjligt att stänga av inlogg över HTTP?
+
+Refaktorering
+* Instantiering av FileRepository, Förhållandet mellan FileRepository och EncryptionKeyRepository
 
 Krypterad fil sparas på disk  
 Nyckel krypterat med lösenord sparas i databasen  
