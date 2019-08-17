@@ -10,18 +10,15 @@ class AuthenticationToken
     /** @var string */
     private $hashedToken;
     /** @var string */
-    private $encryptedPassword;
-    /** @var string */
     private $expires;
     /** @var string */
     private $token;
 
-    public function __construct(User $user, string $selector, string $hashedToken, string $encryptedPassword, int $expires)
+    public function __construct(User $user, string $selector, string $hashedToken, int $expires)
     {
         $this->user = $user;
         $this->selector = $selector;
         $this->hashedToken = $hashedToken;
-        $this->encryptedPassword = $encryptedPassword;
         $this->expires = $expires;
     }
 
@@ -47,14 +44,6 @@ class AuthenticationToken
     public function getHashedToken(): string
     {
         return $this->hashedToken;
-    }
-
-    /**
-     * @return string
-     */
-    public function getEncryptedPassword(): string
-    {
-        return $this->encryptedPassword;
     }
 
     /**
@@ -87,14 +76,6 @@ class AuthenticationToken
     public function setHashedToken(string $hashedToken)
     {
         $this->hashedToken = $hashedToken;
-    }
-
-    /**
-     * @param string $encryptedPassword
-     */
-    public function setEncryptedPassword(string $encryptedPassword)
-    {
-        $this->encryptedPassword = $encryptedPassword;
     }
 
     /**

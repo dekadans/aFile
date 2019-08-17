@@ -80,12 +80,11 @@ class UserRepository
      */
     public function addAuthTokenToUser(AuthenticationToken $authenticationToken)
     {
-        $statement = $this->pdo->prepare('INSERT INTO auth (user_id, selector, hashed_token, encrypted_password, expires) VALUES (?,?,?,?,?);');
+        $statement = $this->pdo->prepare('INSERT INTO auth (user_id, selector, hashed_token, expires) VALUES (?,?,?,?);');
         $result = $statement->execute([
             $authenticationToken->getUser()->getId(),
             $authenticationToken->getSelector(),
             $authenticationToken->getHashedToken(),
-            $authenticationToken->getEncryptedPassword(),
             date('Y-m-d H:i:s', $authenticationToken->getExpires())
         ]);
 
@@ -115,7 +114,7 @@ class UserRepository
      */
     public function getAuthenticationTokenBySelector(string $selector)
     {
-        $statement = $this->pdo->prepare('SELECT user_id, hashed_token, encrypted_password, expires FROM auth WHERE selector = ?');
+        $statement = $this->pdo->prepare('SELECT user_id, hashed_token, expires FROM auth WHERE selector = ?');
         $statement->execute([$selector]);
         $row = $statement->fetch();
 
@@ -124,7 +123,6 @@ class UserRepository
                 $this->getUserById($row['user_id']),
                 $selector,
                 $row['hashed_token'],
-                $row['encrypted_password'],
                 strtotime($row['expires'])
             );
         }

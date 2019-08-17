@@ -73,7 +73,7 @@ class AuthenticationService
             if ($cookie !== false) {
                 // Authenticate using cookie
                 $authTokenInDb = $this->userRepository->getAuthenticationTokenBySelector($cookie->getSelector());
-                $hashedTokenInCookie = hash('sha256', $cookie->getToken());
+                $hashedTokenInCookie = hash('sha256', $cookie->getEncryptionKey());
 
                 if ($authTokenInDb->getUser()->isset() && hash_equals($authTokenInDb->getHashedToken(), $hashedTokenInCookie)) {
                     if ($authTokenInDb->getExpires() > time()) {
@@ -118,9 +118,7 @@ class AuthenticationService
     {
         $selector = bin2hex(random_bytes(6));
 
-        $encryptionKey = Key::createNewRandomKey();
-        $token = $encryptionKey->saveToAsciiSafeString();
-        $hashedToken = hash('sha256', $token);
+        $hashedToken = hash('sha256', $user->getKey());
 
         $expires = strtotime('+ 1 MONTH');
 
@@ -128,14 +126,13 @@ class AuthenticationService
             $user,
             $selector,
             $hashedToken,
-            '',
             $expires
         );
 
         $result = $this->userRepository->addAuthTokenToUser($authToken);
 
         if ($result) {
-            $cookie = new AuthenticationCookie($selector, $token, $user->getKey());
+            $cookie = new AuthenticationCookie($selector, $user->getKey());
             $cookie->set($expires);
         }
     }

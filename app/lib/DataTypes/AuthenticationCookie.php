@@ -11,14 +11,11 @@ class AuthenticationCookie
     /** @var string */
     private $selector;
     /** @var string */
-    private $token;
-    /** @var string */
     private $encryptionKey;
 
-    public function __construct(string $selector, string $token, string $encryptionKey)
+    public function __construct(string $selector, string $encryptionKey)
     {
         $this->selector = $selector;
-        $this->token = $token;
         $this->encryptionKey = $encryptionKey;
     }
 
@@ -28,8 +25,8 @@ class AuthenticationCookie
         $authCookie = $cookies[self::COOKIE_NAME] ?? null;
 
         if (!is_null($authCookie)) {
-            list($selector, $token, $key) = explode(':', $authCookie);
-            return new self($selector, $token, $key);
+            list($selector, $key) = explode(':', $authCookie);
+            return new self($selector, $key);
         } else {
             return false;
         }
@@ -37,7 +34,7 @@ class AuthenticationCookie
 
     public function set(int $expires)
     {
-        $cookie = $this->selector . ':' . $this->token . ':' . $this->encryptionKey;
+        $cookie = $this->selector . ':' . $this->encryptionKey;
         setcookie(self::COOKIE_NAME, $cookie, $expires, '/');
     }
 
@@ -52,14 +49,6 @@ class AuthenticationCookie
     public function getSelector(): string
     {
         return $this->selector;
-    }
-
-    /**
-     * @return string
-     */
-    public function getToken(): string
-    {
-        return $this->token;
     }
 
     /**

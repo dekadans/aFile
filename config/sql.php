@@ -15,7 +15,6 @@ UNIQUE KEY `username` (`username`)
 `user_id` int(11) unsigned NOT NULL,
 `selector` char(12) DEFAULT NULL,
 `hashed_token` char(64) DEFAULT NULL,
-`encrypted_password` varchar(1024) DEFAULT NULL,
 `expires` datetime DEFAULT NULL,
 PRIMARY KEY (`id`),
 UNIQUE KEY `selector` (`selector`),
