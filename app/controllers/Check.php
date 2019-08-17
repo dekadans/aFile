@@ -3,7 +3,6 @@
 namespace controllers;
 
 use lib\Config;
-use lib\Services\AuthenticationService;
 use lib\Translation;
 
 class Check extends AbstractController {
@@ -14,7 +13,7 @@ class Check extends AbstractController {
     public function index() {
         $info = [];
 
-        $user = AuthenticationService::getUser();
+        $user = $this->authentication()->getUser();
 
         if ($user) {
             $info['login'] = true;

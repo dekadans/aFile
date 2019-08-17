@@ -16,7 +16,7 @@ if (isset($queryParams['do']) && !empty($queryParams['do'])) {
         /** @var \controllers\AbstractController $controller */
         $controller = new $do($request, $authenticationService);
 
-        if (\lib\Acl::checkControllerAccess($controller)) {
+        if ($controller->checkAccess()) {
             if (method_exists($controller, 'init')) {
                 $response = $controller->init();
 

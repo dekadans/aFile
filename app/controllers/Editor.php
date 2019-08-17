@@ -1,9 +1,6 @@
 <?php
 namespace controllers;
 
-
-use lib\Acl;
-use lib\Authentication;
 use lib\DataTypes\File;
 use lib\DataTypes\FileContent;
 use lib\Repositories\FileRepository;
@@ -44,7 +41,7 @@ class Editor extends AbstractController
         if ($fileId) {
             $this->file = $this->fileRepository->find($fileId);
 
-            if ($this->file->isset() && !Acl::checkFileAccess($this->file)) {
+            if ($this->file->isset() && !$this->checkFileAccess($this->file)) {
                 return $this->outputJSON([
                     'error' => Translation::getInstance()->translate('ACCESS_DENIED')
                 ]);
@@ -60,7 +57,7 @@ class Editor extends AbstractController
         file_put_contents($tempFile, $this->content);
         $fileContent = new FileContent($tempFile);
 
-        $file = $createFileService->createFile(Authentication::getUser(), $this->filename, $this->location, 'text/plain', $fileContent);
+        $file = $createFileService->createFile($this->authentication()->getUser(), $this->filename, $this->location, 'text/plain', $fileContent);
         @unlink($tempFile);
 
         if ($file) {

@@ -2,7 +2,6 @@
 
 namespace controllers;
 
-use lib\Acl;
 use lib\DataTypes\File;
 use lib\Repositories\EncryptionKeyRepository;
 use lib\Repositories\FileRepository;
@@ -23,7 +22,7 @@ class Share extends AbstractController {
     public function init()
     {
         $fileRepository = new FileRepository();
-        $this->encryptionKeyRepository = new EncryptionKeyRepository($fileRepository);
+        $this->encryptionKeyRepository = new EncryptionKeyRepository($fileRepository, $this->authentication()->getUser());
 
         $fileId = $this->param('id');
         $this->file = $fileRepository->find($fileId);
@@ -34,7 +33,7 @@ class Share extends AbstractController {
             ]);
         }
 
-        if (!Acl::checkFileAccess($this->file)) {
+        if (!$this->checkFileAccess($this->file)) {
             return $this->outputJSON([
                 'error' => 'NO_ACCESS'
             ]);

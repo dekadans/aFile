@@ -2,12 +2,10 @@
 
 namespace controllers;
 
-use lib\Acl;
 use lib\Config;
 use lib\DataTypes\File;
 use lib\DataTypes\FileContent;
 use lib\Repositories\FileRepository;
-use lib\Services\AuthenticationService;
 use lib\Services\CreateFileService;
 use lib\Translation;
 use Psr\Http\Message\UploadedFileInterface;
@@ -32,7 +30,7 @@ class Upload extends AbstractController {
     public function index()
     {
         $this->location = $this->param('location');
-        $this->user = AuthenticationService::getUser();
+        $this->user = $this->authentication()->getUser();
 
         $createFileService = new CreateFileService($this->fileRepository);
 
@@ -43,7 +41,7 @@ class Upload extends AbstractController {
         $results = [];
 
         /** @var UploadedFileInterface $file */
-        foreach ($this->request->getUploadedFiles() as $file) {
+        foreach ($this->getRequest()->getUploadedFiles() as $file) {
             if ($file->getError() || $file->getSize() > $maxsize) {
                 $results[] = false;
                 continue;
@@ -94,7 +92,7 @@ class Upload extends AbstractController {
         /** @var File $newFile */
         $newFile = $this->fileRepository->find($this->param('newId'));
 
-        if (Acl::checkFileAccess($oldFile) && Acl::checkFileAccess($newFile)) {
+        if ($this->checkFileAccess($oldFile) && $this->checkFileAccess($newFile)) {
             try {
                 $newContent = $newFile->getContent();
 

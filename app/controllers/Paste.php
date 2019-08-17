@@ -2,8 +2,6 @@
 
 namespace controllers;
 
-
-use lib\Acl;
 use lib\Repositories\FileRepository;
 use lib\Translation;
 
@@ -25,7 +23,7 @@ class Paste extends AbstractController
         if (is_array($fileIds)) {
             foreach ($fileIds as $id) {
                 $file = $fileRepository->find($id);
-                if ($file->isset() && Acl::checkFileAccess($file)) {
+                if ($file->isset() && $this->checkFileAccess($file)) {
                     $result[] = $fileRepository->updateFileLocation($id, $newLocation);
                 }
             }

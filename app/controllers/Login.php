@@ -2,7 +2,6 @@
 
 namespace controllers;
 
-use lib\Services\AuthenticationService;
 use lib\Translation;
 
 class Login extends AbstractController {
@@ -13,12 +12,12 @@ class Login extends AbstractController {
     public function index() {
         $translation = Translation::getInstance();
 
-        if (!AuthenticationService::isSignedIn()) {
+        if (!$this->authentication()->isSignedIn()) {
             $username = $this->param('username');
             $password = $this->param('password');
 
             if ($username && $password) {
-                $result = $this->authenticationService->authenticate($username, $password);
+                $result = $this->authentication()->authenticate($username, $password);
 
                 if ($result) {
                     return $this->outputJSON([

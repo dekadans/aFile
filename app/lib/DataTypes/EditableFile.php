@@ -2,7 +2,6 @@
 
 namespace lib\DataTypes;
 
-use lib\Acl;
 use lib\Config;
 
 class EditableFile
@@ -30,11 +29,6 @@ class EditableFile
     public function hasPreview()
     {
         return ($this->isMarkdown() || $this->isCode());
-    }
-
-    public function isWritable()
-    {
-        return Acl::checkFileAccess($this->file);
     }
 
     public function getFile() : File

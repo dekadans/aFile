@@ -2,7 +2,6 @@
 
 namespace controllers;
 
-use lib\Authentication;
 use lib\DataTypes\FileContent;
 use lib\Repositories\FileRepository;
 use lib\Services\CreateFileService;
@@ -30,7 +29,7 @@ class Link extends AbstractController
             file_put_contents($tempFile, $fileContent);
             $fileContent = new FileContent($tempFile);
 
-            $result = $createFileService->createLink(Authentication::getUser(), $name, $location, $fileContent);
+            $result = $createFileService->createLink($this->authentication()->getUser(), $name, $location, $fileContent);
 
             if ($result) {
                 return $this->outputJSON(['status' => 'ok']);

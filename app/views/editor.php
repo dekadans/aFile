@@ -1,6 +1,7 @@
 <?php
 /**
  * @var \lib\DataTypes\EditableFile $editableFile
+ * @var bool $isWritable
  */
 
 $lang = \lib\Translation::getInstance();
@@ -56,7 +57,7 @@ $openInPreview = $editableFile->hasPreview() && !empty($text);
             </button>
             <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
                 <div class="navbar-nav mr-auto">
-                    <?php if ($editableFile->isWritable()): ?>
+                    <?php if ($isWritable): ?>
                     <button id="EditorSave" class="btn btn-outline-success my-2 my-sm-0 <?= $openInPreview ? 'd-none' : '' ?>"><?= $lang->translate('EDITOR_SAVE') ?></button>
                     <?php endif; ?>
 
@@ -72,7 +73,7 @@ $openInPreview = $editableFile->hasPreview() && !empty($text);
         </div>
     </nav>
 
-    <textarea id="EditorTextarea" data-fileid="<?= $editableFile->getFile()->getId() ?>" spellcheck="false" <?= $editableFile->isWritable() ? '' : 'readonly' ?>><?= $text ?></textarea>
+    <textarea id="EditorTextarea" data-fileid="<?= $editableFile->getFile()->getId() ?>" spellcheck="false" <?= $isWritable ? '' : 'readonly' ?>><?= $text ?></textarea>
 </div>
 
 <div class="container editor-preview <?= $openInPreview ? '' : 'd-none' ?>" style="margin-bottom: 100px;">
@@ -87,7 +88,7 @@ $openInPreview = $editableFile->hasPreview() && !empty($text);
                 </span>
 
                 <div style="float: right;">
-                    <?php if ($editableFile->isWritable()): ?>
+                    <?php if ($isWritable): ?>
                     <a class="preview-toggle" href="#">
                         <i class="fas fa-edit"></i>
                         <?= $lang->translate('EDITOR_EDIT') ?>

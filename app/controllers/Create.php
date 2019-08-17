@@ -1,7 +1,6 @@
 <?php
 namespace controllers;
 
-use lib\Authentication;
 use lib\Repositories\FileRepository;
 use lib\Services\CreateFileService;
 use lib\Translation;
@@ -15,7 +14,7 @@ class Create extends AbstractController
 
     public function actionDirectory()
     {
-        $user = Authentication::getUser();
+        $user = $this->authentication()->getUser();
         $name = $this->param('name');
         $location = $this->param('location');
         $fileRepository = new FileRepository();

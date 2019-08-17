@@ -15,7 +15,8 @@ class AuthenticationService
 {
     const USER_SESSION_NAME = 'aFile_User';
 
-    private static $signedInUser = null;
+    /** @var User|null */
+    private $signedInUser = null;
 
     /** @var UserRepository */
     private $userRepository;
@@ -39,7 +40,7 @@ class AuthenticationService
                     $user->setKey($encryptionKey);
                     $this->createCookie($user);
 
-                    self::$signedInUser = $user;
+                    $this->signedInUser = $user;
                     return true;
                 }
             }
@@ -60,13 +61,13 @@ class AuthenticationService
             }
 
             $cookie->clear();
-            self::$signedInUser = null;
+            $this->signedInUser = null;
         }
     }
 
     public function load(ServerRequestInterface $request)
     {
-        if (is_null(self::$signedInUser)) {
+        if (is_null($this->signedInUser)) {
             $cookie = AuthenticationCookie::createFromRequest($request);
 
             if ($cookie !== false) {
@@ -78,7 +79,7 @@ class AuthenticationService
                     if ($authTokenInDb->getExpires() > time()) {
                         $user = $authTokenInDb->getUser();
                         $user->setKey($cookie->getEncryptionKey());
-                        self::$signedInUser = $user;
+                        $this->signedInUser = $user;
 
                         $newExpiresDate = strtotime('+ 1 MONTH');
                         $cookie->set($newExpiresDate);
@@ -142,16 +143,16 @@ class AuthenticationService
     /**
      * @return bool
      */
-    public static function isSignedIn() : bool
+    public function isSignedIn() : bool
     {
-        return !is_null(self::$signedInUser);
+        return !is_null($this->signedInUser);
     }
 
     /**
      * @return User
      */
-    public static function getUser()
+    public function getUser()
     {
-        return self::$signedInUser;
+        return $this->signedInUser;
     }
 }

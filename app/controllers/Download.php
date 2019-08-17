@@ -2,13 +2,14 @@
 
 namespace controllers;
 
-use lib\Acl;
 use lib\DataTypes\File;
+use lib\DataTypes\FileToken;
 use lib\DataTypes\Link;
 use lib\HTTP\DownloadResponse;
 use lib\HTTP\HTMLResponse;
 use lib\HTTP\Response;
 use lib\HTTP\TemplateResponse;
+use lib\Repositories\EncryptionKeyRepository;
 use lib\Repositories\FileRepository;
 use lib\Services\AuthenticationService;
 use lib\Translation;
@@ -16,6 +17,11 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 class Download extends AbstractController {
+
+    const DOWNLOAD_ACCESS_APPROVED = 1;
+    const DOWNLOAD_ACCESS_PASSWORD = 2;
+    const DOWNLOAD_ACCESS_DENIED = 3;
+
     /** @var FileRepository  */
     private $fileRepository;
     /** @var File|Link */
@@ -33,7 +39,7 @@ class Download extends AbstractController {
     {
         parent::__construct($request, $authenticationService);
 
-        $pathInfo = $this->request->getServerParams()['PATH_INFO'] ?? '';
+        $pathInfo = $this->getRequest()->getServerParams()['PATH_INFO'] ?? '';
 
         $pathInfo = substr($pathInfo, 1) . '/';
         list($id, $urlToken) = explode('/', $pathInfo);
@@ -57,11 +63,11 @@ class Download extends AbstractController {
             return $this->fileNotFound();
         }
 
-        $access = Acl::checkDownloadAccess($this->file, $this->urlToken, $this->password);
+        $access = $this->checkDownloadAccess();
 
-        if ($access === Acl::DOWNLOAD_ACCESS_DENIED) {
+        if ($access === self::DOWNLOAD_ACCESS_DENIED) {
             return $this->accessDenied();
-        } else if ($access === Acl::DOWNLOAD_ACCESS_PASSWORD) {
+        } else if ($access === self::DOWNLOAD_ACCESS_PASSWORD) {
             return $this->filePassword();
         } else {
             if ($this->file->isDownloadable() && file_exists($this->file->getFilePath())) {
@@ -103,7 +109,8 @@ class Download extends AbstractController {
             return $this->linkRedirect();
         } else if ($editableFile = $this->file->isEditable()) {
             $editableFile->setUrlToken($this->urlToken);
-            return (new HTMLResponse('editor', ['editableFile' => $editableFile]))->psr7();
+            $isWritable = $this->checkFileAccess($this->file);
+            return (new HTMLResponse('editor', ['editableFile' => $editableFile, 'isWritable' => $isWritable]))->psr7();
         } else {
             return (new DownloadResponse($this->file, $this->file->isInlineDownload()))->psr7();
         }
@@ -121,5 +128,37 @@ class Download extends AbstractController {
     public function getAccessLevel()
     {
         return self::ACCESS_CLOSED;
+    }
+
+    /**
+     * Checks access to a requested download
+     * @param File $file
+     * @param string $urlToken
+     * @param string $password
+     * @return int
+     */
+    private function checkDownloadAccess() : int
+    {
+        if ($this->authentication()->isSignedIn() && $this->authentication()->getUser()->getId() == $this->file->getUser()->getId()) {
+            return self::DOWNLOAD_ACCESS_APPROVED;
+        }
+        else {
+            $encryptionKeyRepository = new EncryptionKeyRepository($this->fileRepository, $this->authentication()->getUser());
+            $fileToken = $encryptionKeyRepository->findAccessTokenForFile($this->file);
+
+            if ($fileToken && $fileToken->getToken() === $this->urlToken) {
+                if ($fileToken->getActiveState() === FileToken::STATE_OPEN) {
+                    return self::DOWNLOAD_ACCESS_APPROVED;
+                } else if ($fileToken->getActiveState() === FileToken::STATE_RESTRICTED && !empty($fileToken->getPasswordHash())) {
+                    if (!empty($this->password) && password_verify($this->password, $fileToken->getPasswordHash())) {
+                        return self::DOWNLOAD_ACCESS_APPROVED;
+                    } else {
+                        return self::DOWNLOAD_ACCESS_PASSWORD;
+                    }
+                }
+            }
+        }
+
+        return self::DOWNLOAD_ACCESS_DENIED;
     }
 }

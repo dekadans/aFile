@@ -2,7 +2,6 @@
 
 namespace controllers;
 
-use lib\Acl;
 use lib\Repositories\FileRepository;
 use lib\Translation;
 
@@ -41,7 +40,7 @@ class Delete extends AbstractController {
     {
         $fileRepository = new FileRepository();
         $file = $fileRepository->find($id);
-        if ($file->isset() && Acl::checkFileAccess($file)) {
+        if ($file->isset() && $this->checkFileAccess($file)) {
             return $fileRepository->deleteFile($id);
         }
         return true;

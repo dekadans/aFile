@@ -1,8 +1,6 @@
 <?php
 namespace controllers;
 
-
-use lib\Acl;
 use lib\Repositories\FileRepository;
 use lib\Translation;
 
@@ -28,7 +26,7 @@ class Rename extends AbstractController
 
         $file = $this->fileRepository->find($id);
 
-        if ($file->isset() && !Acl::checkFileAccess($file)) {
+        if ($file->isset() && !$this->checkFileAccess($file)) {
             return $this->outputJSON([
                 'error' => Translation::getInstance()->translate('ACCESS_DENIED')
             ]);
@@ -53,7 +51,7 @@ class Rename extends AbstractController
 
         $file = $this->fileRepository->find($id);
 
-        if ($file->isset() && Acl::checkFileAccess($file)) {
+        if ($file->isset() && $this->checkFileAccess($file)) {
             $file->setMime($newMime);
             return $this->outputJSON([
                 'status' => 'ok'

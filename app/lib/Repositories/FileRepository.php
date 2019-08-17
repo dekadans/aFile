@@ -1,6 +1,7 @@
 <?php
 namespace lib\Repositories;
 
+use GuzzleHttp\Psr7\ServerRequest;
 use lib\DataTypes\AbstractFile;
 use lib\Config;
 use lib\Database;
@@ -10,7 +11,7 @@ use lib\Encryption;
 use lib\DataTypes\File;
 use lib\DataTypes\FileContent;
 use lib\DataTypes\FileList;
-use lib\SearchEngine;
+use lib\Services\AuthenticationService;
 use lib\Sort;
 use lib\DataTypes\User;
 
@@ -37,7 +38,11 @@ class FileRepository
         $this->pdo = Database::getInstance()->getPDO();
         $this->userRepository = new UserRepository(Database::getInstance());
         $this->encryption = new Encryption();
-        $this->encryptionKeyRepository = new EncryptionKeyRepository($this);
+
+        // Inject this
+        $authenticationService = new AuthenticationService($this->userRepository);
+        $authenticationService->load(ServerRequest::fromGlobals());
+        $this->encryptionKeyRepository = new EncryptionKeyRepository($this, $authenticationService->getUser());
     }
 
     /**

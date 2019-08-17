@@ -5,7 +5,6 @@ namespace controllers;
 use lib\Config;
 use lib\DataTypes\File;
 use lib\Repositories\FileRepository;
-use lib\Services\AuthenticationService;
 use lib\Services\SearchService;
 use lib\Sort;
 use lib\Translation;
@@ -34,7 +33,7 @@ class ListFiles extends AbstractController {
     {
         $location = $this->param('location');
 
-        $fileList = $this->fileRepository->findByLocation(AuthenticationService::getUser(), $location);
+        $fileList = $this->fileRepository->findByLocation($this->authentication()->getUser(), $location);
 
         if (count($fileList)) {
             return $this->parseView('partials/filelist', ['fileList' => $fileList]);
@@ -48,7 +47,7 @@ class ListFiles extends AbstractController {
     public function actionSearch()
     {
         $searchString = $this->param('search');
-        $search = new SearchService(AuthenticationService::getUser(), $this->fileRepository);
+        $search = new SearchService($this->authentication()->getUser(), $this->fileRepository);
 
         $fileList = $search->search($searchString);
 
@@ -67,7 +66,7 @@ class ListFiles extends AbstractController {
         $location = $this->param('location');
 
         $imageFileExts = Config::getInstance()->type_groups->image;
-        $fileList = $this->fileRepository->findByFileExtension(AuthenticationService::getUser(), $location, $imageFileExts);
+        $fileList = $this->fileRepository->findByFileExtension($this->authentication()->getUser(), $location, $imageFileExts);
         $images = [];
 
         /** @var File $file */

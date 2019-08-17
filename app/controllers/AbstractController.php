@@ -2,6 +2,7 @@
 
 namespace controllers;
 
+use lib\DataTypes\AbstractFile;
 use lib\HTTP\JsonResponse;
 use lib\HTTP\HTMLResponse;
 use lib\Services\AuthenticationService;
@@ -15,10 +16,10 @@ abstract class AbstractController {
     const ACCESS_ADMIN = 2;
 
     /** @var ServerRequestInterface */
-    protected $request;
+    private $request;
 
     /** @var AuthenticationService */
-    protected $authenticationService;
+    private $authenticationService;
 
     abstract public function getAccessLevel();
 
@@ -26,6 +27,44 @@ abstract class AbstractController {
     {
         $this->request = $request;
         $this->authenticationService = $authenticationService;
+    }
+
+    public function checkAccess()
+    {
+        switch ($this->getAccessLevel()) {
+            case self::ACCESS_OPEN:
+                return true;
+            case self::ACCESS_LOGIN:
+                if ($this->authentication()->isSignedIn()) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            case self::ACCESS_ADMIN:
+                if ($this->authentication()->isSignedIn() && $this->authentication()->getUser()->getType() == 'ADMIN') {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            default:
+                return false;
+        }
+    }
+
+    /**
+     * @param AbstractFile $file
+     * @return bool
+     */
+    public function checkFileAccess(AbstractFile $file) : bool
+    {
+        if ($this->authenticationService->isSignedIn() && $this->authenticationService->getUser()->getId() === $file->getUser()->getId()) {
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
     /**
@@ -73,5 +112,15 @@ abstract class AbstractController {
     protected function outputJSON($data) {
         $response = new JsonResponse($data);
         return $response->psr7();
+    }
+
+    protected function authentication()
+    {
+        return $this->authenticationService;
+    }
+
+    protected function getRequest()
+    {
+        return $this->request;
     }
 }

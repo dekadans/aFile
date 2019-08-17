@@ -2,7 +2,6 @@
 
 namespace controllers;
 
-use lib\Authentication;
 use lib\Repositories\FileRepository;
 
 class Info extends AbstractController
@@ -20,7 +19,7 @@ class Info extends AbstractController
     public function actionSize()
     {
         $fileRepository = new FileRepository();
-        $sizeInDb = $fileRepository->findTotalSizeForUser(Authentication::getUser());
+        $sizeInDb = $fileRepository->findTotalSizeForUser($this->authentication()->getUser());
 
         return $this->outputJSON([
             'b' => $sizeInDb,

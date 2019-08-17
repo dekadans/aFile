@@ -8,7 +8,7 @@ class Logout extends AbstractController {
     }
 
     public function index() {
-        $this->authenticationService->deauthenticate($this->request);
+        $this->authentication()->deauthenticate($this->getRequest());
 
         return $this->outputJSON([
             'status' => 'ok'
