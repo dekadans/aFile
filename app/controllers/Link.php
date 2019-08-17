@@ -21,7 +21,7 @@ class Link extends AbstractController
         $url = $this->param('url');
 
         if (!empty($name) && !empty($url) && filter_var($url, FILTER_VALIDATE_URL)) {
-            $fileRepository = new FileRepository();
+            $fileRepository = $this->getFileRepository();
             $createFileService = new CreateFileService($fileRepository);
 
             $fileContent = '[InternetShortcut]' . PHP_EOL . 'URL=' . $url;

@@ -1,7 +1,6 @@
 <?php
 namespace lib\Repositories;
 
-use GuzzleHttp\Psr7\ServerRequest;
 use lib\DataTypes\AbstractFile;
 use lib\Config;
 use lib\Database;
@@ -11,7 +10,6 @@ use lib\Services\EncryptionService;
 use lib\DataTypes\File;
 use lib\DataTypes\FileContent;
 use lib\DataTypes\FileList;
-use lib\Services\AuthenticationService;
 use lib\Sort;
 use lib\DataTypes\User;
 
@@ -33,16 +31,12 @@ class FileRepository
     /** @var EncryptionKeyRepository */
     private $encryptionKeyRepository;
 
-    public function __construct()
+    public function __construct(Database $database, UserRepository $userRepository, EncryptionService $encryptionService, EncryptionKeyRepository $encryptionKeyRepository)
     {
-        $this->pdo = Database::getInstance()->getPDO();
-        $this->userRepository = new UserRepository(Database::getInstance());
-        $this->encryption = new EncryptionService();
-
-        // Inject this
-        $authenticationService = new AuthenticationService($this->userRepository);
-        $authenticationService->load(ServerRequest::fromGlobals());
-        $this->encryptionKeyRepository = new EncryptionKeyRepository($this, $authenticationService->getUser());
+        $this->pdo = $database->getPDO();
+        $this->userRepository = $userRepository;
+        $this->encryption = $encryptionService;
+        $this->encryptionKeyRepository = $encryptionKeyRepository;
     }
 
     /**
@@ -274,34 +268,6 @@ class FileRepository
         } else {
             return false;
         }
-    }
-
-    /**
-     * @param File $file
-     * @param string $newEncryptionKey
-     * @param string $encryptionType
-     * @return bool
-     * @throws CouldNotLocateEncryptionKeyException
-     */
-    public function changeEncryptionKeyForFile(File $file, string $newEncryptionKey, string $encryptionType) : bool
-    {
-        $currentEncryptionKey = $this->encryptionKeyRepository->getEncryptionKeyForFile($file);
-        $this->encryption->setKey($currentEncryptionKey);
-
-        $pathToPlaintext = $this->encryption->decryptFile($file);
-
-        if ($pathToPlaintext) {
-            $this->encryption->setKey($newEncryptionKey);
-            if ($this->encryption->encryptFile($file, $pathToPlaintext)) {
-                @unlink($pathToPlaintext);
-                $this->updateFileProperties($file->getId(), [
-                    'encryption' => $encryptionType
-                ]);
-                return true;
-            }
-        }
-
-        return false;
     }
 
     /**

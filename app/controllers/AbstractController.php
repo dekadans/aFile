@@ -3,6 +3,7 @@
 namespace controllers;
 
 use lib\DataTypes\AbstractFile;
+use lib\Factories\FileRepositoryFactory;
 use lib\HTTP\JsonResponse;
 use lib\HTTP\HTMLResponse;
 use lib\Services\AuthenticationService;
@@ -122,5 +123,10 @@ abstract class AbstractController {
     protected function getRequest()
     {
         return $this->request;
+    }
+
+    protected function getFileRepository()
+    {
+        return FileRepositoryFactory::create($this->authentication());
     }
 }

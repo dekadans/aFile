@@ -18,7 +18,7 @@ class Info extends AbstractController
 
     public function actionSize()
     {
-        $fileRepository = new FileRepository();
+        $fileRepository = $this->getFileRepository();
         $sizeInDb = $fileRepository->findTotalSizeForUser($this->authentication()->getUser());
 
         return $this->outputJSON([

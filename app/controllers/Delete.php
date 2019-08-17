@@ -38,7 +38,7 @@ class Delete extends AbstractController {
 
     private function deleteFile($id)
     {
-        $fileRepository = new FileRepository();
+        $fileRepository = $this->getFileRepository();
         $file = $fileRepository->find($id);
         if ($file->isset() && $this->checkFileAccess($file)) {
             return $fileRepository->deleteFile($id);

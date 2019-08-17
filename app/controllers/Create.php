@@ -17,7 +17,7 @@ class Create extends AbstractController
         $user = $this->authentication()->getUser();
         $name = $this->param('name');
         $location = $this->param('location');
-        $fileRepository = new FileRepository();
+        $fileRepository = $this->getFileRepository();
         $createFileService = new CreateFileService($fileRepository);
 
         if (!empty($name)) {

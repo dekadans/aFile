@@ -129,15 +129,16 @@ class UserRepository
     }
 
     /**
-     * @param string $selector
+     * @param string $oldSelector
      * @param int $newExpiresTimestamp
      * @return bool
      */
-    public function refreshAuthenticationToken(string $selector, int $newExpiresTimestamp)
+    public function refreshAuthenticationToken(string $oldSelector, string $newSelector, int $newExpiresTimestamp)
     {
-        $statement = $this->pdo->prepare('UPDATE auth SET expires = :newExpiresDate WHERE selector = :selector;');
+        $statement = $this->pdo->prepare('UPDATE auth SET selector = :newSelector, expires = :newExpiresDate WHERE selector = :oldSelector;');
+        $statement->bindValue(':newSelector', $newSelector);
         $statement->bindValue(':newExpiresDate', date('Y-m-d H:i:s', $newExpiresTimestamp));
-        $statement->bindValue(':selector', $selector);
+        $statement->bindValue(':oldSelector', $oldSelector);
 
         return $statement->execute();
     }

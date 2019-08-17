@@ -58,4 +58,12 @@ class AuthenticationCookie
     {
         return $this->encryptionKey;
     }
+
+    /**
+     * @param string $selector
+     */
+    public function setSelector(string $selector)
+    {
+        $this->selector = $selector;
+    }
 }

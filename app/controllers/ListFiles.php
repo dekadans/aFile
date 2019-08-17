@@ -20,7 +20,7 @@ class ListFiles extends AbstractController {
 
     public function init()
     {
-        $this->fileRepository = new FileRepository();
+        $this->fileRepository = $this->getFileRepository();
     }
 
     public function index()

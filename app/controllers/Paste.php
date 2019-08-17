@@ -18,7 +18,7 @@ class Paste extends AbstractController
         $newLocation = $this->param('location');
         $result = [];
 
-        $fileRepository = new FileRepository();
+        $fileRepository = $this->getFileRepository();
 
         if (is_array($fileIds)) {
             foreach ($fileIds as $id) {

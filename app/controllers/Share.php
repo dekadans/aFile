@@ -5,6 +5,7 @@ namespace controllers;
 use lib\DataTypes\File;
 use lib\Repositories\EncryptionKeyRepository;
 use lib\Repositories\FileRepository;
+use lib\Services\EncryptionService;
 use lib\Translation;
 
 class Share extends AbstractController {
@@ -21,8 +22,8 @@ class Share extends AbstractController {
 
     public function init()
     {
-        $fileRepository = new FileRepository();
-        $this->encryptionKeyRepository = new EncryptionKeyRepository($fileRepository, $this->authentication()->getUser());
+        $fileRepository = $this->getFileRepository();
+        $this->encryptionKeyRepository = new EncryptionKeyRepository(new EncryptionService(), $this->authentication()->getUser());
 
         $fileId = $this->param('id');
         $this->file = $fileRepository->find($fileId);

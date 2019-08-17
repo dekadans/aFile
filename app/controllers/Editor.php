@@ -35,7 +35,7 @@ class Editor extends AbstractController
         $this->content = $this->param('content');
         $this->location = $this->param('location');
 
-        $this->fileRepository = new FileRepository();
+        $this->fileRepository = $this->getFileRepository();
 
         $fileId = $this->param('id');
         if ($fileId) {

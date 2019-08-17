@@ -78,9 +78,7 @@ class AuthenticationService
                         $user->setKey($cookie->getEncryptionKey());
                         $this->signedInUser = $user;
 
-                        $newExpiresDate = strtotime('+ 1 MONTH');
-                        $cookie->set($newExpiresDate);
-                        $this->userRepository->refreshAuthenticationToken($authTokenInDb->getSelector(), $newExpiresDate);
+                        $this->refreshCookie($cookie);
 
                         return true;
                     }
@@ -131,6 +129,22 @@ class AuthenticationService
         if ($result) {
             $cookie = new AuthenticationCookie($selector, $user->getKey());
             $cookie->set($expires);
+        }
+    }
+
+    private function refreshCookie(AuthenticationCookie $cookie)
+    {
+        if (!isset($_SESSION['aFile_CookieRefreshed'])) {
+            $newSelector = bin2hex(random_bytes(6));
+            $oldSelector = $cookie->getSelector();
+            $newExpiresDate = strtotime('+ 1 MONTH');
+
+            $cookie->setSelector($newSelector);
+            $cookie->set($newExpiresDate);
+
+            $this->userRepository->refreshAuthenticationToken($oldSelector, $newSelector, $newExpiresDate);
+
+            $_SESSION['aFile_CookieRefreshed'] = true;
         }
     }
 

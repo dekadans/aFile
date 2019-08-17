@@ -7,6 +7,7 @@ use lib\Database;
 use lib\DataTypes\User;
 use lib\DataTypes\File;
 use lib\DataTypes\FileToken;
+use lib\Services\EncryptionService;
 
 class EncryptionKeyRepository
 {
@@ -15,14 +16,14 @@ class EncryptionKeyRepository
 
     /** @var \PDO */
     private $pdo;
-    /** @var FileRepository */
-    private $fileRepository;
     /** @var User */
     private $user;
+    /** @var EncryptionService */
+    private $encryptionService;
 
-    public function __construct(FileRepository $fileRepository, User $authenticatedUser = null)
+    public function __construct(EncryptionService $encryptionService, User $authenticatedUser = null)
     {
-        $this->fileRepository = $fileRepository;
+        $this->encryptionService = $encryptionService;
         $this->pdo = Database::getInstance()->getPDO();
         $this->user = $authenticatedUser;
     }
@@ -92,7 +93,7 @@ class EncryptionKeyRepository
             $createStatement->bindValue(':encryptionKey', $encryptionKeyAscii);
 
             if ($createStatement->execute()) {
-                $result = $this->fileRepository->changeEncryptionKeyForFile($file, $encryptionKeyAscii, self::ENCRYPTION_TOKEN);
+                $result = $this->changeEncryptionKeyForFile($file, $encryptionKeyAscii, self::ENCRYPTION_TOKEN);
 
                 if ($result) {
                     return $this->findAccessTokenForFile($file);
@@ -116,7 +117,7 @@ class EncryptionKeyRepository
             return true;
         } else {
             $newEncryptionKey = $this->user->getKey();
-            $result = $this->fileRepository->changeEncryptionKeyForFile($file, $newEncryptionKey, self::ENCRYPTION_PERSONAL);
+            $result = $this->changeEncryptionKeyForFile($file, $newEncryptionKey, self::ENCRYPTION_PERSONAL);
 
             if ($result) {
                 $SQL = "DELETE from share WHERE id = :id";
@@ -206,6 +207,30 @@ class EncryptionKeyRepository
     private function generateToken()
     {
         return sha1(random_bytes(32));
+    }
+
+    private function changeEncryptionKeyForFile(File $file, string $newEncryptionKey, string $encryptionType) : bool
+    {
+        $currentEncryptionKey = $this->getEncryptionKeyForFile($file);
+        $this->encryptionService->setKey($currentEncryptionKey);
+
+        $pathToPlaintext = $this->encryptionService->decryptFile($file);
+
+        if ($pathToPlaintext) {
+            $this->encryptionService->setKey($newEncryptionKey);
+            if ($this->encryptionService->encryptFile($file, $pathToPlaintext)) {
+                @unlink($pathToPlaintext);
+
+                $updateStatement = $this->pdo->prepare("UPDATE files SET encryption = :encryption WHERE id = :id");
+                $updateStatement->bindValue(':encryption', $encryptionType);
+                $updateStatement->bindValue(':id', $file->getId());
+                $updateStatement->execute();
+
+                return true;
+            }
+        }
+
+        return false;
     }
 }
 
