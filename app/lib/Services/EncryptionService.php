@@ -1,9 +1,9 @@
 <?php
-namespace lib;
+namespace lib\Services;
 
 use lib\DataTypes\File;
 
-class Encryption
+class EncryptionService
 {
     private $key;
 

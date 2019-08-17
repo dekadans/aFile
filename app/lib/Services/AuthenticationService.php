@@ -72,7 +72,7 @@ class AuthenticationService
                 $authTokenInDb = $this->userRepository->getAuthenticationTokenBySelector($cookie->getSelector());
                 $hashedTokenInCookie = hash('sha256', $cookie->getEncryptionKey());
 
-                if ($authTokenInDb->getUser()->isset() && hash_equals($authTokenInDb->getHashedToken(), $hashedTokenInCookie)) {
+                if ($authTokenInDb && $authTokenInDb->getUser()->isset() && hash_equals($authTokenInDb->getHashedToken(), $hashedTokenInCookie)) {
                     if ($authTokenInDb->getExpires() > time()) {
                         $user = $authTokenInDb->getUser();
                         $user->setKey($cookie->getEncryptionKey());

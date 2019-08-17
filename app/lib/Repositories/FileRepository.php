@@ -7,7 +7,7 @@ use lib\Config;
 use lib\Database;
 use lib\DataTypes\Directory;
 use lib\DataTypes\Link;
-use lib\Encryption;
+use lib\Services\EncryptionService;
 use lib\DataTypes\File;
 use lib\DataTypes\FileContent;
 use lib\DataTypes\FileList;
@@ -27,7 +27,7 @@ class FileRepository
     /** @var UserRepository */
     private $userRepository;
 
-    /** @var Encryption */
+    /** @var EncryptionService */
     private $encryption;
 
     /** @var EncryptionKeyRepository */
@@ -37,7 +37,7 @@ class FileRepository
     {
         $this->pdo = Database::getInstance()->getPDO();
         $this->userRepository = new UserRepository(Database::getInstance());
-        $this->encryption = new Encryption();
+        $this->encryption = new EncryptionService();
 
         // Inject this
         $authenticationService = new AuthenticationService($this->userRepository);

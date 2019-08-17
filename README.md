@@ -28,6 +28,7 @@ Refaktorera sök
 
 Ny Auhthentication
 * Option för att ställa in cookies levnadslängd, 0 = ej "kom ihåg"?
+* Regenerate selector
 * Visa varning om HTTPS ej används? Möjligt att stänga av inlogg över HTTP?
 
 Refaktorering
