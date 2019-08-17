@@ -44,8 +44,10 @@ if (!file_exists(__DIR__ . '/../config/config.ini')) {
 
 $userRepository = new \lib\Repositories\UserRepository(\lib\Database::getInstance());
 $request = \GuzzleHttp\Psr7\ServerRequest::fromGlobals();
-$authentication = new \lib\Authentication($userRepository, $request, \lib\Config::getInstance()->login->remember_me_activated);
-$authentication->loadUserFromSession();
+
+$authenticationService = new \lib\Services\AuthenticationService($userRepository);
+$authenticationService->load($request);
+
 
 function printResponse(\Psr\Http\Message\ResponseInterface $response)
 {

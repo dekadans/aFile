@@ -15,7 +15,7 @@ class AuthenticationCookie
     /** @var string */
     private $encryptionKey;
 
-    private function __construct(string $selector, string $token, string $encryptionKey)
+    public function __construct(string $selector, string $token, string $encryptionKey)
     {
         $this->selector = $selector;
         $this->token = $token;

@@ -8,6 +8,7 @@ use lib\DataTypes\File;
 use lib\DataTypes\FileToken;
 use lib\Repositories\EncryptionKeyRepository;
 use lib\Repositories\FileRepository;
+use lib\Services\AuthenticationService;
 
 class Acl {
 
@@ -25,14 +26,14 @@ class Acl {
             case AbstractController::ACCESS_OPEN:
                 return true;
             case AbstractController::ACCESS_LOGIN:
-                if (Authentication::isSignedIn()) {
+                if (AuthenticationService::isSignedIn()) {
                     return true;
                 }
                 else {
                     return false;
                 }
             case AbstractController::ACCESS_ADMIN:
-                if (Authentication::isSignedIn() && Authentication::getUser()->getType() == 'ADMIN') {
+                if (AuthenticationService::isSignedIn() && AuthenticationService::getUser()->getType() == 'ADMIN') {
                     return true;
                 }
                 else {
@@ -52,7 +53,7 @@ class Acl {
      */
     public static function checkDownloadAccess(File $file, string $urlToken = '', string $password = '') : int
     {
-        if (Authentication::isSignedIn() && Authentication::getUser()->getId() == $file->getUser()->getId()) {
+        if (AuthenticationService::isSignedIn() && AuthenticationService::getUser()->getId() == $file->getUser()->getId()) {
             return self::DOWNLOAD_ACCESS_APPROVED;
         }
         else {
@@ -82,7 +83,7 @@ class Acl {
      */
     public static function checkFileAccess(AbstractFile $file) : bool
     {
-        $user = Authentication::getUser();
+        $user = AuthenticationService::getUser();
 
         if ($user && $user->getId() === $file->getUser()->getId()) {
             return true;

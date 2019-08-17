@@ -10,6 +10,7 @@ use lib\HTTP\HTMLResponse;
 use lib\HTTP\Response;
 use lib\HTTP\TemplateResponse;
 use lib\Repositories\FileRepository;
+use lib\Services\AuthenticationService;
 use lib\Translation;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -28,9 +29,9 @@ class Download extends AbstractController {
     /** @var bool */
     private $forceDownload = false;
 
-    public function __construct(ServerRequestInterface $request)
+    public function __construct(ServerRequestInterface $request, AuthenticationService $authenticationService)
     {
-        parent::__construct($request);
+        parent::__construct($request, $authenticationService);
 
         $pathInfo = $this->request->getServerParams()['PATH_INFO'] ?? '';
 

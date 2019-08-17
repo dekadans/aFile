@@ -3,11 +3,11 @@
 namespace controllers;
 
 use lib\Acl;
-use lib\Authentication;
 use lib\Config;
 use lib\DataTypes\File;
 use lib\DataTypes\FileContent;
 use lib\Repositories\FileRepository;
+use lib\Services\AuthenticationService;
 use lib\Services\CreateFileService;
 use lib\Translation;
 use Psr\Http\Message\UploadedFileInterface;
@@ -32,7 +32,7 @@ class Upload extends AbstractController {
     public function index()
     {
         $this->location = $this->param('location');
-        $this->user = Authentication::getUser();
+        $this->user = AuthenticationService::getUser();
 
         $createFileService = new CreateFileService($this->fileRepository);
 

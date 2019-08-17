@@ -1,7 +1,12 @@
 <?php
+/**
+ * Set in init.php
+ * @var \Psr\Http\Message\ServerRequestInterface $request
+ * @var \lib\Services\AuthenticationService $authenticationService
+ */
+
 require_once '../app/init.php';
 
-$request = \GuzzleHttp\Psr7\ServerRequest::fromGlobals();
 $queryParams = $request->getQueryParams();
 
 if (isset($queryParams['do']) && !empty($queryParams['do'])) {
@@ -9,7 +14,7 @@ if (isset($queryParams['do']) && !empty($queryParams['do'])) {
 
     if (class_exists($do)) {
         /** @var \controllers\AbstractController $controller */
-        $controller = new $do($request);
+        $controller = new $do($request, $authenticationService);
 
         if (\lib\Acl::checkControllerAccess($controller)) {
             if (method_exists($controller, 'init')) {

@@ -4,6 +4,7 @@ namespace controllers;
 
 use lib\HTTP\JsonResponse;
 use lib\HTTP\HTMLResponse;
+use lib\Services\AuthenticationService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -16,11 +17,15 @@ abstract class AbstractController {
     /** @var ServerRequestInterface */
     protected $request;
 
+    /** @var AuthenticationService */
+    protected $authenticationService;
+
     abstract public function getAccessLevel();
 
-    public function __construct(ServerRequestInterface $request)
+    public function __construct(ServerRequestInterface $request, AuthenticationService $authenticationService)
     {
         $this->request = $request;
+        $this->authenticationService = $authenticationService;
     }
 
     /**

@@ -2,8 +2,10 @@
 
 namespace lib\Services;
 
+use Defuse\Crypto\Key;
 use Defuse\Crypto\KeyProtectedByPassword;
 use lib\DataTypes\AuthenticationCookie;
+use lib\DataTypes\AuthenticationToken;
 use lib\DataTypes\User;
 use lib\Exceptions\AuthenticationException;
 use lib\Repositories\UserRepository;
@@ -32,10 +34,11 @@ class AuthenticationService
                 $encryptionKey = $this->findEncryptionKeyForUser($user, $password);
 
                 if ($encryptionKey) {
-                    // $this->createCookie($user);
                     $this->userRepository->deleteExpiredAuthenticationTokens();
 
                     $user->setKey($encryptionKey);
+                    $this->createCookie($user);
+
                     self::$signedInUser = $user;
                     return true;
                 }
@@ -43,6 +46,22 @@ class AuthenticationService
         }
 
         return false;
+    }
+
+    public function deauthenticate(ServerRequestInterface $request)
+    {
+        $cookie = AuthenticationCookie::createFromRequest($request);
+
+        if ($cookie) {
+            $authTokenInDb = $this->userRepository->getAuthenticationTokenBySelector($cookie->getSelector());
+
+            if ($authTokenInDb) {
+                $this->userRepository->deleteAuthTokenForUser($authTokenInDb);
+            }
+
+            $cookie->clear();
+            self::$signedInUser = null;
+        }
     }
 
     public function load(ServerRequestInterface $request)
@@ -92,6 +111,32 @@ class AuthenticationService
         }
 
         return false;
+    }
+
+    private function createCookie(User $user)
+    {
+        $selector = bin2hex(random_bytes(6));
+
+        $encryptionKey = Key::createNewRandomKey();
+        $token = $encryptionKey->saveToAsciiSafeString();
+        $hashedToken = hash('sha256', $token);
+
+        $expires = strtotime('+ 1 MONTH');
+
+        $authToken = new AuthenticationToken(
+            $user,
+            $selector,
+            $hashedToken,
+            '',
+            $expires
+        );
+
+        $result = $this->userRepository->addAuthTokenToUser($authToken);
+
+        if ($result) {
+            $cookie = new AuthenticationCookie($selector, $token, $user->getKey());
+            $cookie->set($expires);
+        }
     }
 
     /**

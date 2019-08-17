@@ -3,11 +3,11 @@
 namespace lib\Repositories;
 
 use Defuse\Crypto\Key;
-use lib\Authentication;
 use lib\Database;
 use lib\DataTypes\User;
 use lib\DataTypes\File;
 use lib\DataTypes\FileToken;
+use lib\Services\AuthenticationService;
 
 class EncryptionKeyRepository
 {
@@ -25,7 +25,7 @@ class EncryptionKeyRepository
     {
         $this->fileRepository = $fileRepository;
         $this->pdo = Database::getInstance()->getPDO();
-        $this->user = Authentication::getUser();
+        $this->user = AuthenticationService::getUser();
     }
 
     /**

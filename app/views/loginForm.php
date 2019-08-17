@@ -20,13 +20,6 @@ $lang = \lib\Translation::getInstance();
                         <input type="password" id="LoginPassword" placeholder="<?= $lang->translate('PASSWORD') ?>">
                     </div>
                     <div class="card-footer">
-                        <?php if (\lib\Config::getInstance()->login->remember_me_activated): ?>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="checkbox" id="RememberMe" value="1">
-                            <label class="form-check-label" for="RememberMe"><?= $lang->translate('REMEMBER_ME') ?></label>
-                        </div>
-                        <?php endif; ?>
-
                         <button class="btn btn-primary btn-sm float-right" id="LoginButton"><?= $lang->translate('LOGIN') ?></button>
                     </div>
 

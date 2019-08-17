@@ -2,8 +2,8 @@
 
 namespace controllers;
 
-use lib\Authentication;
 use lib\Config;
+use lib\Services\AuthenticationService;
 use lib\Translation;
 
 class Check extends AbstractController {
@@ -14,7 +14,7 @@ class Check extends AbstractController {
     public function index() {
         $info = [];
 
-        $user = Authentication::getUser();
+        $user = AuthenticationService::getUser();
 
         if ($user) {
             $info['login'] = true;
