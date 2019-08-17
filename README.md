@@ -17,6 +17,8 @@ mobilanspassa
 
 refaktorera js
 
+Förbättra felrapportering genom att testa vanliga fel
+
 clipboard  
 * animationer
 * knapp ist utöver ctrl+x
