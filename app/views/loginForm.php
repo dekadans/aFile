@@ -1,4 +1,7 @@
 <?php
+/**
+ * @var bool $isHttps
+ */
 $lang = \lib\Translation::getInstance();
 ?>
 <div id="Loading" class="view"><?= $lang->translate('LOADING') ?></div>
@@ -12,8 +15,17 @@ $lang = \lib\Translation::getInstance();
                     <div class="card-header">
                         <h4 class="card-title m-0"><?= $lang->translate('LOGIN') ?></h4>
                     </div>
-                    <div class="card-body" id="LoginMessage">
-                        <div class="alert alert-danger" role="alert"></div>
+                    <div id="LoginAlerts">
+                        <? if (!$isHttps): ?>
+                        <div class="card-body">
+                            <div class="alert alert-warning" role="alert">
+                                <strong><?= $lang->translate('LOGIN_HTTPS_WARNING') ?></strong>
+                            </div>
+                        </div>
+                        <? endif; ?>
+                        <div class="card-body" id="LoginMessage">
+                            <div class="alert alert-danger" role="alert"></div>
+                        </div>
                     </div>
                     <div class="card-body p-0" id="LoginInputs">
                         <input type="text" id="LoginUsername" placeholder="<?= $lang->translate('USERNAME') ?>">

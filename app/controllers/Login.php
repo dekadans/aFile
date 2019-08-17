@@ -39,6 +39,14 @@ class Login extends AbstractController {
     }
 
     public function actionForm() {
-        return $this->parseView('loginForm');
+        if (empty($_SERVER['HTTPS']) || $_SERVER['HTTPS'] === 'off') {
+            $isHttps = false;
+        } else {
+            $isHttps = true;
+        }
+
+        return $this->parseView('loginForm', [
+            'isHttps' => $isHttps
+        ]);
     }
 }

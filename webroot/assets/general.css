@@ -41,8 +41,17 @@ html, body, #AppContainer {
     border-bottom: 1px solid #dddddd;
 }
 
-#LoginMessage > .alert {
+#LoginAlerts {
+    border-bottom: 1px solid #dddddd;
+}
+
+#LoginAlerts .alert {
     margin-bottom: 0;
+}
+
+#LoginAlerts .card-body {
+    padding-top: 10px;
+    padding-bottom: 10px;
 }
 
 #LoginInputs input {

@@ -2,6 +2,7 @@
     "EXCEPTION_MESSAGE" : "Something went terribly wrong...",
     "LOADING" : "Loading...",
     "LOGIN" : "Sign in",
+    "LOGIN_HTTPS_WARNING" : "Warning! aFile should only be used over HTTPS.",
     "USERNAME" : "Username",
     "PASSWORD" : "Password",
     "REMEMBER_ME" : "Remember me",
