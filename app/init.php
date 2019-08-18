@@ -6,9 +6,9 @@ $port = (!in_array($_SERVER['SERVER_PORT'], [80, 443]) ? ':' . $_SERVER['SERVER_
 define('AFILE_LOCATION', (!empty($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['SERVER_NAME'] . $port . preg_replace('/[a-z]*\.php[a-z0-9\/]*/', '', $_SERVER['PHP_SELF']));
 
 /**
- * Autoloading aFile classes
+ * Include packages and classes
  */
-require __DIR__ . '/autoload.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
 /**
  * Set up basic error handling
@@ -18,11 +18,6 @@ set_exception_handler(function (\Throwable $ex){
     printResponse($response->psr7());
     die;
 });
-
-/**
- * Include packages from Composer
- */
-require_once __DIR__ . '/../vendor/autoload.php';
 
 if (!file_exists(__DIR__ . '/../config/config.ini')) {
     $response = new \lib\HTTP\Response('No config found. Please run installation script.', 500);
