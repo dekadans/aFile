@@ -25,7 +25,7 @@ class KeyCommand extends Command
     public function __construct(UserRepository $userRepository)
     {
         $this->userRepository = $userRepository;
-        parent::__construct('Test 123');
+        parent::__construct();
     }
 
     protected function configure()
