@@ -63,7 +63,7 @@ class UserRepository
 
     /**
      * @param int $userId
-     * @return bool
+     * @return KeyProtectedByPassword|bool
      */
     public function getProtectedEncryptionKeyForUser($userId)
     {
@@ -71,7 +71,11 @@ class UserRepository
         $userStatement->execute([$userId]);
         $user = $userStatement->fetch();
 
-        return $user['encryption_key'] ?? false;
+        if (isset($user['encryption_key'])) {
+            return KeyProtectedByPassword::loadFromAsciiSafeString($user['encryption_key']);
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -175,9 +179,8 @@ class UserRepository
 
     public function updatePassword(User $user, string $oldPassword, string $newPassword)
     {
-        $protectedKey = $this->getProtectedEncryptionKeyForUser($user->getId());
+        $key = $this->getProtectedEncryptionKeyForUser($user->getId());
 
-        $key = KeyProtectedByPassword::loadFromAsciiSafeString($protectedKey);
         $key->changePassword($oldPassword, $newPassword);
 
         $protectedKey = $key->saveToAsciiSafeString();

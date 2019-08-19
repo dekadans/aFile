@@ -10,7 +10,6 @@ if (!file_exists('vendor/autoload.php')) {
     die('ERROR! Run composer install first.'.PHP_EOL);
 }
 
-require_once 'app/autoload.php';
 require_once 'vendor/autoload.php';
 
 if (\lib\Installation::isInstalled()) {
@@ -30,10 +29,6 @@ try {
         'newUsername' => [
             'longPrefix' => 'add-user',
             'description' => 'Adds a user.'
-        ],
-        'encryptionKeyUsername' => [
-            'longPrefix' => 'print-key',
-            'description' => 'Prints the encryption key for a user.'
         ]
     ]);
 
@@ -47,9 +42,6 @@ if ($climate->arguments->defined('install')) {
 }
 else if ($climate->arguments->defined('newUsername')) {
 	require('cli/addUser.php');
-}
-else if ($climate->arguments->defined('encryptionKeyUsername')) {
-    require('cli/printKey.php');
 }
 else {
 	$climate->usage();

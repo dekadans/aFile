@@ -91,11 +91,10 @@ class AuthenticationService
 
     private function findEncryptionKeyForUser(User $user, string $password)
     {
-        $protectedKey = $this->userRepository->getProtectedEncryptionKeyForUser($user->getId());
+        $protectedKeyObject = $this->userRepository->getProtectedEncryptionKeyForUser($user->getId());
 
-        if ($protectedKey) {
+        if ($protectedKeyObject) {
             try {
-                $protectedKeyObject = KeyProtectedByPassword::loadFromAsciiSafeString($protectedKey);
                 $keyObject = $protectedKeyObject->unlockKey($password);
                 $keyAscii = $keyObject->saveToAsciiSafeString();
 

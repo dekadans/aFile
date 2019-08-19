@@ -76,7 +76,7 @@ class PasswordCommand extends Command
         $passwordQuestion->setHidden(true);
         $passwordQuestion->setMaxAttempts(3);
 
-        $this->oldPassword = $this->questionHelper->ask($input, $output, $passwordQuestion);
+        $this->oldPassword = $this->questionHelper->ask($input, $output, $passwordQuestion) ?? '';
     }
 
 
@@ -85,7 +85,7 @@ class PasswordCommand extends Command
         $passwordQuestion = new Question('Please enter your new password: ');
         $passwordQuestion->setHidden(true);
 
-        $this->newPassword = $this->questionHelper->ask($input, $output, $passwordQuestion);
+        $this->newPassword = $this->questionHelper->ask($input, $output, $passwordQuestion) ?? '';
 
         $passwordQuestion = new Question('Please repeat your new password: ');
         $passwordQuestion->setHidden(true);
