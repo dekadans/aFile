@@ -25,25 +25,6 @@ if (!file_exists(__DIR__ . '/../config/config.ini')) {
     die;
 }
 
-/**
- * Parse config file.
- */
-\lib\Config::load(__DIR__ . '/../config/config.ini');
-
-/**
- * Loads language data
- */
-\lib\Translation::loadLanguage(\lib\Config::getInstance()->language);
-
-\lib\Sort::loadFromSession();
-
-$userRepository = new \lib\Repositories\UserRepository(\lib\Database::getInstance());
-$request = \GuzzleHttp\Psr7\ServerRequest::fromGlobals();
-
-$authenticationService = new \lib\Services\AuthenticationService($userRepository);
-$authenticationService->load($request);
-
-
 function printResponse(\Psr\Http\Message\ResponseInterface $response)
 {
     http_response_code($response->getStatusCode());

@@ -3,10 +3,11 @@
 namespace controllers;
 
 use lib\DataTypes\AbstractFile;
-use lib\Factories\FileRepositoryFactory;
 use lib\HTTP\JsonResponse;
 use lib\HTTP\HTMLResponse;
+use lib\Repositories\FileRepository;
 use lib\Services\AuthenticationService;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -22,12 +23,16 @@ abstract class AbstractController {
     /** @var AuthenticationService */
     private $authenticationService;
 
+    /** @var ContainerInterface */
+    private $container;
+
     abstract public function getAccessLevel();
 
-    public function __construct(ServerRequestInterface $request, AuthenticationService $authenticationService)
+    public function __construct(ContainerInterface $container)
     {
-        $this->request = $request;
-        $this->authenticationService = $authenticationService;
+        $this->container = $container;
+        $this->request = $container->get(ServerRequestInterface::class);
+        $this->authenticationService = $container->get(AuthenticationService::class);
     }
 
     public function checkAccess()
@@ -127,6 +132,6 @@ abstract class AbstractController {
 
     protected function getFileRepository()
     {
-        return FileRepositoryFactory::create($this->authentication());
+        return $this->container->get(FileRepository::class);
     }
 }

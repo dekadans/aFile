@@ -1,13 +1,12 @@
 <?php
 /**
- * Set in init.php
- * @var \Psr\Http\Message\ServerRequestInterface $request
- * @var \lib\Services\AuthenticationService $authenticationService
+ * @var \Psr\Container\ContainerInterface $container
  */
 
-require_once '../app/init.php';
+require_once '../app/webinit.php';
+$container = require '../app/container.php';
 
-$controller = new \controllers\Download($request, $authenticationService);
+$controller = new \controllers\Download($container);
 $response = $controller->index();
 printResponse($response);
 die;

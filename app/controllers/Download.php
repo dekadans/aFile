@@ -11,11 +11,10 @@ use lib\HTTP\Response;
 use lib\HTTP\TemplateResponse;
 use lib\Repositories\EncryptionKeyRepository;
 use lib\Repositories\FileRepository;
-use lib\Services\AuthenticationService;
 use lib\Services\EncryptionService;
 use lib\Translation;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
 
 class Download extends AbstractController {
 
@@ -36,9 +35,9 @@ class Download extends AbstractController {
     /** @var bool */
     private $forceDownload = false;
 
-    public function __construct(ServerRequestInterface $request, AuthenticationService $authenticationService)
+    public function __construct(ContainerInterface $container)
     {
-        parent::__construct($request, $authenticationService);
+        parent::__construct($container);
 
         $pathInfo = $this->getRequest()->getServerParams()['PATH_INFO'] ?? '';
 
@@ -144,7 +143,7 @@ class Download extends AbstractController {
             return self::DOWNLOAD_ACCESS_APPROVED;
         }
         else {
-            $encryptionKeyRepository = new EncryptionKeyRepository(new EncryptionService(), $this->authentication()->getUser());
+            $encryptionKeyRepository = new EncryptionKeyRepository(new EncryptionService(), $this->authentication());
             $fileToken = $encryptionKeyRepository->findAccessTokenForFile($this->file);
 
             if ($fileToken && $fileToken->getToken() === $this->urlToken) {

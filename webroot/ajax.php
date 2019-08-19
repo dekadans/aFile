@@ -1,11 +1,12 @@
 <?php
 /**
- * Set in init.php
- * @var \Psr\Http\Message\ServerRequestInterface $request
- * @var \lib\Services\AuthenticationService $authenticationService
+ * @var \Psr\Container\ContainerInterface $container
  */
 
-require_once '../app/init.php';
+require_once '../app/webinit.php';
+$container = require '../app/container.php';
+
+$request = $container->get(\Psr\Http\Message\ServerRequestInterface::class);
 
 $queryParams = $request->getQueryParams();
 
@@ -14,7 +15,7 @@ if (isset($queryParams['do']) && !empty($queryParams['do'])) {
 
     if (class_exists($do)) {
         /** @var \controllers\AbstractController $controller */
-        $controller = new $do($request, $authenticationService);
+        $controller = new $do($container);
 
         if ($controller->checkAccess()) {
             if (method_exists($controller, 'init')) {

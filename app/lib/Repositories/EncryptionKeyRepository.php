@@ -7,6 +7,7 @@ use lib\Database;
 use lib\DataTypes\User;
 use lib\DataTypes\File;
 use lib\DataTypes\FileToken;
+use lib\Services\AuthenticationService;
 use lib\Services\EncryptionService;
 
 class EncryptionKeyRepository
@@ -21,11 +22,11 @@ class EncryptionKeyRepository
     /** @var EncryptionService */
     private $encryptionService;
 
-    public function __construct(EncryptionService $encryptionService, User $authenticatedUser = null)
+    public function __construct(EncryptionService $encryptionService, AuthenticationService $authenticationService = null)
     {
         $this->encryptionService = $encryptionService;
         $this->pdo = Database::getInstance()->getPDO();
-        $this->user = $authenticatedUser;
+        $this->user = $authenticationService->getUser();
     }
 
     /**
