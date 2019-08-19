@@ -10,5 +10,6 @@ $container = require __DIR__ . '/../container.php';
 $application = new Application();
 
 $application->add(new \cli\Commands\TestCommand($container->get(\lib\Repositories\FileRepository::class)));
+$application->add(new \cli\Commands\PasswordCommand($container->get(\lib\Repositories\UserRepository::class)));
 
 $application->run();

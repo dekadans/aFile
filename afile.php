@@ -34,10 +34,6 @@ try {
         'encryptionKeyUsername' => [
             'longPrefix' => 'print-key',
             'description' => 'Prints the encryption key for a user.'
-        ],
-        'username' => [
-            'longPrefix' => 'pw',
-            'description' => 'Sets a new password for a user',
         ]
     ]);
 
@@ -54,9 +50,6 @@ else if ($climate->arguments->defined('newUsername')) {
 }
 else if ($climate->arguments->defined('encryptionKeyUsername')) {
     require('cli/printKey.php');
-}
-else if ($climate->arguments->defined('username')) {
-    require('cli/changePw.php');
 }
 else {
 	$climate->usage();

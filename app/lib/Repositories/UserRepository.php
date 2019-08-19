@@ -173,5 +173,23 @@ class UserRepository
         return 'User already exists';
     }
 
+    public function updatePassword(User $user, string $oldPassword, string $newPassword)
+    {
+        $protectedKey = $this->getProtectedEncryptionKeyForUser($user->getId());
+
+        $key = KeyProtectedByPassword::loadFromAsciiSafeString($protectedKey);
+        $key->changePassword($oldPassword, $newPassword);
+
+        $protectedKey = $key->saveToAsciiSafeString();
+        $newHashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
+
+        $statement = $this->pdo->prepare("UPDATE users SET password = ?, encryption_key = ? WHERE id = ?;");
+        if (!$statement->execute([$newHashedPassword, $protectedKey, $user->getId()])) {
+            throw new \RuntimeException('Could not change password.');
+        } else {
+            return true;
+        }
+    }
+
 
 }
