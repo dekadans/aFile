@@ -1,9 +1,6 @@
 language = en
 
-show_detailed_exceptions = EXCEPTIONS
-
-[login]
-remember_me_activated = REMEMBER_ME
+show_detailed_exceptions = 0
 
 [database]
 driver = mysql

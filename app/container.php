@@ -15,11 +15,20 @@ use Symfony\Component\DependencyInjection\Reference;
  * Singletons setup
  */
 
-\lib\Config::load(__DIR__ . '/../config/config.ini');
+$configurationFile = __DIR__ . '/../config/config.ini';
+
+if (!is_file($configurationFile)) {
+    $configurationFile .= '.template';
+}
+
+\lib\Config::load($configurationFile);
 \lib\Translation::loadLanguage(\lib\Config::getInstance()->language);
 \lib\Sort::loadFromSession();
 
-$userRepository = new UserRepository(Database::getInstance());
+$databaseConfiguration = \lib\Config::getInstance()->getDatabaseConfiguration();
+$database = new Database($databaseConfiguration);
+
+$userRepository = new UserRepository($database);
 $request = \GuzzleHttp\Psr7\ServerRequest::fromGlobals();
 
 $authenticationService = new AuthenticationService($userRepository);
@@ -32,7 +41,7 @@ $authenticationService->load($request);
 
 $containerBuilder = new ContainerBuilder();
 
-$containerBuilder->set(Database::class, Database::getInstance());
+$containerBuilder->set(Database::class, $database);
 $containerBuilder->set(AuthenticationService::class, $authenticationService);
 $containerBuilder->set(ServerRequestInterface::class, $request);
 

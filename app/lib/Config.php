@@ -1,6 +1,8 @@
 <?php
 namespace lib;
 
+use lib\DataTypes\DatabaseConfiguration;
+
 class Config {
     private $config;
 
@@ -15,6 +17,16 @@ class Config {
         else {
             return null;
         }
+    }
+
+    public function getDatabaseConfiguration()
+    {
+        return new DatabaseConfiguration(
+            $this->config->database->host,
+            $this->config->database->database,
+            $this->config->database->user,
+            $this->config->database->password
+        );
     }
 
     public static function load($filename)

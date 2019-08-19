@@ -1,6 +1,7 @@
 <?php
 
 use cli\Commands\AddUserCommand;
+use cli\Commands\InstallCommand;
 use cli\Commands\KeyCommand;
 use cli\Commands\PasswordCommand;
 use lib\Repositories\UserRepository;
@@ -16,5 +17,6 @@ $application = new Application('aFile CLI Tool');
 $application->add(new PasswordCommand($container->get(UserRepository::class)));
 $application->add(new KeyCommand($container->get(UserRepository::class)));
 $application->add(new AddUserCommand($container->get(UserRepository::class)));
+$application->add(new InstallCommand());
 
 $application->run();
