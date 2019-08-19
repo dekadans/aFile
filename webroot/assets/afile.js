@@ -59,7 +59,7 @@ class aFile {
                     if (e.which === 46) { // Delete
                         $('#Delete').click();
                     }
-                    else if (e.which === 82) { // R
+                    else if (e.which === 82 && !(e.ctrlKey || e.metaKey)) { // R
                         $('#Rename').click();
                     }
                     else if (e.which === 13) { // Enter
@@ -244,6 +244,7 @@ class aFile {
 
         $('#Logout').click(e => {
             e.preventDefault();
+            this.selectItem(null);
             this.fetch('GET', 'Logout').then(data => {
                 this.check();
             });
