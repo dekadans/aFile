@@ -23,7 +23,7 @@ class Share extends AbstractController {
     public function init()
     {
         $fileRepository = $this->getFileRepository();
-        $this->encryptionKeyRepository = new EncryptionKeyRepository(new EncryptionService(), $this->authentication());
+        $this->encryptionKeyRepository = $this->getContainer()->get(EncryptionKeyRepository::class);
 
         $fileId = $this->param('id');
         $this->file = $fileRepository->find($fileId);

@@ -143,7 +143,7 @@ class Download extends AbstractController {
             return self::DOWNLOAD_ACCESS_APPROVED;
         }
         else {
-            $encryptionKeyRepository = new EncryptionKeyRepository(new EncryptionService(), $this->authentication());
+            $encryptionKeyRepository = $this->getContainer()->get(EncryptionKeyRepository::class);
             $fileToken = $encryptionKeyRepository->findAccessTokenForFile($this->file);
 
             if ($fileToken && $fileToken->getToken() === $this->urlToken) {

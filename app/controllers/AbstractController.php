@@ -134,4 +134,9 @@ abstract class AbstractController {
     {
         return $this->container->get(FileRepository::class);
     }
+
+    protected function getContainer()
+    {
+        return $this->container;
+    }
 }

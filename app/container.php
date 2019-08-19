@@ -43,6 +43,7 @@ $containerBuilder->register(EncryptionService::class, EncryptionService::class);
 
 $containerBuilder->register(EncryptionKeyRepository::class, EncryptionKeyRepository::class)
     ->addArgument(new Reference(EncryptionService::class))
+    ->addArgument(new Reference(Database::class))
     ->addArgument(new Reference(AuthenticationService::class));
 
 $containerBuilder->register(FileRepository::class, FileRepository::class)

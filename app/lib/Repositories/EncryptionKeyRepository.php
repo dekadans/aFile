@@ -22,10 +22,10 @@ class EncryptionKeyRepository
     /** @var EncryptionService */
     private $encryptionService;
 
-    public function __construct(EncryptionService $encryptionService, AuthenticationService $authenticationService = null)
+    public function __construct(EncryptionService $encryptionService, Database $database, AuthenticationService $authenticationService = null)
     {
         $this->encryptionService = $encryptionService;
-        $this->pdo = Database::getInstance()->getPDO();
+        $this->pdo = $database->getPDO();
         $this->user = $authenticationService->getUser();
     }
 
