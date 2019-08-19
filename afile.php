@@ -25,10 +25,6 @@ try {
             'longPrefix' => 'install',
             'description' => 'Install aFile',
             'noValue' => true
-        ],
-        'newUsername' => [
-            'longPrefix' => 'add-user',
-            'description' => 'Adds a user.'
         ]
     ]);
 
@@ -39,9 +35,6 @@ try {
 
 if ($climate->arguments->defined('install')) {
 	require('cli/install.php');
-}
-else if ($climate->arguments->defined('newUsername')) {
-	require('cli/addUser.php');
 }
 else {
 	$climate->usage();

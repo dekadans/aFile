@@ -11,5 +11,6 @@ $application = new Application('aFile CLI Tool');
 
 $application->add(new \cli\Commands\PasswordCommand($container->get(\lib\Repositories\UserRepository::class)));
 $application->add(new \cli\Commands\KeyCommand($container->get(\lib\Repositories\UserRepository::class)));
+$application->add(new \cli\Commands\AddUserCommand($container->get(\lib\Repositories\UserRepository::class)));
 
 $application->run();
