@@ -28,6 +28,22 @@ class DatabaseConfiguration
     }
 
     /**
+     * @return string
+     */
+    public function getHost()
+    {
+        return $this->host;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDatabase()
+    {
+        return $this->database;
+    }
+
+    /**
      * @return mixed
      */
     public function getUsername()

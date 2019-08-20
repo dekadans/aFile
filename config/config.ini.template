@@ -2,13 +2,16 @@ language = en
 
 show_detailed_exceptions = 0
 
+[login]
+
+stay_logged_in = REMEMBER_ME
+
 [database]
 driver = mysql
 host = DB_HOST
 user = DB_USER
 password = DB_PASSWORD
 database = DB_DATABASE
-installation = ./config/sql.php
 
 [files]
 ; Path to where the encrypted files should be stored, relative to project root

@@ -1,5 +1,6 @@
 <?php
 
+use lib\Config;
 use lib\Database;
 use lib\Repositories\EncryptionKeyRepository;
 use lib\Repositories\FileRepository;
@@ -21,11 +22,11 @@ if (!is_file($configurationFile)) {
     $configurationFile .= '.template';
 }
 
-\lib\Config::load($configurationFile);
-\lib\Translation::loadLanguage(\lib\Config::getInstance()->language);
+Config::load($configurationFile);
+\lib\Translation::loadLanguage(Config::getInstance()->language);
 \lib\Sort::loadFromSession();
 
-$databaseConfiguration = \lib\Config::getInstance()->getDatabaseConfiguration();
+$databaseConfiguration = Config::getInstance()->getDatabaseConfiguration();
 $database = new Database($databaseConfiguration);
 
 $userRepository = new UserRepository($database);
@@ -41,6 +42,7 @@ $authenticationService->load($request);
 
 $containerBuilder = new ContainerBuilder();
 
+$containerBuilder->set(Config::class, Config::getInstance());
 $containerBuilder->set(Database::class, $database);
 $containerBuilder->set(AuthenticationService::class, $authenticationService);
 $containerBuilder->set(ServerRequestInterface::class, $request);
