@@ -49,10 +49,6 @@ class PasswordCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $keypath = $input->getOption('keypath');
-        $key = trim(file_get_contents($keypath));
-        $output->writeln($key);
-
         $io = new SymfonyStyle($input, $output);
         $io->title('Change password');
 
