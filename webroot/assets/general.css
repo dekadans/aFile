@@ -136,6 +136,10 @@ html, body, #AppContainer {
     padding-top: 80px;
 }
 
+.editor-preview img {
+    max-width: 100%;
+}
+
 #EditorTextarea {
     width: 100%;
     height: 99%;

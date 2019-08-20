@@ -7,7 +7,7 @@ Readme
 Merge
 
 Förbättra felrapportering genom att testa vanliga fel
-- Misslyckad uppladdning
+- Misslyckad uppladdning. (Behörigheter i filsystemet, maxsize i conf, maxsize i INI)
 
 Refaktorera sortering
 
