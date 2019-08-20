@@ -1,7 +1,6 @@
 <?php
 namespace lib\Repositories;
 
-
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use Defuse\Crypto\KeyProtectedByPassword;
 use lib\DataTypes\AuthenticationToken;
@@ -194,5 +193,17 @@ class UserRepository
         }
     }
 
+    public function updatePasswordAndKey(User $user, KeyProtectedByPassword $protectedKey, string $newPassword)
+    {
+        $protectedKeyAscii = $protectedKey->saveToAsciiSafeString();
 
+        $newHashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
+
+        $statement = $this->pdo->prepare("UPDATE users SET password = ?, encryption_key = ? WHERE id = ?;");
+        if (!$statement->execute([$newHashedPassword, $protectedKeyAscii, $user->getId()])) {
+            throw new \RuntimeException('Could not change password.');
+        } else {
+            return true;
+        }
+    }
 }

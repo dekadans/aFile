@@ -2,11 +2,15 @@
 
 namespace cli\Commands;
 
+use Defuse\Crypto\Exception\BadFormatException;
+use Defuse\Crypto\Key;
 use lib\DataTypes\User;
 use lib\Repositories\UserRepository;
+use lib\Services\EncryptionService;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
@@ -14,6 +18,9 @@ class PasswordCommand extends Command
 {
     /** @var UserRepository */
     private $userRepository;
+
+    /** @var EncryptionService */
+    private $encryptionService;
 
     /** @var User */
     private $user;
@@ -24,10 +31,11 @@ class PasswordCommand extends Command
     /** @var string */
     private $newPassword;
 
-    public function __construct(UserRepository $userRepository)
+    public function __construct(UserRepository $userRepository, EncryptionService $encryptionService)
     {
         $this->userRepository = $userRepository;
         parent::__construct();
+        $this->encryptionService = $encryptionService;
     }
 
     protected function configure()
@@ -36,10 +44,15 @@ class PasswordCommand extends Command
         $this->setDescription('Change the password of a user.');
 
         $this->addArgument('username', InputArgument::REQUIRED, 'Username of the user whose password should be changed.');
+        $this->addOption('keypath', 'k', InputOption::VALUE_REQUIRED, 'The path to the file containing the key');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $keypath = $input->getOption('keypath');
+        $key = trim(file_get_contents($keypath));
+        $output->writeln($key);
+
         $io = new SymfonyStyle($input, $output);
         $io->title('Change password');
 
@@ -50,12 +63,37 @@ class PasswordCommand extends Command
             throw new \RuntimeException('User not found for username ' . $username);
         }
 
-        $this->enterCurrentPassword($io);
-        $this->enterNewPassword($io);
+        $key = $this->getKey($input);
 
-        $this->userRepository->updatePassword($this->user, $this->oldPassword, $this->newPassword);
+        if ($key) {
+            $io->note('Encryption key found');
+            $this->enterNewPassword($io);
+            $newProtectedKey = $this->encryptionService->passwordEncryptKey($key, $this->newPassword);
+            $this->userRepository->updatePasswordAndKey($this->user, $newProtectedKey, $this->newPassword);
+        } else {
+            $this->enterCurrentPassword($io);
+            $this->enterNewPassword($io);
+            $this->userRepository->updatePassword($this->user, $this->oldPassword, $this->newPassword);
+        }
 
         $io->success('The password has been changed.');
+    }
+
+    private function getKey(InputInterface $input)
+    {
+        $keypath = $input->getOption('keypath');
+
+        if (!empty($keypath) && file_exists($keypath)) {
+            $keyString = file_get_contents($keypath);
+            try {
+                $key = Key::loadFromAsciiSafeString($keyString);
+                return $key;
+            } catch (BadFormatException $e) {
+                return false;
+            }
+        }
+
+        return false;
     }
 
     private function enterCurrentPassword(SymfonyStyle $io)
