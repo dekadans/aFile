@@ -32,7 +32,7 @@ $database = new Database($databaseConfiguration);
 $userRepository = new UserRepository($database);
 $request = \GuzzleHttp\Psr7\ServerRequest::fromGlobals();
 
-$authenticationService = new AuthenticationService($userRepository);
+$authenticationService = new AuthenticationService($userRepository, Config::getInstance());
 $authenticationService->load($request);
 
 

@@ -178,6 +178,7 @@ class aFile {
                 }).then(data => {
                     if (data.loginError) {
                         $('#LoginMessage > .alert').html(data.loginError);
+                        $('#LoginPassword').val('');
                         $('#LoginMessage').show();
                     }
                     else if (data.status === 'ok') {

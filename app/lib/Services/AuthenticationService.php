@@ -2,7 +2,7 @@
 
 namespace lib\Services;
 
-use Defuse\Crypto\KeyProtectedByPassword;
+use lib\Config;
 use lib\DataTypes\AuthenticationCookie;
 use lib\DataTypes\AuthenticationToken;
 use lib\DataTypes\User;
@@ -18,9 +18,17 @@ class AuthenticationService
     /** @var UserRepository */
     private $userRepository;
 
-    public function __construct(UserRepository $userRepository)
+    private $stayLoggedIn = true;
+    private $tokenLife = '+ 1 MONTH';
+
+    public function __construct(UserRepository $userRepository, Config $config)
     {
         $this->userRepository = $userRepository;
+
+        if ($config->login->stay_logged_in !== '1') {
+            $this->stayLoggedIn = false;
+            $this->tokenLife = '+ 1 DAY';
+        }
     }
 
     public function authenticate(string $username, string $password)
@@ -113,8 +121,7 @@ class AuthenticationService
         $selector = bin2hex(random_bytes(6));
 
         $hashedToken = hash('sha256', $user->getKey());
-
-        $expires = strtotime('+ 1 MONTH');
+        $expires = strtotime($this->tokenLife);
 
         $authToken = new AuthenticationToken(
             $user,
@@ -127,16 +134,16 @@ class AuthenticationService
 
         if ($result) {
             $cookie = new AuthenticationCookie($selector, $user->getKey());
-            $cookie->set($expires);
+            $cookie->set($this->stayLoggedIn ? $expires : 0);
         }
     }
 
     private function refreshCookie(AuthenticationCookie $cookie)
     {
-        if (!isset($_SESSION['aFile_CookieRefreshed'])) {
+        if (!isset($_SESSION['aFile_CookieRefreshed']) && $this->stayLoggedIn) {
             $newSelector = bin2hex(random_bytes(6));
             $oldSelector = $cookie->getSelector();
-            $newExpiresDate = strtotime('+ 1 MONTH');
+            $newExpiresDate = strtotime($this->tokenLife);
 
             $cookie->setSelector($newSelector);
             $cookie->set($newExpiresDate);

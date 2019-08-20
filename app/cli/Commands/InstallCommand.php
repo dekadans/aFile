@@ -108,7 +108,7 @@ class InstallCommand extends Command
 
         $choice = $io->confirm('Keep users signed in?', true);
 
-        $this->configReplacements['REMEMBER_ME'] = $choice ? 'true' : 'false';
+        $this->configReplacements['REMEMBER_ME'] = $choice ? '1' : '0';
     }
 
     private function createTables()

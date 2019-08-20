@@ -1,7 +1,5 @@
 ## Todo
 
-Möjligt med sessionsinloggning
-
 Logga ut överallt
 
 Readme
