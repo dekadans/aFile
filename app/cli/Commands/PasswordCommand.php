@@ -5,19 +5,15 @@ namespace cli\Commands;
 use lib\DataTypes\User;
 use lib\Repositories\UserRepository;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\Question;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 class PasswordCommand extends Command
 {
     /** @var UserRepository */
     private $userRepository;
-
-    /** @var QuestionHelper */
-    private $questionHelper;
 
     /** @var User */
     private $user;
@@ -44,7 +40,8 @@ class PasswordCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->questionHelper = $this->getHelper('question');
+        $io = new SymfonyStyle($input, $output);
+        $io->title('Change password');
 
         $username = $input->getArgument('username');
         $this->user = $this->userRepository->getUserByUsername($username);
@@ -53,49 +50,36 @@ class PasswordCommand extends Command
             throw new \RuntimeException('User not found for username ' . $username);
         }
 
-        $this->enterCurrentPassword($input, $output);
-        $this->enterNewPassword($input, $output);
+        $this->enterCurrentPassword($io);
+        $this->enterNewPassword($io);
 
         $this->userRepository->updatePassword($this->user, $this->oldPassword, $this->newPassword);
 
-        $output->writeln('The password has bee changed.');
+        $io->success('The password has been changed.');
     }
 
-    private function enterCurrentPassword(InputInterface $input, OutputInterface $output)
+    private function enterCurrentPassword(SymfonyStyle $io)
     {
-        $passwordQuestion = new Question('Please enter your current password: ');
-
-        $passwordQuestion->setValidator(function($answer) {
+        $this->oldPassword = $io->askHidden('Please enter your current password', function($answer) {
             if (!password_verify($answer, $this->user->getHashedPassword())) {
                 throw new \RuntimeException('Incorrect password');
             }
 
             return $answer;
         });
-
-        $passwordQuestion->setHidden(true);
-        $passwordQuestion->setMaxAttempts(3);
-
-        $this->oldPassword = $this->questionHelper->ask($input, $output, $passwordQuestion) ?? '';
     }
 
 
-    private function enterNewPassword(InputInterface $input, OutputInterface $output)
+    private function enterNewPassword(SymfonyStyle $io)
     {
-        $passwordQuestion = new Question('Please enter your new password: ');
-        $passwordQuestion->setHidden(true);
+        $this->newPassword = $io->askHidden('Please enter your new password');
 
-        $this->newPassword = $this->questionHelper->ask($input, $output, $passwordQuestion) ?? '';
-
-        $passwordQuestion = new Question('Please repeat your new password: ');
-        $passwordQuestion->setHidden(true);
-        $passwordQuestion->setValidator(function($answer) {
+        $repeatedQuestion = $io->askHidden('Please repeat your new password', function($answer) {
             if ($answer !== $this->newPassword) {
                 throw new \RuntimeException('The provided passwords do not match');
             }
-        });
-        $passwordQuestion->setMaxAttempts(3);
 
-        $repeatedQuestion = $this->questionHelper->ask($input, $output, $passwordQuestion);
+            return $answer;
+        });
     }
 }
