@@ -10,6 +10,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 class AddUserCommand extends Command
 {
@@ -34,37 +35,31 @@ class AddUserCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $io = new SymfonyStyle($input, $output);
+        $io->title('Add user');
         $this->questionHelper = $this->getHelper('question');
 
         $username = $input->getArgument('username');
-        $password = $this->enterPassword($input, $output);
+        $password = $this->enterPassword($io);
 
         $result = $this->userRepository->createUser($username, $password);
 
         if ($result instanceof User) {
-            $output->writeln('User added');
+            $io->success('User added');
         } else {
-            $output->writeln($result);
+            $io->error($result);
         }
     }
 
-    private function enterPassword(InputInterface $input, OutputInterface $output)
+    private function enterPassword(SymfonyStyle $io)
     {
-        $passwordQuestion = new Question('Please enter a password: ');
-        $passwordQuestion->setHidden(true);
+        $newPassword = $io->askHidden('Please enter a password');
 
-        $newPassword = $this->questionHelper->ask($input, $output, $passwordQuestion) ?? '';
-
-        $passwordQuestion = new Question('Please repeat the password: ');
-        $passwordQuestion->setHidden(true);
-        $passwordQuestion->setValidator(function($answer) use ($newPassword) {
+        $repeatedQuestion = $io->askHidden('Please repeat the password', function($answer) use ($newPassword) {
             if ($answer !== $newPassword) {
                 throw new \RuntimeException('The provided passwords do not match');
             }
         });
-        $passwordQuestion->setMaxAttempts(3);
-
-        $repeatedQuestion = $this->questionHelper->ask($input, $output, $passwordQuestion);
 
         return $newPassword;
     }
