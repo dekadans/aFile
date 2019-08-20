@@ -14,18 +14,15 @@ class SearchService
 
     private $searchString = '';
 
-    /** @var int */
-    private $user;
     /** @var FileRepository */
     private $fileRepository;
 
-    public function __construct(User $user, FileRepository $fileRepository)
+    public function __construct(FileRepository $fileRepository)
     {
-        $this->user = $user;
         $this->fileRepository = $fileRepository;
     }
 
-    public function search(string $searchString)
+    public function search(User $user, string $searchString)
     {
         $this->searchString = $searchString;
 
@@ -36,7 +33,7 @@ class SearchService
         $this->setFileName();
 
         if ($this->isReadyForSearch()) {
-            return $this->fileRepository->searchForFile($this->user, $this->fileName, $this->fileExtensions, $this->fileType, $this->onlyShared);
+            return $this->fileRepository->searchForFile($user, $this->fileName, $this->fileExtensions, $this->fileType, $this->onlyShared);
         } else {
             return false;
         }

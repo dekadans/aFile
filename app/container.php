@@ -7,6 +7,7 @@ use lib\Repositories\FileRepository;
 use lib\Repositories\UserRepository;
 use lib\Services\AuthenticationService;
 use lib\Services\EncryptionService;
+use lib\Services\SearchService;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
@@ -62,5 +63,8 @@ $containerBuilder->register(FileRepository::class, FileRepository::class)
     ->addArgument(new Reference(UserRepository::class))
     ->addArgument(new Reference(EncryptionService::class))
     ->addArgument(new Reference(EncryptionKeyRepository::class));
+
+$containerBuilder->register(SearchService::class, SearchService::class)
+    ->addArgument(new Reference(FileRepository::class));
 
 return $containerBuilder;

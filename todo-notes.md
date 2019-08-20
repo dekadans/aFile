@@ -8,10 +8,11 @@ Merge
 
 Förbättra felrapportering genom att testa vanliga fel
 
+Refaktorera sortering
+
 Refaktorera config
 
 Refaktorera sök  
-* Hämta från container
 * Sök endast nedåt i trädet. Bör gå med lokala variabler-magi.
 
 clipboard  

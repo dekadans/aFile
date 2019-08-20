@@ -47,9 +47,9 @@ class ListFiles extends AbstractController {
     public function actionSearch()
     {
         $searchString = $this->param('search');
-        $search = new SearchService($this->authentication()->getUser(), $this->fileRepository);
+        $search = $this->getContainer()->get(SearchService::class);
 
-        $fileList = $search->search($searchString);
+        $fileList = $search->search($this->authentication()->getUser(), $searchString);
 
         if ($fileList === false) {
             return $this->parseView('partials/nofiles', ['message' => Translation::getInstance()->translate('NO_CRITERIA_SEARCH')]);
