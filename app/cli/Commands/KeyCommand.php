@@ -5,19 +5,15 @@ namespace cli\Commands;
 use lib\DataTypes\User;
 use lib\Repositories\UserRepository;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\Question;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 class KeyCommand extends Command
 {
     /** @var UserRepository */
     private $userRepository;
-
-    /** @var QuestionHelper */
-    private $questionHelper;
 
     /** @var User */
     private $user;
@@ -37,7 +33,9 @@ class KeyCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->questionHelper = $this->getHelper('question');
+        $io = new SymfonyStyle($input, $output);
+        $eio = $io->getErrorStyle();
+        $eio->title('Print encryption key');
 
         $username = $input->getArgument('username');
         $this->user = $this->userRepository->getUserByUsername($username);
@@ -48,17 +46,19 @@ class KeyCommand extends Command
 
         $protectedKey = $this->userRepository->getProtectedEncryptionKeyForUser($this->user->getId());
 
-        $password = $this->enterPassword($input, $output);
+        $password = $this->enterPassword($eio);
 
         $key = $protectedKey->unlockKey($password);
-        $output->writeln($key->saveToAsciiSafeString());
+
+        $eio->note('Save this key somewhere safe, physically separate from the aFile installation.');
+
+        $io->writeln($key->saveToAsciiSafeString());
+        $eio->newLine();
     }
 
-    private function enterPassword(InputInterface $input, OutputInterface $output) : string
+    private function enterPassword(SymfonyStyle $eio) : string
     {
-        $passwordQuestion = new Question('Please enter your password: ');
-
-        $passwordQuestion->setValidator(function($answer) {
+        $password = $eio->askHidden('Please enter your password', function($answer) {
             if (!password_verify($answer, $this->user->getHashedPassword())) {
                 throw new \RuntimeException('Incorrect password');
             }
@@ -66,9 +66,6 @@ class KeyCommand extends Command
             return $answer;
         });
 
-        $passwordQuestion->setHidden(true);
-        $passwordQuestion->setMaxAttempts(3);
-
-        return $this->questionHelper->ask($input, $output, $passwordQuestion) ?? '';
+        return $password ?? '';
     }
 }

@@ -5,20 +5,15 @@ namespace cli\Commands;
 use lib\DataTypes\User;
 use lib\Repositories\UserRepository;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 class AddUserCommand extends Command
 {
     /** @var UserRepository */
     private $userRepository;
-
-    /** @var QuestionHelper */
-    private $questionHelper;
 
     public function __construct(UserRepository $userRepository)
     {
@@ -37,7 +32,6 @@ class AddUserCommand extends Command
     {
         $io = new SymfonyStyle($input, $output);
         $io->title('Add user');
-        $this->questionHelper = $this->getHelper('question');
 
         $username = $input->getArgument('username');
         $password = $this->enterPassword($io);
@@ -59,6 +53,8 @@ class AddUserCommand extends Command
             if ($answer !== $newPassword) {
                 throw new \RuntimeException('The provided passwords do not match');
             }
+
+            return $answer;
         });
 
         return $newPassword;
