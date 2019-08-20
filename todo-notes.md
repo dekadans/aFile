@@ -7,6 +7,7 @@ Readme
 Merge
 
 Förbättra felrapportering genom att testa vanliga fel
+- Misslyckad uppladdning
 
 Refaktorera sortering
 

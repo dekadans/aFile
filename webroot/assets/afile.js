@@ -78,7 +78,7 @@ class aFile {
                             });
                         });
                     }
-                    else if (e.which === 88 && (e.ctrlKey || e.metaKey) && this.selected.hasClass('file')) { // Ctrl/Cmd + x
+                    else if (e.which === 88 && (e.ctrlKey || e.metaKey)) { // Ctrl/Cmd + x
                         e.preventDefault();
                         let fileId = this.selected.data('id');
 

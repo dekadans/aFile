@@ -71,12 +71,10 @@ class FileRepository
             if ($createStatement->execute()) {
                 $file = $this->find($this->pdo->lastInsertId());
                 return $file;
-            }
-            else {
+            } else {
                 return false;
             }
-        }
-        else {
+        } else {
             return false;
         }
     }
