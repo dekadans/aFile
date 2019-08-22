@@ -12,7 +12,8 @@ class Sort extends AbstractController
     {
         $column = $this->param('column');
 
-        \lib\Sort::getInstance()->setSortBy($column);
+        $sort = $this->getContainer()->get(\lib\Services\SortService::class);
+        $sort->setSortBy($column);
 
         return $this->outputJSON([
             'status' => 'ok'

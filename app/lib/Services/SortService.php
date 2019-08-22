@@ -1,8 +1,8 @@
 <?php
-namespace lib;
+namespace lib\Services;
 
 
-class Sort
+class SortService
 {
     const COLUMN_NAME = 'name';
     const COLUMN_SIZE = 'size';
@@ -78,6 +78,14 @@ class Sort
         $this->direction = $direction;
     }
 
+    public function getSortString()
+    {
+        return $this->sortBy . ' ' . $this->direction;
+    }
+
+    /**
+     * @return SortService
+     */
     public static function loadFromSession()
     {
         if (isset($_SESSION[self::SESSION_COLUMN]) && isset($_SESSION[self::SESSION_DIRECTION])) {
@@ -96,17 +104,6 @@ class Sort
         $sort->setSortBy($column);
         $sort->setDirection($direction);
 
-        self::$instance = $sort;
-    }
-
-    /** @var Sort */
-    private static $instance;
-
-    /**
-     * @return Sort
-     */
-    public static function getInstance()
-    {
-        return self::$instance;
+        return $sort;
     }
 }

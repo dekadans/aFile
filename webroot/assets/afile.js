@@ -54,7 +54,7 @@ class aFile {
      */
     keybindings() {
         $(document).keydown(e => {
-            if ((typeof this.modal.getModal() === 'undefined' || !this.modal.getModal().is(':visible')) && !$('#SearchInput').is(':focus')) {
+            if (this.info.login && !this.modal.getModal().is(':visible') && !$('#SearchInput').is(':focus')) {
                 if (this.selected) {
                     if (e.which === 46) { // Delete
                         $('#Delete').click();

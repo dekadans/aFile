@@ -8,6 +8,7 @@ use lib\Repositories\UserRepository;
 use lib\Services\AuthenticationService;
 use lib\Services\EncryptionService;
 use lib\Services\SearchService;
+use lib\Services\SortService;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
@@ -25,7 +26,6 @@ if (!is_file($configurationFile)) {
 
 Config::load($configurationFile);
 \lib\Translation::loadLanguage(Config::getInstance()->language);
-\lib\Sort::loadFromSession();
 
 $databaseConfiguration = Config::getInstance()->getDatabaseConfiguration();
 $database = new Database($databaseConfiguration);
@@ -47,6 +47,7 @@ $containerBuilder->set(Config::class, Config::getInstance());
 $containerBuilder->set(Database::class, $database);
 $containerBuilder->set(AuthenticationService::class, $authenticationService);
 $containerBuilder->set(ServerRequestInterface::class, $request);
+$containerBuilder->set(SortService::class, SortService::loadFromSession());
 
 $containerBuilder->register(UserRepository::class, UserRepository::class)
     ->addArgument(new Reference(Database::class));
@@ -62,7 +63,8 @@ $containerBuilder->register(FileRepository::class, FileRepository::class)
     ->addArgument(new Reference(Database::class))
     ->addArgument(new Reference(UserRepository::class))
     ->addArgument(new Reference(EncryptionService::class))
-    ->addArgument(new Reference(EncryptionKeyRepository::class));
+    ->addArgument(new Reference(EncryptionKeyRepository::class))
+    ->addArgument(new Reference(SortService::class));
 
 $containerBuilder->register(SearchService::class, SearchService::class)
     ->addArgument(new Reference(FileRepository::class));

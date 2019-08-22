@@ -3,6 +3,8 @@
  * @var string $currentSorting
  */
 $lang = \lib\Translation::getInstance();
+
+use lib\Services\SortService;
 ?>
 
 <div id="Loading" class="view"><?= $lang->translate('LOADING') ?></div>
@@ -96,13 +98,13 @@ $lang = \lib\Translation::getInstance();
                                     <i class="fas fa-sort-amount-down"></i>
                                 </button>
                                 <div class="dropdown-menu" aria-labelledby="SortMenu">
-                                    <a class="dropdown-item sortby <?= ($currentSorting === \lib\Sort::COLUMN_NAME ? 'active' : '') ?>" href="#" data-column="<?= \lib\Sort::COLUMN_NAME ?>"><?= $lang->translate('SORT_NAME') ?></a>
-                                    <a class="dropdown-item sortby <?= ($currentSorting === \lib\Sort::COLUMN_SIZE ? 'active' : '') ?>" href="#" data-column="<?= \lib\Sort::COLUMN_SIZE ?>"><?= $lang->translate('SORT_SIZE') ?></a>
+                                    <a class="dropdown-item sortby <?= ($currentSorting === SortService::COLUMN_NAME ? 'active' : '') ?>" href="#" data-column="<?= SortService::COLUMN_NAME ?>"><?= $lang->translate('SORT_NAME') ?></a>
+                                    <a class="dropdown-item sortby <?= ($currentSorting === SortService::COLUMN_SIZE ? 'active' : '') ?>" href="#" data-column="<?= SortService::COLUMN_SIZE ?>"><?= $lang->translate('SORT_SIZE') ?></a>
 
                                     <?php if (\lib\Config::getInstance()->presentation->upload_date_in_list): ?>
-                                    <a class="dropdown-item sortby <?= ($currentSorting === \lib\Sort::COLUMN_DATE_UPLOAD ? 'active' : '') ?>" href="#" data-column="<?= \lib\Sort::COLUMN_DATE_UPLOAD ?>"><?= $lang->translate('SORT_DATE') ?></a>
+                                    <a class="dropdown-item sortby <?= ($currentSorting === SortService::COLUMN_DATE_UPLOAD ? 'active' : '') ?>" href="#" data-column="<?= SortService::COLUMN_DATE_UPLOAD ?>"><?= $lang->translate('SORT_DATE') ?></a>
                                     <?php else: ?>
-                                    <a class="dropdown-item sortby <?= ($currentSorting === \lib\Sort::COLUMN_DATE_EDIT ? 'active' : '') ?>" href="#" data-column="<?= \lib\Sort::COLUMN_DATE_EDIT ?>"><?= $lang->translate('SORT_DATE') ?></a>
+                                    <a class="dropdown-item sortby <?= ($currentSorting === SortService::COLUMN_DATE_EDIT ? 'active' : '') ?>" href="#" data-column="<?= SortService::COLUMN_DATE_EDIT ?>"><?= $lang->translate('SORT_DATE') ?></a>
                                     <?php endif; ?>
                                 </div>
                             </div>

@@ -6,7 +6,7 @@ use lib\Config;
 use lib\DataTypes\File;
 use lib\Repositories\FileRepository;
 use lib\Services\SearchService;
-use lib\Sort;
+use lib\Services\SortService;
 use lib\Translation;
 
 class ListFiles extends AbstractController {
@@ -25,7 +25,8 @@ class ListFiles extends AbstractController {
 
     public function index()
     {
-        $currentSorting = Sort::getInstance()->getSortBy();
+        $sort = $this->getContainer()->get(SortService::class);
+        $currentSorting = $sort->getSortBy();
         return $this->parseView('main', ['currentSorting' => $currentSorting]);
     }
 

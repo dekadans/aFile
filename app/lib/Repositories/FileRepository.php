@@ -10,7 +10,7 @@ use lib\Services\EncryptionService;
 use lib\DataTypes\File;
 use lib\DataTypes\FileContent;
 use lib\DataTypes\FileList;
-use lib\Sort;
+use lib\Services\SortService;
 use lib\DataTypes\User;
 
 class FileRepository
@@ -31,12 +31,20 @@ class FileRepository
     /** @var EncryptionKeyRepository */
     private $encryptionKeyRepository;
 
-    public function __construct(Database $database, UserRepository $userRepository, EncryptionService $encryptionService, EncryptionKeyRepository $encryptionKeyRepository)
+    /** @var SortService */
+    private $sort;
+
+    public function __construct(Database $database,
+                                UserRepository $userRepository,
+                                EncryptionService $encryptionService,
+                                EncryptionKeyRepository $encryptionKeyRepository,
+                                SortService $sort)
     {
         $this->pdo = $database->getPDO();
         $this->userRepository = $userRepository;
         $this->encryption = $encryptionService;
         $this->encryptionKeyRepository = $encryptionKeyRepository;
+        $this->sort = $sort;
     }
 
     /**
@@ -303,8 +311,6 @@ class FileRepository
     {
         $files = [];
 
-        $sort = Sort::getInstance();
-
         $sql = "SELECT
                     *
                 FROM files
@@ -315,7 +321,7 @@ class FileRepository
                     WHEN type = 'DIRECTORY' THEN 1
                     WHEN type = 'LINK' THEN 2
                     ELSE 4
-                END), " . $sort->getSortBy() . ' ' . $sort->getDirection();
+                END), " . $this->sort->getSortString();
 
         $filesQuery = $this->pdo->prepare($sql);
         $filesQuery->execute([($location ?? null), $user->getId()]);
@@ -344,8 +350,6 @@ class FileRepository
 
     public function findByFileExtension(User $user, $location, array $fileExtensions)
     {
-        $sort = Sort::getInstance();
-
         $in  = str_repeat('?,', count($fileExtensions) - 1) . '?';
 
         $params = array_merge([$user->getId(), $location ?? null], $fileExtensions);
@@ -356,7 +360,7 @@ class FileRepository
                 WHERE user_id = ? AND parent_id ". (is_null($location) ? 'is' : '=') ." ? AND
                 type = 'FILE'
                 HAVING ext IN ($in)
-                ORDER BY " .  $sort->getSortBy() . ' ' . $sort->getDirection();
+                ORDER BY " .  $this->sort->getSortString();
 
         $statement = $this->pdo->prepare($SQL);
         $statement->execute($params);
@@ -372,7 +376,6 @@ class FileRepository
     public function searchForFile(User $user, string $fileNameSearch, array $fileExtensions, string $fileType, bool $onlyShared)
     {
         $files = [];
-        $sort = Sort::getInstance();
 
         $whereCriteria = [];
         $parametersToBind = [];
@@ -413,7 +416,7 @@ class FileRepository
                     WHEN type = 'DIRECTORY' THEN 1
                     WHEN type = 'LINK' THEN 2
                     ELSE 4
-                END), " .  $sort->getSortBy() . ' ' . $sort->getDirection();
+                END), " .  $this->sort->getSortString();
 
         $searchStatement = $this->pdo->prepare($SQL);
 
