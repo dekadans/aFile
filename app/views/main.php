@@ -24,8 +24,14 @@ $lang = \lib\Translation::getInstance();
                     <li class="nav-item">
                         <a class="nav-link" id="Size" href="#"><i class="fas fa-database"></i> <?= $lang->translate('SIZE') ?></a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" id="Logout" href="#"><i class="fas fa-sign-out-alt"></i> <?= $lang->translate('LOGOUT') ?></a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-sign-out-alt"></i> <?= $lang->translate('LOGOUT') ?>
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                            <a class="dropdown-item logout" href="#"><?= $lang->translate('LOGOUT_HERE') ?></a>
+                            <a class="dropdown-item logout everywhere" href="#"><?= $lang->translate('LOGOUT_EVERYWHERE') ?></a>
+                        </div>
                     </li>
                 </ul>
                 <div class="form-inline my-2 my-lg-0">

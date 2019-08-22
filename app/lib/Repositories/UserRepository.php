@@ -106,6 +106,18 @@ class UserRepository
         return $result;
     }
 
+    /**
+     * @param User $user
+     * @return bool
+     */
+    public function deleteAllAuthTokensForUser(User $user)
+    {
+        $statement = $this->pdo->prepare('DELETE FROM auth WHERE user_id = ?;');
+        $result = $statement->execute([$user->getId()]);
+
+        return $result;
+    }
+
     public function deleteExpiredAuthenticationTokens()
     {
         $this->pdo->exec('DELETE FROM auth WHERE expires < NOW();');

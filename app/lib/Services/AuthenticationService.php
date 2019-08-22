@@ -54,7 +54,7 @@ class AuthenticationService
         return false;
     }
 
-    public function deauthenticate(ServerRequestInterface $request)
+    public function deauthenticate(ServerRequestInterface $request, bool $signOutEverywhere = false)
     {
         $cookie = AuthenticationCookie::createFromRequest($request);
 
@@ -62,7 +62,11 @@ class AuthenticationService
             $authTokenInDb = $this->userRepository->getAuthenticationTokenBySelector($cookie->getSelector());
 
             if ($authTokenInDb) {
-                $this->userRepository->deleteAuthTokenForUser($authTokenInDb);
+                if ($signOutEverywhere) {
+                    $this->userRepository->deleteAllAuthTokensForUser($authTokenInDb->getUser());
+                } else {
+                    $this->userRepository->deleteAuthTokenForUser($authTokenInDb);
+                }
             }
 
             $cookie->clear();
@@ -91,6 +95,8 @@ class AuthenticationService
                         return true;
                     }
                 }
+
+                $cookie->clear();
             }
         }
 

@@ -49,6 +49,8 @@
     "SEARCH" : "Search for files",
     "SEARCH_RESULT" : "Search results",
     "LOGOUT" : "Sign out",
+    "LOGOUT_HERE" : "This device",
+    "LOGOUT_EVERYWHERE" : "Everywhere",
     "SIZE" : "Size",
     "SIZE_TITLE" : "Total size of your files on disk",
     "HOME" : "Home",

@@ -8,7 +8,9 @@ class Logout extends AbstractController {
     }
 
     public function index() {
-        $this->authentication()->deauthenticate($this->getRequest());
+        $everywhere = $this->param('everywhere') === 'true' ? true : false;
+
+        $this->authentication()->deauthenticate($this->getRequest(), $everywhere);
 
         return $this->outputJSON([
             'status' => 'ok'

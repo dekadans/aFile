@@ -243,10 +243,21 @@ class aFile {
             });
         });
 
-        $('#Logout').click(e => {
+        $('.logout').click(e => {
             e.preventDefault();
             this.selectItem(null);
-            this.fetch('GET', 'Logout').then(data => {
+
+            let params = {};
+
+            if ($(e.target).hasClass('everywhere')) {
+                if (!confirm(this.info.language.ARE_YOU_SURE)) {
+                    return false;
+                }
+
+                params.everywhere = 'true';
+            }
+
+            this.fetch('GET', 'Logout', '', params).then(data => {
                 this.check();
             });
         });
