@@ -11,7 +11,9 @@ class Check extends AbstractController {
     }
 
     public function index() {
-        $info = [];
+        $info = [
+            'title' => Config::getInstance()->title ?? 'aFile'
+        ];
 
         $user = $this->authentication()->getUser();
 

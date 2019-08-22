@@ -31,6 +31,8 @@ class aFile {
 
         this.info = await this.fetch('GET', 'Check');
 
+        document.querySelector('head > title').textContent = this.info.title;
+
         if (this.info.login) {
             document.querySelector('body').innerHTML = await this.fetch('GET', 'ListFiles');
             this.mainView();
