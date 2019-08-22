@@ -1,6 +1,6 @@
 # aFile
 
-This is an application that offers simple cloud storage-like possibilities for your own web server. It's mostly just something I work on in my free time.
+This is an application that offers simple cloud storage-like possibilities for your own web server. It's mostly just something I work on in my free time, but it's usable should anyone want to try it out.
 
 ![Screenshot](https://f.tthe.se/dl/lmv38/816bd9f9d02636318335ba116dc43b49b7ceba8e "Screen shot of the main view")
 
