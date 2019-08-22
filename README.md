@@ -24,7 +24,7 @@ This is an application that offers simple cloud storage-like possibilities for y
 * Run `php app/cli/afile.php add-user [your desired username]`
 * Ready to use!
 * _(Optional)_ Run `php app/cli/afile.php key [username] > key.txt` and save the resulting file somewhere safe and physically separate from the installation. If you forget your password you can then change it by running `php app/cli/afile.php password [username] --keypath=key.txt`
-* _(Optional)_ In `config/config.ini` you can set some additional settings, as well as change what you entered dureing installation.
+* _(Optional)_ In `config/config.ini` you can set some additional settings, as well as change what you entered during installation.
 
 #### The encryption, explained
 
