@@ -1,5 +1,6 @@
 language = en
 
+; If set to 1, then potential error pages will display detailed exception info
 show_detailed_exceptions = 0
 
 ; Change this to set your own <title>
@@ -20,13 +21,18 @@ database = DB_DATABASE
 ; Path to where the encrypted files should be stored, relative to project root
 ; Must include a trailing /
 path = STORAGE
+
+; The maximum allowed file size, in bytes
 maxsize = MAXSIZE
+
+; The length of the ID string generated for each file
 id_string_length = 5
 
 ; If the php extension should be skipped when writing download links
 ; requires some htaccess magic to be added
 skip_dl_php_extension = false
 
+; Which MIME-types that should be opened in the browser instead of downloading
 inline_download[] = application/pdf
 inline_download[] = image/jpeg
 inline_download[] = image/png
@@ -34,6 +40,7 @@ inline_download[] = image/gif
 inline_download[] = image/svg+xml
 inline_download[] = text/plain
 
+; The MIME-types that will open in the text editor
 editor[] = text/plain
 
 [presentation]
@@ -45,6 +52,9 @@ siprefix = true
 upload_date_in_list = true
 
 [type_groups]
+
+; You can define your own groups here, and then be able to use content:your_group
+; when using the search functionality to limit the results
 
 code[] = css
 code[] = js
