@@ -12,7 +12,8 @@ class Check extends AbstractController {
 
     public function index() {
         $info = [
-            'title' => $this->config()->find('title') ?? 'aFile'
+            'title' => $this->config()->find('title') ?? 'aFile',
+            'language' => Translation::getInstance()->getLanguageData()
         ];
 
         $user = $this->authentication()->getUser();
@@ -24,7 +25,6 @@ class Check extends AbstractController {
                 'username' => $user->getUsername(),
                 'type' => $user->getType()
             ];
-            $info['language'] = Translation::getInstance()->getLanguageData();
             $info['skip_dl_php_extension'] = $this->config()->find('files', 'skip_dl_php_extension');
         }
         else {

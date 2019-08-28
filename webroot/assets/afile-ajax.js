@@ -83,7 +83,7 @@ let aFileAjax = {
             let content = await response.json();
 
             if (content.status === 'error') {
-                alert(this.info.language.UPLOAD_FAILED);
+                alert(this.lang.find('UPLOAD_FAILED'));
             }
             else if (content.status === 'confirm') {
                 this.confirmOverwrite(content);
@@ -96,9 +96,9 @@ let aFileAjax = {
     },
 
     confirmOverwrite(uploadResult) {
-        let message = this.info.language.CONFIRM_OVERWRITE + ' ' + uploadResult.name + '?';
+        let message = this.lang.find('CONFIRM_OVERWRITE') + ' ' + uploadResult.name + '?';
 
-        this.modal.confirm(this.info.language.ARE_YOU_SURE, message, e => {
+        this.modal.confirm(this.lang.find('ARE_YOU_SURE'), message, e => {
             this.fetch('POST', 'Upload', 'Confirmoverwrite', {
                 newId : uploadResult.newId,
                 oldId : uploadResult.oldId

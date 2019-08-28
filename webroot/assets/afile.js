@@ -8,6 +8,7 @@ class aFile {
 
         this.nav = new aFileNavigation();
         this.modal = new aFileModal();
+        this.lang = new aFileLang();
 
         window.onpopstate = event => {
             if (this.info.login && event.state !== null) {
@@ -30,6 +31,8 @@ class aFile {
         }
 
         this.info = await this.fetch('GET', 'Check');
+
+        this.lang.setTranslations(this.info.language);
 
         document.querySelector('head > title').textContent = this.info.title;
 
@@ -222,7 +225,7 @@ class aFile {
             this.fetch('GET', 'Info', 'Help').then(html => {
                 this.modal.setSizeXl();
                 this.modal.hideCancel();
-                this.modal.setTitle(this.info.language.HELP);
+                this.modal.setTitle(this.lang.find('HELP'));
                 this.modal.setBody(html);
                 this.modal.setOkCallback(e => {
                     this.modal.hide();
@@ -236,7 +239,7 @@ class aFile {
 
             this.fetch('GET', 'Info', 'Size').then(json => {
                 this.modal.hideCancel();
-                this.modal.setTitle(this.info.language.SIZE_TITLE);
+                this.modal.setTitle(this.lang.find('SIZE_TITLE'));
                 this.modal.setBody('<strong>' + json.h + '</strong> (' + json.b + ')');
                 this.modal.setOkCallback(e => {
                     this.modal.hide();
@@ -252,7 +255,7 @@ class aFile {
             let params = {};
 
             if ($(e.target).hasClass('everywhere')) {
-                if (!confirm(this.info.language.ARE_YOU_SURE)) {
+                if (!confirm(this.lang.find('ARE_YOU_SURE'))) {
                     return false;
                 }
 
@@ -379,8 +382,8 @@ class aFile {
 
         $('#Delete').click(e => {
             if (this.selected) {
-                let message = this.info.language.CONFIRM_DELETE + ' ' + this.selected.find('.fileName').text() + '?';
-                this.modal.confirm(this.info.language.ARE_YOU_SURE, message, e => {
+                let message = this.lang.find('CONFIRM_DELETE') + ' ' + this.selected.find('.fileName').text() + '?';
+                this.modal.confirm(this.lang.find('ARE_YOU_SURE'), message, e => {
                     let id = this.selected.data('id');
 
                     let selectNextInList = this.selected.next();
@@ -405,7 +408,7 @@ class aFile {
             if (this.selected) {
                 let currentNameElement = this.selected.find('.fileName');
 
-                this.modal.input(this.info.language.RENAME, value => {
+                this.modal.input(this.lang.find('RENAME'), value => {
                     this.fetch('POST', 'Rename', '', {
                         id : this.selected.data('id'),
                         name : value
@@ -418,7 +421,7 @@ class aFile {
 
         $('#Share').click(e => {
             if (this.selected) {
-                this.modal.setTitle(this.info.language.SHARE);
+                this.modal.setTitle(this.lang.find('SHARE'));
                 this.modal.hideCancel();
                 this.modal.setOkCallback(e => {
                     this.modal.hide();
@@ -447,7 +450,7 @@ class aFile {
 
         $('#Upload').click(e => {
             e.preventDefault();
-            this.modal.setTitle(this.info.language.UPLOAD);
+            this.modal.setTitle(this.lang.find('UPLOAD'));
             this.modal.setBody('<input type="file" id="ManualUpload" multiple>');
             this.modal.setOkCallback(e => {
                 let filesToUpload = document.getElementById('ManualUpload').files;
@@ -467,7 +470,7 @@ class aFile {
 
         $('#CreateDirectory').click(e => {
             e.preventDefault();
-            this.modal.input(this.info.language.CREATE_DIRECTORY, value => {
+            this.modal.input(this.lang.find('CREATE_DIRECTORY'), value => {
                 this.fetch('POST', 'Create', 'Directory', {
                     location : this.nav.getCurrentLocation(),
                     name : value
@@ -479,7 +482,7 @@ class aFile {
 
         $('#OpenEditor').click(e => {
             e.preventDefault();
-            this.modal.input(this.info.language.EDITOR_NAME, value => {
+            this.modal.input(this.lang.find('EDITOR_NAME'), value => {
                 this.fetch('POST', 'Editor', 'Create', {
                     filename : value,
                     location : this.nav.getCurrentLocation()
@@ -504,7 +507,7 @@ class aFile {
                 try {
                     new URL(url);
                 } catch (_) {
-                    alert(this.info.language.LINK_ERROR);
+                    alert(this.lang.find('LINK_ERROR'));
                     return false;
                 }
 
@@ -586,11 +589,11 @@ class aFile {
         $('#ClipboardDelete').click(e => {
             let idsToDelete = getClipboardFileIds();
 
-            let message = this.info.language.CONFIRM_DELETE + ' '
+            let message = this.lang.find('CONFIRM_DELETE') + ' '
                         + this.clipboard.length
-                        + this.info.language.FILES
+                        + this.lang.find('FILES')
                         + '?';
-            this.modal.confirm(this.info.language.ARE_YOU_SURE, message, e => {
+            this.modal.confirm(this.lang.find('ARE_YOU_SURE'), message, e => {
                 this.fetch('POST', 'Delete', '', {
                     id : idsToDelete
                 }).then(data => {
@@ -640,7 +643,7 @@ class aFile {
 
         if (this.nav.isSearching() || this.nav.isFromSearchResult()) {
             let directory = $('<li class="breadcrumb-item">');
-            directory.addClass('directory').text(this.info.language.SEARCH_RESULT);
+            directory.addClass('directory').text(this.lang.find(SEARCH_RESULT));
             pathElement.append(directory);
         }
 

@@ -43,7 +43,7 @@ let aFileShare = {
                     if (password === '') return;
                 }
 
-                if (confirm(this.info.language.ARE_YOU_SURE)) {
+                if (confirm(this.lang.find('ARE_YOU_SURE'))) {
                     this.fetch('POST', 'Share', 'Password', {id : fileId, password : password}).then(result => {
                         this.loadShareDialog(fileId);
                         this.list();
