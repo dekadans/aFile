@@ -65,11 +65,11 @@ class ListFiles extends AbstractController {
     {
         $location = $this->param('location');
 
-        $imageFileExts = $this->config()->get('type_groups', 'image');
+        $imageFileExts = $this->config()->find('type_groups', 'image');
         $fileList = $this->fileRepository->findByFileExtension($this->authentication()->getUser(), $location, $imageFileExts);
         $images = [];
 
-        $phpExtension = $this->config()->get('files', 'skip_dl_php_extension') ? '' : '.php';
+        $phpExtension = $this->config()->find('files', 'skip_dl_php_extension') ? '' : '.php';
 
         /** @var File $file */
         foreach ($fileList as $file) {

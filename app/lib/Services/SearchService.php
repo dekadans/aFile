@@ -1,7 +1,7 @@
 <?php
 namespace lib\Services;
 
-use lib\Config;
+use lib\Repositories\ConfigurationRepository;
 use lib\DataTypes\User;
 use lib\Repositories\FileRepository;
 
@@ -17,10 +17,10 @@ class SearchService
     /** @var FileRepository */
     private $fileRepository;
 
-    /** @var Config */
+    /** @var ConfigurationRepository */
     private $config;
 
-    public function __construct(FileRepository $fileRepository, Config $config)
+    public function __construct(FileRepository $fileRepository, ConfigurationRepository $config)
     {
         $this->fileRepository = $fileRepository;
         $this->config = $config;
@@ -48,7 +48,7 @@ class SearchService
         $fileExtensionGroup = $this->extractAdvancedParameter('content');
 
         if (!is_null($fileExtensionGroup)) {
-            $fileExtensions = $this->config->get('type_groups', $fileExtensionGroup);
+            $fileExtensions = $this->config->find('type_groups', $fileExtensionGroup);
 
             if (is_array($fileExtensions)) {
                 $this->fileExtensions = $fileExtensions;

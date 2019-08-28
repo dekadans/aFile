@@ -1,16 +1,16 @@
 <?php
-namespace lib;
+namespace lib\Repositories;
 
 use lib\DataTypes\DatabaseConfiguration;
 
-class Config {
+class ConfigurationRepository {
     private $config;
 
     private function __construct ($filename) {
         $this->config = parse_ini_file($filename,true);
     }
 
-    public function get(string $section, string $property = '')
+    public function find(string $section, string $property = '')
     {
         if (is_array($this->config[$section]) && isset($this->config[$section][$property])) {
             return $this->config[$section][$property];
@@ -36,11 +36,11 @@ class Config {
         self::$instance = new self($filename);
     }
 
-    /** @var Config */
+    /** @var ConfigurationRepository */
     private static $instance;
 
     /**
-     * @return Config
+     * @return ConfigurationRepository
      */
     public static function getInstance()
     {

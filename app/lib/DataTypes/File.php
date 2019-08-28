@@ -12,12 +12,12 @@ class File extends AbstractFile {
 
     public function isInlineDownload()
     {
-        return in_array($this->getMime(), $this->config->get('files', 'inline_download'));
+        return in_array($this->getMime(), $this->config->find('files', 'inline_download'));
     }
 
     public function isEditable()
     {
-        if ($this->isFile() && in_array($this->getMime(), $this->config->get('files', 'editor'))) {
+        if ($this->isFile() && in_array($this->getMime(), $this->config->find('files', 'editor'))) {
             return new EditableFile($this, $this->config);
         } else {
             return false;
@@ -26,7 +26,7 @@ class File extends AbstractFile {
 
     public function getFilePath() : string
     {
-        return __DIR__ . '/../../../' . $this->config->get('files', 'path') . $this->getUser()->getId() . '/' . $this->id;
+        return __DIR__ . '/../../../' . $this->config->find('files', 'path') . $this->getUser()->getId() . '/' . $this->id;
     }
 
     public function getFileExtension() : string

@@ -4,7 +4,6 @@ namespace lib\Repositories;
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use Defuse\Crypto\KeyProtectedByPassword;
 use lib\DataTypes\AuthenticationToken;
-use lib\Config;
 use lib\Database;
 use lib\DataTypes\User;
 
@@ -13,14 +12,14 @@ class UserRepository
     /** @var \PDO */
     private $pdo;
 
-    /** @var Config */
+    /** @var ConfigurationRepository */
     private $config;
 
     /**
      * UserRepository constructor.
      * @param Database $db
      */
-    public function __construct(Database $db, Config $config)
+    public function __construct(Database $db, ConfigurationRepository $config)
     {
         $this->pdo = $db->getPDO();
         $this->config = $config;
@@ -183,7 +182,7 @@ class UserRepository
             $lastInsertId = $this->pdo->lastInsertId();
             $user = $this->getUserById($lastInsertId);
 
-            mkdir(__DIR__ . '/../../../' . $this->config->get('files', 'path') . $lastInsertId);
+            mkdir(__DIR__ . '/../../../' . $this->config->find('files', 'path') . $lastInsertId);
             return $user;
         }
 

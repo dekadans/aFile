@@ -35,7 +35,7 @@ class Upload extends AbstractController {
 
         $previousFileWithSameName = null;
 
-        $maxsize = $this->config()->get('files', 'maxsize');
+        $maxsize = $this->config()->find('files', 'maxsize');
 
         $results = [];
 
@@ -132,7 +132,7 @@ class Upload extends AbstractController {
         $extension = explode('.', $filename);
         $extension = array_pop($extension);
 
-        if (in_array($extension, $this->config()->get('type_groups', 'code'))) {
+        if (in_array($extension, $this->config()->find('type_groups', 'code'))) {
             return 'text/plain';
         }
 

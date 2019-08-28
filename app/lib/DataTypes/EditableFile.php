@@ -2,7 +2,7 @@
 
 namespace lib\DataTypes;
 
-use lib\Config;
+use lib\Repositories\ConfigurationRepository;
 
 class EditableFile
 {
@@ -10,10 +10,10 @@ class EditableFile
     private $file;
     /** @var string */
     private $urlToken;
-    /** @var Config */
+    /** @var ConfigurationRepository */
     private $config;
 
-    public function __construct(File $file, Config $config)
+    public function __construct(File $file, ConfigurationRepository $config)
     {
         $this->file = $file;
         $this->config = $config;
@@ -26,7 +26,7 @@ class EditableFile
 
     public function isCode()
     {
-        return in_array($this->file->getFileExtension(), $this->config->get('type_groups', 'code'));
+        return in_array($this->file->getFileExtension(), $this->config->find('type_groups', 'code'));
     }
 
     public function hasPreview()
@@ -51,7 +51,7 @@ class EditableFile
 
     public function getForceDownloadLink()
     {
-        $url = AFILE_LOCATION . 'dl' . ($this->config->get('files', 'skip_dl_php_extension') ? '' : '.php') . '/' . $this->file->getStringId();
+        $url = AFILE_LOCATION . 'dl' . ($this->config->find('files', 'skip_dl_php_extension') ? '' : '.php') . '/' . $this->file->getStringId();
 
         if (!empty($this->urlToken)) {
             $url .= '/' . $this->urlToken;

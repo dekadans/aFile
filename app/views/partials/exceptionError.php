@@ -4,7 +4,7 @@
 <div class="container py-5">
     <h2>Error!</h2>
 
-    <?php if (\lib\Config::getInstance()->get('show_detailed_exceptions')): ?>
+    <?php if (\lib\Repositories\ConfigurationRepository::getInstance()->find('show_detailed_exceptions')): ?>
 
     <p><?= $exception->getMessage() ?></p>
 

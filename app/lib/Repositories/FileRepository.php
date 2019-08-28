@@ -2,7 +2,6 @@
 namespace lib\Repositories;
 
 use lib\DataTypes\AbstractFile;
-use lib\Config;
 use lib\Database;
 use lib\DataTypes\Directory;
 use lib\DataTypes\Link;
@@ -34,7 +33,7 @@ class FileRepository
     /** @var SortService */
     private $sort;
 
-    /** @var Config */
+    /** @var ConfigurationRepository */
     private $config;
 
     public function __construct(Database $database,
@@ -42,7 +41,7 @@ class FileRepository
                                 EncryptionService $encryptionService,
                                 EncryptionKeyRepository $encryptionKeyRepository,
                                 SortService $sort,
-                                Config $config)
+                                ConfigurationRepository $config)
     {
         $this->pdo = $database->getPDO();
         $this->userRepository = $userRepository;
@@ -99,7 +98,7 @@ class FileRepository
     {
         $fileQuery = $this->pdo->prepare('SELECT id FROM files WHERE string_id = ?');
         $characters = '0123456789abcdefghijklmnopqrstuvwxyz';
-        $length = $this->config->get('files', 'id_string_length');
+        $length = $this->config->find('files', 'id_string_length');
 
         while (true) {
             $randomString = '';
@@ -475,7 +474,7 @@ class FileRepository
 
     public function convertBytesToReadable(int $bytes, int $precision = 0)
     {
-        $siPrefix = $this->config->get('presentation', 'siprefix');
+        $siPrefix = $this->config->find('presentation', 'siprefix');
 
         $thresh = $siPrefix ? 1000 : 1024;
 

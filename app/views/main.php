@@ -1,7 +1,7 @@
 <?php
 /**
  * @var string $currentSorting
- * @var \lib\Config $config
+ * @var \lib\Repositories\ConfigurationRepository $config
  */
 $lang = \lib\Translation::getInstance();
 
@@ -102,7 +102,7 @@ use lib\Services\SortService;
                                     <a class="dropdown-item sortby <?= ($currentSorting === SortService::COLUMN_NAME ? 'active' : '') ?>" href="#" data-column="<?= SortService::COLUMN_NAME ?>"><?= $lang->translate('SORT_NAME') ?></a>
                                     <a class="dropdown-item sortby <?= ($currentSorting === SortService::COLUMN_SIZE ? 'active' : '') ?>" href="#" data-column="<?= SortService::COLUMN_SIZE ?>"><?= $lang->translate('SORT_SIZE') ?></a>
 
-                                    <?php if ($config->get('presentation', 'upload_date_in_list')): ?>
+                                    <?php if ($config->find('presentation', 'upload_date_in_list')): ?>
                                     <a class="dropdown-item sortby <?= ($currentSorting === SortService::COLUMN_DATE_UPLOAD ? 'active' : '') ?>" href="#" data-column="<?= SortService::COLUMN_DATE_UPLOAD ?>"><?= $lang->translate('SORT_DATE') ?></a>
                                     <?php else: ?>
                                     <a class="dropdown-item sortby <?= ($currentSorting === SortService::COLUMN_DATE_EDIT ? 'active' : '') ?>" href="#" data-column="<?= SortService::COLUMN_DATE_EDIT ?>"><?= $lang->translate('SORT_DATE') ?></a>

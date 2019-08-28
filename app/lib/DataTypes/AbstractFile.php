@@ -2,7 +2,7 @@
 
 namespace lib\DataTypes;
 
-use lib\Config;
+use lib\Repositories\ConfigurationRepository;
 use lib\Repositories\FileRepository;
 use lib\Repositories\UserRepository;
 use lib\Translation;
@@ -25,10 +25,10 @@ abstract class AbstractFile {
     protected $fileRepository;
     /** @var UserRepository*/
     protected $userRepository;
-    /** @var Config */
+    /** @var ConfigurationRepository */
     protected $config;
 
-    public function __construct(FileRepository $fileRepository, UserRepository $userRepository, Config $config, $data = null)
+    public function __construct(FileRepository $fileRepository, UserRepository $userRepository, ConfigurationRepository $config, $data = null)
     {
         $this->fileRepository = $fileRepository;
         $this->userRepository = $userRepository;
@@ -183,7 +183,7 @@ abstract class AbstractFile {
 
     public function getReadableDateForFileList()
     {
-        if ($this->config->get('presentation', 'upload_date_in_list')) {
+        if ($this->config->find('presentation', 'upload_date_in_list')) {
             $timestamp = strtotime($this->created);
         } else {
             $timestamp = strtotime($this->last_edit);

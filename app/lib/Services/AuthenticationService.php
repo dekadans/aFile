@@ -2,7 +2,7 @@
 
 namespace lib\Services;
 
-use lib\Config;
+use lib\Repositories\ConfigurationRepository;
 use lib\DataTypes\AuthenticationCookie;
 use lib\DataTypes\AuthenticationToken;
 use lib\DataTypes\User;
@@ -21,11 +21,11 @@ class AuthenticationService
     private $stayLoggedIn = true;
     private $tokenLife = '+ 1 MONTH';
 
-    public function __construct(UserRepository $userRepository, Config $config)
+    public function __construct(UserRepository $userRepository, ConfigurationRepository $config)
     {
         $this->userRepository = $userRepository;
 
-        if ($config->get('login', 'stay_logged_in') !== '1') {
+        if ($config->find('login', 'stay_logged_in') !== '1') {
             $this->stayLoggedIn = false;
             $this->tokenLife = '+ 1 DAY';
         }

@@ -2,7 +2,7 @@
 
 namespace controllers;
 
-use lib\Config;
+use lib\Repositories\ConfigurationRepository;
 use lib\DataTypes\AbstractFile;
 use lib\HTTP\JsonResponse;
 use lib\HTTP\HTMLResponse;
@@ -24,7 +24,7 @@ abstract class AbstractController {
     /** @var AuthenticationService */
     private $authenticationService;
 
-    /** @var Config */
+    /** @var ConfigurationRepository */
     private $config;
 
     /** @var ContainerInterface */
@@ -36,7 +36,7 @@ abstract class AbstractController {
     {
         $this->container = $container;
         $this->request = $container->get(ServerRequestInterface::class);
-        $this->config  = $container->get(Config::class);
+        $this->config  = $container->get(ConfigurationRepository::class);
         $this->authenticationService = $container->get(AuthenticationService::class);
     }
 
@@ -134,7 +134,7 @@ abstract class AbstractController {
     }
 
     /**
-     * @return Config
+     * @return ConfigurationRepository
      */
     protected function config()
     {

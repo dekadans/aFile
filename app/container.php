@@ -1,6 +1,6 @@
 <?php
 
-use lib\Config;
+use lib\Repositories\ConfigurationRepository;
 use lib\Database;
 use lib\Repositories\EncryptionKeyRepository;
 use lib\Repositories\FileRepository;
@@ -24,9 +24,9 @@ if (!is_file($configurationFile)) {
     $configurationFile .= '.template';
 }
 
-Config::load($configurationFile);
-$config = Config::getInstance();
-\lib\Translation::loadLanguage($config->get('language'));
+ConfigurationRepository::load($configurationFile);
+$config = ConfigurationRepository::getInstance();
+\lib\Translation::loadLanguage($config->find('language'));
 
 $databaseConfiguration = $config->getDatabaseConfiguration();
 $database = new Database($databaseConfiguration);
@@ -44,7 +44,7 @@ $authenticationService->load($request);
 
 $containerBuilder = new ContainerBuilder();
 
-$containerBuilder->set(Config::class, $config);
+$containerBuilder->set(ConfigurationRepository::class, $config);
 $containerBuilder->set(Database::class, $database);
 $containerBuilder->set(AuthenticationService::class, $authenticationService);
 $containerBuilder->set(ServerRequestInterface::class, $request);
@@ -52,7 +52,7 @@ $containerBuilder->set(SortService::class, SortService::loadFromSession());
 
 $containerBuilder->register(UserRepository::class, UserRepository::class)
     ->addArgument(new Reference(Database::class))
-    ->addArgument(new Reference(Config::class));
+    ->addArgument(new Reference(ConfigurationRepository::class));
 
 $containerBuilder->register(EncryptionService::class, EncryptionService::class);
 
@@ -67,10 +67,10 @@ $containerBuilder->register(FileRepository::class, FileRepository::class)
     ->addArgument(new Reference(EncryptionService::class))
     ->addArgument(new Reference(EncryptionKeyRepository::class))
     ->addArgument(new Reference(SortService::class))
-    ->addArgument(new Reference(Config::class));
+    ->addArgument(new Reference(ConfigurationRepository::class));
 
 $containerBuilder->register(SearchService::class, SearchService::class)
     ->addArgument(new Reference(FileRepository::class))
-    ->addArgument(new Reference(Config::class));
+    ->addArgument(new Reference(ConfigurationRepository::class));
 
 return $containerBuilder;

@@ -1,12 +1,12 @@
 <?php
 /** @var \lib\DataTypes\FileToken $token */
 /** @var \lib\DataTypes\File $file */
-/** @var \lib\Config $config */
+/** @var \lib\Repositories\ConfigurationRepository $config */
 $lang = \lib\Translation::getInstance();
 ?>
 
 <?php if ($token):
-$skipExtension = $config->get('files', 'skip_dl_php_extension');
+$skipExtension = $config->find('files', 'skip_dl_php_extension');
 $link = AFILE_LOCATION . 'dl'. ($skipExtension ? '' : '.php') .'/' . $file->getStringId() . '/' . $token->getToken();
 $restricted = $token->getActiveState() === \lib\DataTypes\FileToken::STATE_RESTRICTED;
 $passwordIsSet = !empty($token->getPasswordHash());

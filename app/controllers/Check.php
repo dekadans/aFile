@@ -3,6 +3,7 @@
 namespace controllers;
 
 use lib\Translation;
+use mysql_xdevapi\Exception;
 
 class Check extends AbstractController {
     public function getAccessLevel() {
@@ -11,7 +12,7 @@ class Check extends AbstractController {
 
     public function index() {
         $info = [
-            'title' => $this->config()->get('title') ?? 'aFile'
+            'title' => $this->config()->find('title') ?? 'aFile'
         ];
 
         $user = $this->authentication()->getUser();
@@ -24,7 +25,7 @@ class Check extends AbstractController {
                 'type' => $user->getType()
             ];
             $info['language'] = Translation::getInstance()->getLanguageData();
-            $info['skip_dl_php_extension'] = $this->config()->get('files', 'skip_dl_php_extension');
+            $info['skip_dl_php_extension'] = $this->config()->find('files', 'skip_dl_php_extension');
         }
         else {
             $info['login'] = false;
