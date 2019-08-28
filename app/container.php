@@ -25,15 +25,16 @@ if (!is_file($configurationFile)) {
 }
 
 Config::load($configurationFile);
-\lib\Translation::loadLanguage(Config::getInstance()->language);
+$config = Config::getInstance();
+\lib\Translation::loadLanguage($config->get('language'));
 
-$databaseConfiguration = Config::getInstance()->getDatabaseConfiguration();
+$databaseConfiguration = $config->getDatabaseConfiguration();
 $database = new Database($databaseConfiguration);
 
-$userRepository = new UserRepository($database);
+$userRepository = new UserRepository($database, $config);
 $request = \GuzzleHttp\Psr7\ServerRequest::fromGlobals();
 
-$authenticationService = new AuthenticationService($userRepository, Config::getInstance());
+$authenticationService = new AuthenticationService($userRepository, $config);
 $authenticationService->load($request);
 
 
@@ -43,14 +44,15 @@ $authenticationService->load($request);
 
 $containerBuilder = new ContainerBuilder();
 
-$containerBuilder->set(Config::class, Config::getInstance());
+$containerBuilder->set(Config::class, $config);
 $containerBuilder->set(Database::class, $database);
 $containerBuilder->set(AuthenticationService::class, $authenticationService);
 $containerBuilder->set(ServerRequestInterface::class, $request);
 $containerBuilder->set(SortService::class, SortService::loadFromSession());
 
 $containerBuilder->register(UserRepository::class, UserRepository::class)
-    ->addArgument(new Reference(Database::class));
+    ->addArgument(new Reference(Database::class))
+    ->addArgument(new Reference(Config::class));
 
 $containerBuilder->register(EncryptionService::class, EncryptionService::class);
 
@@ -64,9 +66,11 @@ $containerBuilder->register(FileRepository::class, FileRepository::class)
     ->addArgument(new Reference(UserRepository::class))
     ->addArgument(new Reference(EncryptionService::class))
     ->addArgument(new Reference(EncryptionKeyRepository::class))
-    ->addArgument(new Reference(SortService::class));
+    ->addArgument(new Reference(SortService::class))
+    ->addArgument(new Reference(Config::class));
 
 $containerBuilder->register(SearchService::class, SearchService::class)
-    ->addArgument(new Reference(FileRepository::class));
+    ->addArgument(new Reference(FileRepository::class))
+    ->addArgument(new Reference(Config::class));
 
 return $containerBuilder;

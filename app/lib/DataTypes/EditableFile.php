@@ -10,10 +10,13 @@ class EditableFile
     private $file;
     /** @var string */
     private $urlToken;
+    /** @var Config */
+    private $config;
 
-    public function __construct(File $file)
+    public function __construct(File $file, Config $config)
     {
         $this->file = $file;
+        $this->config = $config;
     }
 
     public function isMarkdown()
@@ -23,7 +26,7 @@ class EditableFile
 
     public function isCode()
     {
-        return in_array($this->file->getFileExtension(), Config::getInstance()->type_groups->code);
+        return in_array($this->file->getFileExtension(), $this->config->get('type_groups', 'code'));
     }
 
     public function hasPreview()
@@ -48,7 +51,7 @@ class EditableFile
 
     public function getForceDownloadLink()
     {
-        $url = AFILE_LOCATION . 'dl' . (Config::getInstance()->files->skip_dl_php_extension ? '' : '.php') . '/' . $this->file->getStringId();
+        $url = AFILE_LOCATION . 'dl' . ($this->config->get('files', 'skip_dl_php_extension') ? '' : '.php') . '/' . $this->file->getStringId();
 
         if (!empty($this->urlToken)) {
             $url .= '/' . $this->urlToken;

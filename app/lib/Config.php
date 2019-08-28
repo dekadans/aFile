@@ -7,14 +7,16 @@ class Config {
     private $config;
 
     private function __construct ($filename) {
-        $this->config = json_decode(json_encode(parse_ini_file($filename,true)));
+        $this->config = parse_ini_file($filename,true);
     }
 
-    function __get ($property) {
-        if (isset($this->config->{$property})) {
-            return $this->config->{$property};
-        }
-        else {
+    public function get(string $section, string $property = '')
+    {
+        if (is_array($this->config[$section]) && isset($this->config[$section][$property])) {
+            return $this->config[$section][$property];
+        } else if (!is_array($this->config[$section]) && !empty($this->config[$section])) {
+            return $this->config[$section];
+        } else {
             return null;
         }
     }
@@ -22,10 +24,10 @@ class Config {
     public function getDatabaseConfiguration()
     {
         return new DatabaseConfiguration(
-            $this->config->database->host,
-            $this->config->database->database,
-            $this->config->database->user,
-            $this->config->database->password
+            $this->config['database']['host'],
+            $this->config['database']['database'],
+            $this->config['database']['user'],
+            $this->config['database']['password']
         );
     }
 

@@ -115,6 +115,6 @@ class Share extends AbstractController {
     public function actionPanel()
     {
         $token = $this->encryptionKeyRepository->findAccessTokenForFile($this->file);
-        return $this->parseView('partials/sharepanel', ['token' => $token, 'file' => $this->file]);
+        return $this->parseView('partials/sharepanel', ['token' => $token, 'file' => $this->file, 'config' => $this->config()]);
     }
 }

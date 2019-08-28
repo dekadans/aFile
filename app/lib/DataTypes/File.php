@@ -2,7 +2,6 @@
 
 namespace lib\DataTypes;
 
-use lib\Config;
 
 class File extends AbstractFile {
 
@@ -13,13 +12,13 @@ class File extends AbstractFile {
 
     public function isInlineDownload()
     {
-        return in_array($this->getMime(), Config::getInstance()->files->inline_download);
+        return in_array($this->getMime(), $this->config->get('files', 'inline_download'));
     }
 
     public function isEditable()
     {
-        if ($this->isFile() && in_array($this->getMime(), Config::getInstance()->files->editor)) {
-            return new EditableFile($this);
+        if ($this->isFile() && in_array($this->getMime(), $this->config->get('files', 'editor'))) {
+            return new EditableFile($this, $this->config);
         } else {
             return false;
         }
@@ -27,7 +26,7 @@ class File extends AbstractFile {
 
     public function getFilePath() : string
     {
-        return __DIR__ . '/../../../' . Config::getInstance()->files->path . $this->getUser()->getId() . '/' . $this->id;
+        return __DIR__ . '/../../../' . $this->config->get('files', 'path') . $this->getUser()->getId() . '/' . $this->id;
     }
 
     public function getFileExtension() : string

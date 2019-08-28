@@ -25,7 +25,7 @@ class AuthenticationService
     {
         $this->userRepository = $userRepository;
 
-        if ($config->login->stay_logged_in !== '1') {
+        if ($config->get('login', 'stay_logged_in') !== '1') {
             $this->stayLoggedIn = false;
             $this->tokenLife = '+ 1 DAY';
         }

@@ -17,9 +17,13 @@ class SearchService
     /** @var FileRepository */
     private $fileRepository;
 
-    public function __construct(FileRepository $fileRepository)
+    /** @var Config */
+    private $config;
+
+    public function __construct(FileRepository $fileRepository, Config $config)
     {
         $this->fileRepository = $fileRepository;
+        $this->config = $config;
     }
 
     public function search(User $user, string $searchString)
@@ -44,7 +48,7 @@ class SearchService
         $fileExtensionGroup = $this->extractAdvancedParameter('content');
 
         if (!is_null($fileExtensionGroup)) {
-            $fileExtensions = Config::getInstance()->type_groups->{$fileExtensionGroup} ?? null;
+            $fileExtensions = $this->config->get('type_groups', $fileExtensionGroup);
 
             if (is_array($fileExtensions)) {
                 $this->fileExtensions = $fileExtensions;

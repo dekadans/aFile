@@ -2,7 +2,6 @@
 
 namespace controllers;
 
-use lib\Config;
 use lib\DataTypes\File;
 use lib\DataTypes\FileContent;
 use lib\Repositories\FileRepository;
@@ -36,7 +35,7 @@ class Upload extends AbstractController {
 
         $previousFileWithSameName = null;
 
-        $maxsize = Config::getInstance()->files->maxsize;
+        $maxsize = $this->config()->get('files', 'maxsize');
 
         $results = [];
 
@@ -66,8 +65,7 @@ class Upload extends AbstractController {
             return $this->outputJSON([
                 'error' => Translation::getInstance()->translate('UPLOAD_FAILED')
             ]);
-        }
-        else if ($previousFileWithSameName && count($results) === 1) {
+        } else if ($previousFileWithSameName && count($results) === 1) {
             $fileToOverwrite = $this->fileRepository->findByLocationAndName($this->user, $this->location, $previousFileWithSameName);
             $newFile = array_pop($results);
 
@@ -77,8 +75,7 @@ class Upload extends AbstractController {
                 'newId' => $newFile->getId(),
                 'name' => $previousFileWithSameName
             ]);
-        }
-        else {
+        } else {
             return $this->outputJSON([
                 'status' => 'ok'
             ]);
@@ -110,8 +107,7 @@ class Upload extends AbstractController {
                     'msg' => $error->getMessage()
                 ]);
             }
-        }
-        else {
+        } else {
             return $this->outputJSON([
                 'error' => Translation::getInstance()->translate('ACCESS_DENIED')
             ]);
@@ -136,7 +132,7 @@ class Upload extends AbstractController {
         $extension = explode('.', $filename);
         $extension = array_pop($extension);
 
-        if (in_array($extension, Config::getInstance()->type_groups->code)) {
+        if (in_array($extension, $this->config()->get('type_groups', 'code'))) {
             return 'text/plain';
         }
 

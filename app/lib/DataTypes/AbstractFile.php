@@ -25,16 +25,18 @@ abstract class AbstractFile {
     protected $fileRepository;
     /** @var UserRepository*/
     protected $userRepository;
+    /** @var Config */
+    protected $config;
 
-    public function __construct(FileRepository $fileRepository, UserRepository $userRepository, $data = null)
+    public function __construct(FileRepository $fileRepository, UserRepository $userRepository, Config $config, $data = null)
     {
         $this->fileRepository = $fileRepository;
         $this->userRepository = $userRepository;
+        $this->config = $config;
 
         if ($data) {
             $this->setData($data);
-        }
-        else {
+        } else {
             $this->id = '0';
         }
     }
@@ -53,8 +55,7 @@ abstract class AbstractFile {
             $this->last_edit = $fileData['last_edit'];
             $this->created = $fileData['created'];
             $this->string_id = $fileData['string_id'];
-        }
-        else {
+        } else {
             $this->id = '0';
         }
     }
@@ -72,8 +73,7 @@ abstract class AbstractFile {
     {
         if ($this->type === FileRepository::TYPE_FILE) {
             $result = $this->fileRepository->updateFileMimeType($this->id, $newMime);
-        }
-        else {
+        } else {
             $result = false;
         }
 
@@ -138,7 +138,7 @@ abstract class AbstractFile {
      */
     public function getSizeReadable() : string
     {
-        return FileRepository::convertBytesToReadable($this->size);
+        return $this->fileRepository->convertBytesToReadable($this->size);
     }
 
     /**
@@ -183,10 +183,9 @@ abstract class AbstractFile {
 
     public function getReadableDateForFileList()
     {
-        if (Config::getInstance()->presentation->upload_date_in_list) {
+        if ($this->config->get('presentation', 'upload_date_in_list')) {
             $timestamp = strtotime($this->created);
-        }
-        else {
+        } else {
             $timestamp = strtotime($this->last_edit);
         }
 
@@ -195,11 +194,9 @@ abstract class AbstractFile {
         if (date('Y-m-d', $timestamp) === date('Y-m-d', $now)) {
             $todayString = Translation::getInstance()->translate('TODAY');
             return $todayString . ' ' . date('H:i', $timestamp);
-        }
-        else if (date('Y', $timestamp) === date('Y', $now)) {
+        } else if (date('Y', $timestamp) === date('Y', $now)) {
             return date('j M', $timestamp);
-        }
-        else {
+        } else {
             return date('j M Y', $timestamp);
         }
     }

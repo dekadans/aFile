@@ -2,8 +2,6 @@
 
 namespace controllers;
 
-use lib\Repositories\FileRepository;
-
 class Info extends AbstractController
 {
     public function getAccessLevel()
@@ -23,7 +21,7 @@ class Info extends AbstractController
 
         return $this->outputJSON([
             'b' => $sizeInDb,
-            'h' => FileRepository::convertBytesToReadable($sizeInDb, 2)
+            'h' => $fileRepository->convertBytesToReadable($sizeInDb, 2)
         ]);
     }
 }

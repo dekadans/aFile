@@ -2,7 +2,6 @@
 
 namespace controllers;
 
-use lib\Config;
 use lib\DataTypes\File;
 use lib\Repositories\FileRepository;
 use lib\Services\SearchService;
@@ -27,7 +26,7 @@ class ListFiles extends AbstractController {
     {
         $sort = $this->getContainer()->get(SortService::class);
         $currentSorting = $sort->getSortBy();
-        return $this->parseView('main', ['currentSorting' => $currentSorting]);
+        return $this->parseView('main', ['currentSorting' => $currentSorting, 'config' => $this->config()]);
     }
 
     public function actionList()
@@ -66,14 +65,16 @@ class ListFiles extends AbstractController {
     {
         $location = $this->param('location');
 
-        $imageFileExts = Config::getInstance()->type_groups->image;
+        $imageFileExts = $this->config()->get('type_groups', 'image');
         $fileList = $this->fileRepository->findByFileExtension($this->authentication()->getUser(), $location, $imageFileExts);
         $images = [];
+
+        $phpExtension = $this->config()->get('files', 'skip_dl_php_extension') ? '' : '.php';
 
         /** @var File $file */
         foreach ($fileList as $file) {
             $images[] = [
-                'src' => AFILE_LOCATION . 'dl' . (Config::getInstance()->files->skip_dl_php_extension ? '' : '.php') . '/' . $file->getStringId(),
+                'src' => AFILE_LOCATION . 'dl' . $phpExtension . '/' . $file->getStringId(),
                 'subHtml' => $file->getName()
             ];
         }

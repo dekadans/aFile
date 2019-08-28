@@ -34,17 +34,22 @@ class FileRepository
     /** @var SortService */
     private $sort;
 
+    /** @var Config */
+    private $config;
+
     public function __construct(Database $database,
                                 UserRepository $userRepository,
                                 EncryptionService $encryptionService,
                                 EncryptionKeyRepository $encryptionKeyRepository,
-                                SortService $sort)
+                                SortService $sort,
+                                Config $config)
     {
         $this->pdo = $database->getPDO();
         $this->userRepository = $userRepository;
         $this->encryption = $encryptionService;
         $this->encryptionKeyRepository = $encryptionKeyRepository;
         $this->sort = $sort;
+        $this->config = $config;
     }
 
     /**
@@ -94,7 +99,7 @@ class FileRepository
     {
         $fileQuery = $this->pdo->prepare('SELECT id FROM files WHERE string_id = ?');
         $characters = '0123456789abcdefghijklmnopqrstuvwxyz';
-        $length = Config::getInstance()->files->id_string_length;
+        $length = $this->config->get('files', 'id_string_length');
 
         while (true) {
             $randomString = '';
@@ -455,22 +460,23 @@ class FileRepository
     {
         if ($fileData) {
             if ($fileData['type'] === self::TYPE_FILE) {
-                $file = new File($this, $this->userRepository, $fileData);
+                $file = new File($this, $this->userRepository, $this->config, $fileData);
             } else if ($fileData['type'] === self::TYPE_DIRECTORY) {
-                $file = new Directory($this, $this->userRepository, $fileData);
+                $file = new Directory($this, $this->userRepository, $this->config, $fileData);
             } else if ($fileData['type'] === self::TYPE_LINK) {
-                $file = new Link($this, $this->userRepository, $fileData);
+                $file = new Link($this, $this->userRepository, $this->config, $fileData);
             }
         } else {
-            $file = new File($this, $this->userRepository);
+            $file = new File($this, $this->userRepository, $this->config);
         }
 
         return $file;
     }
 
-    public static function convertBytesToReadable(int $bytes, int $precision = 0)
+    public function convertBytesToReadable(int $bytes, int $precision = 0)
     {
-        $siPrefix = Config::getInstance()->presentation->siprefix;
+        $siPrefix = $this->config->get('presentation', 'siprefix');
+
         $thresh = $siPrefix ? 1000 : 1024;
 
         if ($bytes < $thresh) {

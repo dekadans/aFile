@@ -10,18 +10,20 @@ use lib\DataTypes\User;
 
 class UserRepository
 {
-    /**
-     * @var \PDO
-     */
+    /** @var \PDO */
     private $pdo;
+
+    /** @var Config */
+    private $config;
 
     /**
      * UserRepository constructor.
      * @param Database $db
      */
-    public function __construct(Database $db)
+    public function __construct(Database $db, Config $config)
     {
         $this->pdo = $db->getPDO();
+        $this->config = $config;
     }
 
     /**
@@ -181,7 +183,7 @@ class UserRepository
             $lastInsertId = $this->pdo->lastInsertId();
             $user = $this->getUserById($lastInsertId);
 
-            mkdir(__DIR__ . '/../../../' . Config::getInstance()->files->path . $lastInsertId);
+            mkdir(__DIR__ . '/../../../' . $this->config->get('files', 'path') . $lastInsertId);
             return $user;
         }
 
