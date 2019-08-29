@@ -31,7 +31,8 @@ class Upload extends AbstractController {
         $this->location = $this->param('location');
         $this->user = $this->authentication()->getUser();
 
-        $createFileService = new CreateFileService($this->fileRepository);
+        /** @var CreateFileService $createFileService */
+        $createFileService = $this->getContainer()->get(CreateFileService::class);
 
         $previousFileWithSameName = null;
 

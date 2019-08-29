@@ -4,8 +4,6 @@ namespace controllers;
 
 use lib\DataTypes\File;
 use lib\Repositories\EncryptionKeyRepository;
-use lib\Repositories\FileRepository;
-use lib\Services\EncryptionService;
 use lib\Translation;
 
 class Share extends AbstractController {

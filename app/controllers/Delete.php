@@ -2,7 +2,6 @@
 
 namespace controllers;
 
-use lib\Repositories\FileRepository;
 use lib\Translation;
 
 class Delete extends AbstractController {

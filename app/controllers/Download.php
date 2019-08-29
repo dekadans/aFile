@@ -11,7 +11,6 @@ use lib\HTTP\Response;
 use lib\HTTP\TemplateResponse;
 use lib\Repositories\EncryptionKeyRepository;
 use lib\Repositories\FileRepository;
-use lib\Services\EncryptionService;
 use lib\Translation;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
