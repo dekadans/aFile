@@ -5,6 +5,8 @@ use lib\DataTypes\AbstractFile;
 use lib\Database;
 use lib\DataTypes\Directory;
 use lib\DataTypes\Link;
+use lib\Exceptions\CouldNotLocateEncryptionKeyException;
+use lib\Exceptions\CouldNotReadFileException;
 use lib\Services\EncryptionService;
 use lib\DataTypes\File;
 use lib\DataTypes\FileContent;
@@ -264,7 +266,7 @@ class FileRepository
      * @param File $file
      * @return bool|FileContent
      * @throws CouldNotLocateEncryptionKeyException
-     * @throws \lib\DataTypes\CouldNotReadFileException
+     * @throws CouldNotReadFileException
      */
     public function readFileContent(File $file)
     {

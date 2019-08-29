@@ -413,7 +413,9 @@ class aFile {
                         id : this.selected.data('id'),
                         name : value
                     }).then(data => {
-                        currentNameElement.text(value);
+                        if (!data.error) {
+                            currentNameElement.text(value);
+                        }
                     });
                 }, currentNameElement.text());
             }
@@ -480,11 +482,11 @@ class aFile {
             });
         });
 
-        $('#OpenEditor').click(e => {
+        $('#CreateFile').click(e => {
             e.preventDefault();
             this.modal.input(this.lang.find('EDITOR_NAME'), value => {
-                this.fetch('POST', 'Editor', 'Create', {
-                    filename : value,
+                this.fetch('POST', 'Create', 'File', {
+                    name : value,
                     location : this.nav.getCurrentLocation()
                 }).then(jsonResponse => {
                     this.list();
@@ -511,7 +513,7 @@ class aFile {
                     return false;
                 }
 
-                this.fetch('POST', 'Link', 'Create', {
+                this.fetch('POST', 'Create', 'Link', {
                     name : name,
                     url : url,
                     location : this.nav.getCurrentLocation()

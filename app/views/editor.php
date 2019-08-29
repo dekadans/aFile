@@ -84,7 +84,7 @@ $openInPreview = $editableFile->hasPreview() && !empty($text);
 
             <div class="clearfix">
                 <span class="h6" style="float: left; margin: 0;">
-                    <?= $editableFile->getFile()->getReadableDateForFileList() ?>
+                    <?= $editableFile->getFile()->getReadableDate() ?>
                 </span>
 
                 <div style="float: right;">

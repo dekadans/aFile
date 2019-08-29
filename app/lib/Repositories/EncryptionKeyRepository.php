@@ -7,6 +7,7 @@ use lib\Database;
 use lib\DataTypes\User;
 use lib\DataTypes\File;
 use lib\DataTypes\FileToken;
+use lib\Exceptions\CouldNotLocateEncryptionKeyException;
 use lib\Services\AuthenticationService;
 use lib\Services\EncryptionService;
 
@@ -71,7 +72,6 @@ class EncryptionKeyRepository
     /**
      * @param File $file
      * @return bool|FileToken|null
-     * @throws CouldNotLocateEncryptionKeyException
      * @throws \Defuse\Crypto\Exception\EnvironmentIsBrokenException
      */
     public function createAccessTokenForFile(File $file)
@@ -108,7 +108,6 @@ class EncryptionKeyRepository
     /**
      * @param File $file
      * @return bool
-     * @throws CouldNotLocateEncryptionKeyException
      */
     public function removeAccessTokenForFile(File $file)
     {
@@ -234,5 +233,3 @@ class EncryptionKeyRepository
         return false;
     }
 }
-
-class CouldNotLocateEncryptionKeyException extends \Exception {}

@@ -32,6 +32,12 @@ class Rename extends AbstractController
             ]);
         }
 
+        if ($this->fileRepository->exists($this->authentication()->getUser(), $newName, $file->getLocation())) {
+            return $this->outputJSON([
+                'error' => Translation::getInstance()->translate('FILE_EXISTS')
+            ]);
+        }
+
         if ($this->fileRepository->renameFile($id, $newName)) {
             return $this->outputJSON([
                 'status' => 'ok'
@@ -51,8 +57,9 @@ class Rename extends AbstractController
 
         $file = $this->fileRepository->find($id);
 
-        if ($file->isset() && $this->checkFileAccess($file)) {
-            $file->setMime($newMime);
+        if ($file->isset() && $file->isFile() && $this->checkFileAccess($file)) {
+            $this->fileRepository->updateFileMimeType($file->getId(), $newMime);
+
             return $this->outputJSON([
                 'status' => 'ok'
             ]);

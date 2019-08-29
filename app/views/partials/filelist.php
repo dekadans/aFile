@@ -28,7 +28,7 @@ foreach ($fileList as $file): ?>
                 </div>
                 <div class="col text-right">
                     <span class=""><?= $file->getSizeReadable() ?></span><br>
-                    <small class="d-none d-sm-block"><span><?= $file->getReadableDateForFileList() ?></span></small>
+                    <small class="d-none d-sm-block"><span><?= $file->getReadableDate() ?></span></small>
                 </div>
             </div>
         </li>

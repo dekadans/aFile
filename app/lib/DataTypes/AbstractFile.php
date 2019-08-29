@@ -66,25 +66,6 @@ abstract class AbstractFile {
     }
 
     /**
-     * @param string $newMime
-     * @return bool
-     */
-    public function setMime($newMime) : bool
-    {
-        if ($this->type === FileRepository::TYPE_FILE) {
-            $result = $this->fileRepository->updateFileMimeType($this->id, $newMime);
-        } else {
-            $result = false;
-        }
-
-        if ($result) {
-            $this->mime = $newMime;
-        }
-
-        return $result;
-    }
-
-    /**
      * Get the value of Id
      *
      * @return mixed
@@ -138,7 +119,7 @@ abstract class AbstractFile {
      */
     public function getSizeReadable() : string
     {
-        return $this->fileRepository->convertBytesToReadable($this->size);
+        return $this->fileRepository->convertBytesToReadable($this->size ?? 0);
     }
 
     /**
@@ -181,7 +162,7 @@ abstract class AbstractFile {
         return $this->last_edit;
     }
 
-    public function getReadableDateForFileList()
+    public function getReadableDate()
     {
         if ($this->config->find('presentation', 'upload_date_in_list')) {
             $timestamp = strtotime($this->created);

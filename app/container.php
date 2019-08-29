@@ -6,6 +6,7 @@ use lib\Repositories\EncryptionKeyRepository;
 use lib\Repositories\FileRepository;
 use lib\Repositories\UserRepository;
 use lib\Services\AuthenticationService;
+use lib\Services\CreateFileService;
 use lib\Services\EncryptionService;
 use lib\Services\SearchService;
 use lib\Services\SortService;
@@ -72,5 +73,8 @@ $containerBuilder->register(FileRepository::class, FileRepository::class)
 $containerBuilder->register(SearchService::class, SearchService::class)
     ->addArgument(new Reference(FileRepository::class))
     ->addArgument(new Reference(ConfigurationRepository::class));
+
+$containerBuilder->register(CreateFileService::class, CreateFileService::class)
+    ->addArgument(new Reference(FileRepository::class));
 
 return $containerBuilder;

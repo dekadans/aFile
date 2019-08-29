@@ -2,6 +2,8 @@
 
 namespace lib\DataTypes;
 
+use lib\Exceptions\CouldNotReadFileException;
+
 class FileContent
 {
     /** @var string */
@@ -31,5 +33,3 @@ class FileContent
         @unlink($this->path);
     }
 }
-
-class CouldNotReadFileException extends \Exception {}

@@ -6,6 +6,8 @@ use lib\DataTypes\Directory;
 use lib\DataTypes\File;
 use lib\DataTypes\FileContent;
 use lib\DataTypes\User;
+use lib\Exceptions\CouldNotLocateEncryptionKeyException;
+use lib\Exceptions\CouldNotReadFileException;
 use lib\Exceptions\CreateFileException;
 use lib\Repositories\FileRepository;
 
@@ -26,15 +28,21 @@ class CreateFileService
      * @param string $mime
      * @param FileContent $fileContent
      * @return File
+     * @throws CouldNotLocateEncryptionKeyException
+     * @throws CouldNotReadFileException
      * @throws CreateFileException
-     * @throws \lib\Repositories\CouldNotLocateEncryptionKeyException
      */
-    public function createFile(User $user, string $name, $location, string $mime, FileContent $fileContent)
+    public function createFile(User $user, string $name, $location, string $mime, FileContent $fileContent = null)
     {
         /** @var File $file */
         $file = $this->fileRepository->create($user, $name, $location, $mime, 'FILE', 'PERSONAL');
 
         if ($file) {
+            if (is_null($fileContent)) {
+                $tempFile = tempnam(sys_get_temp_dir(), 'afile');
+                $fileContent = new FileContent($tempFile);
+            }
+
             $this->writeContents($file, $fileContent);
         }
 
@@ -45,17 +53,23 @@ class CreateFileService
      * @param User $user
      * @param string $name
      * @param $location
-     * @param FileContent $fileContent
+     * @param string $url
      * @return File
      * @throws CreateFileException
-     * @throws \lib\Repositories\CouldNotLocateEncryptionKeyException
+     * @throws CouldNotReadFileException
+     * @throws CouldNotLocateEncryptionKeyException
      */
-    public function createLink(User $user, string $name, $location, FileContent $fileContent)
+    public function createLink(User $user, string $name, $location, string $url)
     {
         /** @var \lib\DataTypes\File $file */
         $file = $this->fileRepository->create($user, $name, $location, 'text/plain', 'LINK', 'PERSONAL');
 
         if ($file) {
+            $fileContent = '[InternetShortcut]' . PHP_EOL . 'URL=' . $url;
+            $tempFile = tempnam(sys_get_temp_dir(), 'afile');
+            file_put_contents($tempFile, $fileContent);
+            $fileContent = new FileContent($tempFile);
+
             $this->writeContents($file, $fileContent);
         }
 
@@ -76,8 +90,8 @@ class CreateFileService
     /**
      * @param File $file
      * @param FileContent $fileContent
+     * @throws CouldNotLocateEncryptionKeyException
      * @throws CreateFileException
-     * @throws \lib\Repositories\CouldNotLocateEncryptionKeyException
      */
     private function writeContents(File $file, FileContent $fileContent)
     {

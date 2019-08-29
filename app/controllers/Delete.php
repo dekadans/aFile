@@ -16,8 +16,7 @@ class Delete extends AbstractController {
 
         if (is_numeric($id)) {
             $result[] = $this->deleteFile($id);
-        }
-        else {
+        } else {
             $id = explode(',', $id);
             foreach ($id as $fileId) {
                 $result[] = $this->deleteFile($fileId);
@@ -28,8 +27,7 @@ class Delete extends AbstractController {
             return $this->outputJSON([
                 'status' => 'ok'
             ]);
-        }
-        else {
+        } else {
             return $this->outputJSON([
                 'error' => Translation::getInstance()->translate('DELETE_FAILED')
             ]);

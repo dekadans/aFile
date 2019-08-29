@@ -19,6 +19,7 @@
     "RENAME_FAILED" : "Could not rename file or directory",
     "PASTE_FAILED" : "Could not paste file",
     "NO_FILE" : "No file found",
+    "FILE_EXISTS" : "A file with that name already exists",
     "FAILED" : "Operation failed",
     "SHARE" : "Share",
     "SHARE_CREATE" : "Create a shareable link",

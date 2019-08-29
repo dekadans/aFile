@@ -88,7 +88,7 @@ use lib\Services\SortService;
                                 <div class="dropdown-menu" aria-labelledby="CreateMenu">
                                     <a class="dropdown-item" id="Upload" href="#"><i class="fas fa-cloud-upload-alt"></i> <?= $lang->translate('UPLOAD') ?></a>
                                     <a class="dropdown-item" id="CreateDirectory" href="#"><i class="fas fa-folder-open"></i>  <?= $lang->translate('DIRECTORY') ?></a>
-                                    <a class="dropdown-item" id="OpenEditor" href="#"><i class="fas fa-font"></i>  <?= $lang->translate('TEXTFILE') ?></a>
+                                    <a class="dropdown-item" id="CreateFile" href="#"><i class="fas fa-font"></i>  <?= $lang->translate('TEXTFILE') ?></a>
                                     <a class="dropdown-item" id="CreateLink" href="#"><i class="fas fa-link"></i>  <?= $lang->translate('LINK') ?></a>
                                 </div>
 
