@@ -41,9 +41,11 @@ class aFileNavigation {
     }
 
     setSearchString(searchString) {
-        this.state.path = [];
-        this.state.search = searchString;
-        this.saveState();
+        if (this.state.search !== searchString) {
+            this.state.path = [];
+            this.state.search = searchString;
+            this.saveState();
+        }
     }
 
     getSearchString() {

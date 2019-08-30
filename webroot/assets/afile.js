@@ -645,7 +645,7 @@ class aFile {
 
         if (this.nav.isSearching() || this.nav.isFromSearchResult()) {
             let directory = $('<li class="breadcrumb-item">');
-            directory.addClass('directory').text(this.lang.find(SEARCH_RESULT));
+            directory.addClass('directory').text(this.lang.find('SEARCH_RESULT'));
             pathElement.append(directory);
         }
 
