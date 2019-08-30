@@ -5,8 +5,8 @@ Förbättra felrapportering genom att testa vanliga fel
 - Krypteringen fungerar inte (BrokenEnvironment)
 
 Refaktorera
-* translation (inkl js)
 * Exceptions. Stöd för loggning. 
+* Accesskontroller till AuthenticationService
 
 Refaktorera sök  
 * Sök endast nedåt i trädet. Bör gå med lokala variabler-magi.
