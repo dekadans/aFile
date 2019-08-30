@@ -8,8 +8,6 @@ Refaktorera
 * translation (inkl js)
 * Exceptions. Stöd för loggning. 
 
-Hantera tredje parts js (npm)
-
 Refaktorera sök  
 * Sök endast nedåt i trädet. Bör gå med lokala variabler-magi.
 

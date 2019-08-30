@@ -20,6 +20,7 @@ This is an application that offers simple cloud storage-like possibilities for y
 * Clone or download the code to your web server
 * Set up a virtual host or similar to point to the webroot directory
 * Run `composer install`
+* Run `npm install` in the webroot directory
 * Run `php app/cli/afile.php install` and follow the instructions
 * Run `php app/cli/afile.php add-user [your desired username]`
 * Ready to use!

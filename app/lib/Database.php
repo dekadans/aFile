@@ -25,9 +25,4 @@ class Database {
     {
         return $this->pdo;
     }
-
-    public function getConfiguration() : DatabaseConfiguration
-    {
-        return $this->config;
-    }
 }
