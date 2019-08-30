@@ -1,10 +1,9 @@
 <?php
 /**
+ * @var \lib\Repositories\TranslationRepository $lang
  * @var \lib\DataTypes\EditableFile $editableFile
  * @var bool $isWritable
  */
-
-$lang = \lib\Translation::getInstance();
 
 $text = $editableFile->getText();
 $openInPreview = $editableFile->hasPreview() && !empty($text);
@@ -83,7 +82,7 @@ $openInPreview = $editableFile->hasPreview() && !empty($text);
 
             <div class="clearfix">
                 <span class="h6" style="float: left; margin: 0;">
-                    <?= $editableFile->getFile()->getReadableDate() ?>
+                    <?= $editableFile->getFile()->getReadableDate($lang) ?>
                 </span>
 
                 <div style="float: right;">

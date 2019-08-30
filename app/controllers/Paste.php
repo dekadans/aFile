@@ -2,8 +2,6 @@
 
 namespace controllers;
 
-use lib\Translation;
-
 class Paste extends AbstractController
 {
     public function getAccessLevel()
@@ -35,7 +33,7 @@ class Paste extends AbstractController
         }
         else {
             return $this->outputJSON([
-                'error' => Translation::getInstance()->translate('PASTE_FAILED')
+                'error' => $this->translation()->translate('PASTE_FAILED')
             ]);
         }
     }

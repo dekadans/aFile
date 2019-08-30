@@ -6,7 +6,7 @@ use lib\DataTypes\DatabaseConfiguration;
 class ConfigurationRepository {
     private $config;
 
-    private function __construct ($filename) {
+    public function __construct ($filename) {
         $this->config = parse_ini_file($filename,true);
     }
 
@@ -29,21 +29,5 @@ class ConfigurationRepository {
             $this->config['database']['user'],
             $this->config['database']['password']
         );
-    }
-
-    public static function load($filename)
-    {
-        self::$instance = new self($filename);
-    }
-
-    /** @var ConfigurationRepository */
-    private static $instance;
-
-    /**
-     * @return ConfigurationRepository
-     */
-    public static function getInstance()
-    {
-        return self::$instance;
     }
 }

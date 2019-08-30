@@ -1,9 +1,9 @@
 <?php
 /**
  * @var \lib\DataTypes\Link $link
+ * @var \lib\Repositories\TranslationRepository $lang
  */
 $url = $link->getURL();
-$lang = \lib\Translation::getInstance();
 ?>
 <h1 class="display-4"><?= $lang->translate('LINK_CONFIRM') ?></h1>
 <p class="lead"><?= $lang->translate('LINK_TARGET') ?>: <em><?= $url; ?></em></p>

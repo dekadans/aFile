@@ -1,5 +1,7 @@
 <?php
-$lang = \lib\Translation::getInstance();
+/**
+ * @var \lib\Repositories\TranslationRepository $lang
+ */
 ?>
 <div class="container-fluid">
     <div class="row">

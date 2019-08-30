@@ -6,7 +6,6 @@ use lib\DataTypes\File;
 use lib\Repositories\FileRepository;
 use lib\Services\SearchService;
 use lib\Services\SortService;
-use lib\Translation;
 
 class ListFiles extends AbstractController {
     /** @var FileRepository */
@@ -39,7 +38,7 @@ class ListFiles extends AbstractController {
             return $this->parseView('partials/filelist', ['fileList' => $fileList]);
         }
         else {
-            return $this->parseView('partials/nofiles', ['message' => Translation::getInstance()->translate('NO_FILES')]);
+            return $this->parseView('partials/nofiles', ['message' => $this->translation()->translate('NO_FILES')]);
         }
 
     }
@@ -52,12 +51,12 @@ class ListFiles extends AbstractController {
         $fileList = $search->search($this->authentication()->getUser(), $searchString);
 
         if ($fileList === false) {
-            return $this->parseView('partials/nofiles', ['message' => Translation::getInstance()->translate('NO_CRITERIA_SEARCH')]);
+            return $this->parseView('partials/nofiles', ['message' => $this->translation()->translate('NO_CRITERIA_SEARCH')]);
         } else if (count($fileList)) {
             return $this->parseView('partials/filelist', ['fileList' => $fileList]);
         }
         else {
-            return $this->parseView('partials/nofiles', ['message' => Translation::getInstance()->translate('NO_FILES_SEARCH')]);
+            return $this->parseView('partials/nofiles', ['message' => $this->translation()->translate('NO_FILES_SEARCH')]);
         }
     }
 

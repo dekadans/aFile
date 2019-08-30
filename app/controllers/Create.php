@@ -2,7 +2,6 @@
 namespace controllers;
 
 use lib\Services\CreateFileService;
-use lib\Translation;
 
 class Create extends AbstractController
 {
@@ -29,13 +28,13 @@ class Create extends AbstractController
 
         if (empty($this->name)) {
             return $this->outputJSON([
-                'error' => Translation::getInstance()->translate('FAILED')
+                'error' => $this->translation()->translate('FAILED')
             ]);
         }
 
         if ($this->getFileRepository()->exists($this->authentication()->getUser(), $this->name, $this->location)) {
             return $this->outputJSON([
-                'error' => Translation::getInstance()->translate('FILE_EXISTS')
+                'error' => $this->translation()->translate('FILE_EXISTS')
             ]);
         }
     }
@@ -49,7 +48,7 @@ class Create extends AbstractController
         }
 
         return $this->outputJSON([
-            'error' => Translation::getInstance()->translate('CREATE_DIRECTORY_FAILED')
+            'error' => $this->translation()->translate('CREATE_DIRECTORY_FAILED')
         ]);
     }
 
@@ -65,7 +64,7 @@ class Create extends AbstractController
             }
         }
 
-        return $this->outputJSON(['status' => 'error', 'error' => Translation::getInstance()->translate('LINK_ERROR')]);
+        return $this->outputJSON(['status' => 'error', 'error' => $this->translation()->translate('LINK_ERROR')]);
     }
 
     public function actionFile()
@@ -76,6 +75,6 @@ class Create extends AbstractController
             return $this->outputJSON(['status' => 'ok']);
         }
 
-        return $this->outputJSON(['status' => 'error', 'error' => Translation::getInstance()->translate('EDITOR_CREATE_ERROR')]);
+        return $this->outputJSON(['status' => 'error', 'error' => $this->translation()->translate('EDITOR_CREATE_ERROR')]);
     }
 }

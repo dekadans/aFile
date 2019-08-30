@@ -1,10 +1,14 @@
 <?php
-/** @var \Throwable $exception */
+/**
+ * @var \Throwable $exception
+ * @var \lib\Repositories\TranslationRepository $lang
+ * @var \lib\Repositories\ConfigurationRepository $config
+ */
 ?>
 <div class="container py-5">
     <h2>Error!</h2>
 
-    <?php if (\lib\Repositories\ConfigurationRepository::getInstance()->find('show_detailed_exceptions')): ?>
+    <?php if ($config->find('show_detailed_exceptions')): ?>
 
     <p><?= $exception->getMessage() ?></p>
 
@@ -18,7 +22,7 @@
 
     <?php else: ?>
 
-    <?= \lib\Translation::getInstance()->translate('EXCEPTION_MESSAGE') ?>
+    <?= $lang->translate('EXCEPTION_MESSAGE') ?>
 
     <?php endif; ?>
 </div>

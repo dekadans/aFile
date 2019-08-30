@@ -5,7 +5,7 @@ namespace lib\DataTypes;
 use lib\Repositories\ConfigurationRepository;
 use lib\Repositories\FileRepository;
 use lib\Repositories\UserRepository;
-use lib\Translation;
+use lib\Repositories\TranslationRepository;
 
 abstract class AbstractFile {
     protected $id;
@@ -162,7 +162,7 @@ abstract class AbstractFile {
         return $this->last_edit;
     }
 
-    public function getReadableDate()
+    public function getReadableDate(TranslationRepository $lang)
     {
         if ($this->config->find('presentation', 'upload_date_in_list')) {
             $timestamp = strtotime($this->created);
@@ -173,7 +173,7 @@ abstract class AbstractFile {
         $now = time();
 
         if (date('Y-m-d', $timestamp) === date('Y-m-d', $now)) {
-            $todayString = Translation::getInstance()->translate('TODAY');
+            $todayString = $lang->translate('TODAY');
             return $todayString . ' ' . date('H:i', $timestamp);
         } else if (date('Y', $timestamp) === date('Y', $now)) {
             return date('j M', $timestamp);

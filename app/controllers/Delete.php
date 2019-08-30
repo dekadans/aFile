@@ -2,8 +2,6 @@
 
 namespace controllers;
 
-use lib\Translation;
-
 class Delete extends AbstractController {
     public function getAccessLevel() {
         return self::ACCESS_LOGIN;
@@ -28,7 +26,7 @@ class Delete extends AbstractController {
             ]);
         } else {
             return $this->outputJSON([
-                'error' => Translation::getInstance()->translate('DELETE_FAILED')
+                'error' => $this->translation()->translate('DELETE_FAILED')
             ]);
         }
     }

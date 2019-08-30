@@ -1,5 +1,6 @@
 <?php
 
+use GuzzleHttp\Psr7\ServerRequest;
 use lib\Repositories\ConfigurationRepository;
 use lib\Database;
 use lib\Repositories\EncryptionKeyRepository;
@@ -10,6 +11,7 @@ use lib\Services\CreateFileService;
 use lib\Services\EncryptionService;
 use lib\Services\SearchService;
 use lib\Services\SortService;
+use lib\Repositories\TranslationRepository;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
@@ -25,15 +27,14 @@ if (!is_file($configurationFile)) {
     $configurationFile .= '.template';
 }
 
-ConfigurationRepository::load($configurationFile);
-$config = ConfigurationRepository::getInstance();
-\lib\Translation::loadLanguage($config->find('language'));
+$config = new ConfigurationRepository($configurationFile);
+$translationService = new TranslationRepository($config->find('language'));
 
 $databaseConfiguration = $config->getDatabaseConfiguration();
 $database = new Database($databaseConfiguration);
 
 $userRepository = new UserRepository($database, $config);
-$request = \GuzzleHttp\Psr7\ServerRequest::fromGlobals();
+$request = ServerRequest::fromGlobals();
 
 $authenticationService = new AuthenticationService($userRepository, $config);
 $authenticationService->load($request);
@@ -50,6 +51,7 @@ $containerBuilder->set(Database::class, $database);
 $containerBuilder->set(AuthenticationService::class, $authenticationService);
 $containerBuilder->set(ServerRequestInterface::class, $request);
 $containerBuilder->set(SortService::class, SortService::loadFromSession());
+$containerBuilder->set(TranslationRepository::class, $translationService);
 
 $containerBuilder->register(UserRepository::class, UserRepository::class)
     ->addArgument(new Reference(Database::class))

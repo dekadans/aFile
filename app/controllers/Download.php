@@ -11,7 +11,6 @@ use lib\HTTP\Response;
 use lib\HTTP\TemplateResponse;
 use lib\Repositories\EncryptionKeyRepository;
 use lib\Repositories\FileRepository;
-use lib\Translation;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 
@@ -79,23 +78,24 @@ class Download extends AbstractController {
 
     private function fileNotFound() : ResponseInterface
     {
-        $title = '404 ' . Translation::getInstance()->translate('404_NOT_FOUND');
-        $response = new TemplateResponse('downloadNotice', 'partials/fileNotFound', $title, [], 404);
+        $title = '404 ' . $this->translation()->translate('404_NOT_FOUND');
+        $response = new TemplateResponse('downloadNotice', 'partials/fileNotFound', $title, ['lang' => $this->translation()], 404);
         return $response->psr7();
     }
 
     private function accessDenied() : ResponseInterface
     {
-        $title = '403 ' . Translation::getInstance()->translate('403_FORBIDDEN');
-        $response = new TemplateResponse('downloadNotice', 'partials/accessDenied', $title, [], 403);
+        $title = '403 ' . $this->translation()->translate('403_FORBIDDEN');
+        $response = new TemplateResponse('downloadNotice', 'partials/accessDenied', $title, ['lang' => $this->translation()], 403);
         return $response->psr7();
     }
 
     private function filePassword() : ResponseInterface
     {
-        $title = Translation::getInstance()->translate('DOWNLOAD_PASSWORD_TITLE');
+        $title = $this->translation()->translate('DOWNLOAD_PASSWORD_TITLE');
         $response = new TemplateResponse('downloadNotice', 'partials/filePassword', $title, [
-            'file' => $this->file
+            'file' => $this->file,
+            'lang' => $this->translation()
         ]);
         return $response->psr7();
     }
@@ -109,7 +109,11 @@ class Download extends AbstractController {
         } else if ($editableFile = $this->file->isEditable()) {
             $editableFile->setUrlToken($this->urlToken);
             $isWritable = $this->checkFileAccess($this->file);
-            return (new HTMLResponse('editor', ['editableFile' => $editableFile, 'isWritable' => $isWritable]))->psr7();
+            return (new HTMLResponse('editor', [
+                'editableFile' => $editableFile,
+                'isWritable' => $isWritable,
+                'lang' => $this->translation()
+            ]))->psr7();
         } else {
             return (new DownloadResponse($this->file, $this->file->isInlineDownload()))->psr7();
         }
@@ -117,9 +121,10 @@ class Download extends AbstractController {
 
     private function linkRedirect() : ResponseInterface
     {
-        $title = Translation::getInstance()->translate('LINK_CONFIRM');
+        $title = $this->translation()->translate('LINK_CONFIRM');
         $response = new TemplateResponse('downloadNotice', 'partials/link', $title, [
-            'link' => $this->file
+            'link' => $this->file,
+            'lang' => $this->translation()
         ]);
         return $response->psr7();
     }

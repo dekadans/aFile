@@ -4,7 +4,6 @@ namespace controllers;
 
 use lib\DataTypes\File;
 use lib\Repositories\EncryptionKeyRepository;
-use lib\Translation;
 
 class Share extends AbstractController {
     /** @var File */
@@ -84,7 +83,7 @@ class Share extends AbstractController {
             ]);
         } else {
             return $this->outputJSON([
-                'error' => Translation::getInstance()->translate('FAILED')
+                'error' => $this->translation()->translate('FAILED')
             ]);
         }
     }
@@ -105,7 +104,7 @@ class Share extends AbstractController {
             ]);
         } else {
             return $this->outputJSON([
-                'error' => Translation::getInstance()->translate('FAILED')
+                'error' => $this->translation()->translate('FAILED')
             ]);
         }
     }

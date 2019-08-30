@@ -8,6 +8,7 @@ use lib\HTTP\JsonResponse;
 use lib\HTTP\HTMLResponse;
 use lib\Repositories\FileRepository;
 use lib\Services\AuthenticationService;
+use lib\Repositories\TranslationRepository;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -27,6 +28,9 @@ abstract class AbstractController {
     /** @var ConfigurationRepository */
     private $config;
 
+    /** @var TranslationRepository */
+    private $translation;
+
     /** @var ContainerInterface */
     private $container;
 
@@ -37,6 +41,7 @@ abstract class AbstractController {
         $this->container = $container;
         $this->request = $container->get(ServerRequestInterface::class);
         $this->config  = $container->get(ConfigurationRepository::class);
+        $this->translation = $container->get(TranslationRepository::class);
         $this->authenticationService = $container->get(AuthenticationService::class);
     }
 
@@ -111,6 +116,7 @@ abstract class AbstractController {
      * @return ResponseInterface
      */
     protected function parseView(string $viewName, $params = []) {
+        $params['lang'] = $this->translation;
         $response = new HTMLResponse($viewName, $params);
         return $response->psr7();
     }
@@ -139,6 +145,14 @@ abstract class AbstractController {
     protected function config()
     {
         return $this->config;
+    }
+
+    /**
+     * @return TranslationRepository
+     */
+    protected function translation()
+    {
+        return $this->translation;
     }
 
     /**

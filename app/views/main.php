@@ -1,9 +1,9 @@
 <?php
 /**
+ * @var \lib\Repositories\TranslationRepository $lang
  * @var string $currentSorting
  * @var \lib\Repositories\ConfigurationRepository $config
  */
-$lang = \lib\Translation::getInstance();
 
 use lib\Services\SortService;
 ?>

@@ -3,8 +3,10 @@
  * @var \Psr\Container\ContainerInterface $container
  */
 
-require_once '../app/webinit.php';
+require_once '../vendor/autoload.php';
+
 $container = require '../app/container.php';
+require_once '../app/webinit.php';
 
 $request = $container->get(\Psr\Http\Message\ServerRequestInterface::class);
 
@@ -54,7 +56,7 @@ if (isset($queryParams['do']) && !empty($queryParams['do'])) {
 
     if (isset($errorText)) {
         $response = (new \lib\HTTP\JsonResponse([
-            'error' => \lib\Translation::getInstance()->translate($errorText)
+            'error' => $container->get(\lib\Repositories\TranslationRepository::class)->translate($errorText)
         ]))->psr7();
     }
 

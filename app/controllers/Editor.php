@@ -2,7 +2,6 @@
 namespace controllers;
 
 use lib\DataTypes\FileContent;
-use lib\Translation;
 
 class Editor extends AbstractController
 {
@@ -44,13 +43,13 @@ class Editor extends AbstractController
                 }
 
                 return $this->outputJSON([
-                    'error' => Translation::getInstance()->translate('ACCESS_DENIED')
+                    'error' => $this->translation()->translate('ACCESS_DENIED')
                 ]);
             }
         }
 
         return $this->outputJSON([
-            'error' => Translation::getInstance()->translate('NO_FILE')
+            'error' => $this->translation()->translate('NO_FILE')
         ]);
     }
 }

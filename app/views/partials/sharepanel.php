@@ -2,7 +2,7 @@
 /** @var \lib\DataTypes\FileToken $token */
 /** @var \lib\DataTypes\File $file */
 /** @var \lib\Repositories\ConfigurationRepository $config */
-$lang = \lib\Translation::getInstance();
+/** @var \lib\Repositories\TranslationRepository $lang */
 ?>
 
 <?php if ($token):

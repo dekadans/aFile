@@ -2,15 +2,13 @@
 
 namespace controllers;
 
-use lib\Translation;
-
 class Login extends AbstractController {
     public function getAccessLevel() {
         return self::ACCESS_OPEN;
     }
 
     public function index() {
-        $translation = Translation::getInstance();
+        $translation = $this->translation();
 
         if (!$this->authentication()->isSignedIn()) {
             $username = $this->param('username');

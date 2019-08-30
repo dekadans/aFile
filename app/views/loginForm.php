@@ -1,8 +1,9 @@
 <?php
 /**
+ * @var \lib\Repositories\TranslationRepository $lang
  * @var bool $isHttps
  */
-$lang = \lib\Translation::getInstance();
+
 ?>
 <div id="Loading" class="view"><?= $lang->translate('LOADING') ?></div>
 

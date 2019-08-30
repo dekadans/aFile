@@ -1,13 +1,13 @@
 <?php
 
-namespace lib;
+namespace lib\Repositories;
 
-class Translation {
+class TranslationRepository {
     private $language;
     private $languageData;
 
-    private function __construct($language) {
-        $languagePath = __DIR__ . '/../../config/' . $language . '.json';
+    public function __construct($language) {
+        $languagePath = __DIR__ . '/../../../config/' . $language . '.json';
         $languageFile = file_get_contents($languagePath);
         $languageFile = json_decode($languageFile, true);
         $this->languageData = $languageFile;
@@ -28,21 +28,5 @@ class Translation {
         else {
             return $code;
         }
-    }
-
-    public static function loadLanguage($language = 'en')
-    {
-        self::$instance = new self($language);
-    }
-
-    /** @var Translation */
-    private static $instance;
-
-    /**
-     * @return Translation
-     */
-    public static function getInstance()
-    {
-        return self::$instance;
     }
 }

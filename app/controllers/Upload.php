@@ -6,7 +6,6 @@ use lib\DataTypes\File;
 use lib\DataTypes\FileContent;
 use lib\Repositories\FileRepository;
 use lib\Services\CreateFileService;
-use lib\Translation;
 use Psr\Http\Message\UploadedFileInterface;
 
 class Upload extends AbstractController {
@@ -64,7 +63,7 @@ class Upload extends AbstractController {
 
         if (in_array(false, $results)) {
             return $this->outputJSON([
-                'error' => Translation::getInstance()->translate('UPLOAD_FAILED')
+                'error' => $this->translation()->translate('UPLOAD_FAILED')
             ]);
         } else if ($previousFileWithSameName && count($results) === 1) {
             $fileToOverwrite = $this->fileRepository->findByLocationAndName($this->user, $this->location, $previousFileWithSameName);
@@ -104,13 +103,13 @@ class Upload extends AbstractController {
                 ]);
             } catch(\Throwable $error) {
                 return $this->outputJSON([
-                    'error' => Translation::getInstance()->translate('FAILED'),
+                    'error' => $this->translation()->translate('FAILED'),
                     'msg' => $error->getMessage()
                 ]);
             }
         } else {
             return $this->outputJSON([
-                'error' => Translation::getInstance()->translate('ACCESS_DENIED')
+                'error' => $this->translation()->translate('ACCESS_DENIED')
             ]);
         }
     }

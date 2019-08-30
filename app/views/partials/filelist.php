@@ -1,6 +1,9 @@
 <ul class="list-group list-group-flush">
 <?php
-/** @var \lib\DataTypes\FileList $fileList */
+/**
+ * @var \lib\DataTypes\FileList $fileList
+ * @var \lib\Repositories\TranslationRepository $lang
+ */
 
 foreach ($fileList as $file): ?>
     <?php if ($file->isFile() || $file->isLink()): ?>
@@ -28,7 +31,7 @@ foreach ($fileList as $file): ?>
                 </div>
                 <div class="col text-right">
                     <span class=""><?= $file->getSizeReadable() ?></span><br>
-                    <small class="d-none d-sm-block"><span><?= $file->getReadableDate() ?></span></small>
+                    <small class="d-none d-sm-block"><span><?= $file->getReadableDate($lang) ?></span></small>
                 </div>
             </div>
         </li>

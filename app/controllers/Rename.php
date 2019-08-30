@@ -2,7 +2,6 @@
 namespace controllers;
 
 use lib\Repositories\FileRepository;
-use lib\Translation;
 
 class Rename extends AbstractController
 {
@@ -28,13 +27,13 @@ class Rename extends AbstractController
 
         if ($file->isset() && !$this->checkFileAccess($file)) {
             return $this->outputJSON([
-                'error' => Translation::getInstance()->translate('ACCESS_DENIED')
+                'error' => $this->translation()->translate('ACCESS_DENIED')
             ]);
         }
 
         if ($this->fileRepository->exists($this->authentication()->getUser(), $newName, $file->getLocation())) {
             return $this->outputJSON([
-                'error' => Translation::getInstance()->translate('FILE_EXISTS')
+                'error' => $this->translation()->translate('FILE_EXISTS')
             ]);
         }
 
@@ -45,7 +44,7 @@ class Rename extends AbstractController
         }
         else {
             return $this->outputJSON([
-                'error' => Translation::getInstance()->translate('RENAME_FAILED')
+                'error' => $this->translation()->translate('RENAME_FAILED')
             ]);
         }
     }
@@ -66,7 +65,7 @@ class Rename extends AbstractController
         }
         else {
             return $this->outputJSON([
-                'error' => Translation::getInstance()->translate('ACCESS_DENIED')
+                'error' => $this->translation()->translate('ACCESS_DENIED')
             ]);
         }
     }

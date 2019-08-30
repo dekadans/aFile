@@ -1,4 +1,7 @@
 <?php
+/**
+ * @var \Psr\Container\ContainerInterface $container
+ */
 
 session_start();
 
@@ -6,15 +9,14 @@ $port = (!in_array($_SERVER['SERVER_PORT'], [80, 443]) ? ':' . $_SERVER['SERVER_
 define('AFILE_LOCATION', (!empty($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['SERVER_NAME'] . $port . preg_replace('/[a-z]*\.php[a-z0-9\/]*/', '', $_SERVER['PHP_SELF']));
 
 /**
- * Include packages and classes
- */
-require_once __DIR__ . '/../vendor/autoload.php';
-
-/**
  * Set up basic error handling
  */
-set_exception_handler(function (\Throwable $ex){
-    $response = new \lib\HTTP\HTMLResponse('partials/exceptionError', ['exception' => $ex], 500);
+set_exception_handler(function (\Throwable $ex) use ($container) {
+    $response = new \lib\HTTP\HTMLResponse('partials/exceptionError', [
+        'exception' => $ex,
+        'lang' => $container->get(\lib\Repositories\TranslationRepository::class),
+        'config' => $container->get(\lib\Repositories\ConfigurationRepository::class)
+    ], 500);
     printResponse($response->psr7());
     die;
 });

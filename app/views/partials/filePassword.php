@@ -1,8 +1,8 @@
 <?php
 /**
  * @var \lib\DataTypes\File $file
+ * @var \lib\Repositories\TranslationRepository $lang
  */
-$lang = \lib\Translation::getInstance();
 ?>
 <h1 class="display-4"><?= $file->getName() ?></h1>
 <p class="lead"><?= $lang->translate('DOWNLOAD_PASSWORD_TEXT') ?></p>
