@@ -22,7 +22,7 @@ $openInPreview = $editableFile->hasPreview() && !empty($text);
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/styles/github.min.css">
     <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/highlight.min.js"></script>
 
-    <script src="https://kit.fontawesome.com/aabf35e2be.js"></script>
+    <script src="<?= AFILE_LOCATION ?>node_modules/@fortawesome/fontawesome-free/js/all.min.js"></script>
 
     <script src="<?= AFILE_LOCATION ?>node_modules/jquery/dist/jquery.slim.min.js"></script>
     <script src="<?= AFILE_LOCATION ?>node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
