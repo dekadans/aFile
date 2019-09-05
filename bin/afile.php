@@ -8,10 +8,10 @@ use lib\Repositories\UserRepository;
 use lib\Services\EncryptionService;
 use Symfony\Component\Console\Application;
 
-require __DIR__ . '/../../vendor/autoload.php';
+require __DIR__ . '/../vendor/autoload.php';
 
 /** @var \Psr\Container\ContainerInterface $container */
-$container = require __DIR__ . '/../container.php';
+$container = require __DIR__ . '/../app/container.php';
 
 $application = new Application('aFile CLI Tool');
 
