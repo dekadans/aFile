@@ -1,5 +1,6 @@
 .idea
 vendor
-webroot/node_modules
-webroot/package-lock.json
+node_modules
+package-lock.json
+webroot/vendor
 webroot/.htaccess

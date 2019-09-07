@@ -13,7 +13,7 @@
 
     <title><?= $title ?></title>
 
-    <link rel="stylesheet" href="<?= AFILE_LOCATION ?>node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="<?= AFILE_LOCATION ?>vendor/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="<?= AFILE_LOCATION ?>assets/general.css">
 </head>
 <body>
