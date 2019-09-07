@@ -28,6 +28,8 @@ $openInPreview = $editableFile->hasPreview() && !empty($text);
     <script src="<?= AFILE_LOCATION ?>vendor/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="<?= AFILE_LOCATION ?>vendor/bootstrap/dist/css/bootstrap.min.css">
 
+    <link rel="stylesheet" href="<?= AFILE_LOCATION ?>vendor/github-markdown-css/github-markdown.css">
+
     <link rel="stylesheet" href="<?= AFILE_LOCATION ?>assets/general.css">
     <script type="text/javascript" src="<?= AFILE_LOCATION ?>assets/afile-ajax.js"></script>
     <script type="text/javascript" src="<?= AFILE_LOCATION ?>assets/afile-editor.js"></script>
@@ -76,33 +78,35 @@ $openInPreview = $editableFile->hasPreview() && !empty($text);
 
 <div class="container editor-preview <?= $openInPreview ? '' : 'd-none' ?>" style="margin-bottom: 100px;">
     <div class="row">
-        <div class="col"></div>
-        <div class="col-10">
-            <h3><?= $editableFile->getFile()->getName() ?></h3>
+        <div class="col-md"></div>
+        <div class="col-md-10">
 
-            <div class="clearfix">
-                <span class="h6" style="float: left; margin: 0;">
-                    <?= $editableFile->getFile()->getReadableDate($lang) ?>
-                </span>
+            <div class="card">
+                <h5 class="card-header"><?= $editableFile->getFile()->getName() ?>
+                    <div class="float-right">
+                        <small class="text-muted">
+                            <?= $editableFile->getFile()->getReadableDate($lang) ?>&nbsp;&nbsp;|&nbsp;&nbsp;
+                            <?php if ($isWritable): ?>
+                                <a class="preview-toggle" href="#">
+                                    <i class="fas fa-edit"></i>
+                                    <?= $lang->translate('EDITOR_EDIT') ?>
+                                </a>&nbsp;
+                            <?php endif; ?>
+                            <a id="EditorDownload" class="" href="<?= $editableFile->getForceDownloadLink() ?>">
+                                <i class="fas fa-cloud-download-alt"></i>
+                                <?= $lang->translate('EDITOR_DOWNLOAD') ?>
+                            </a>
+                        </small>
+                    </div>
+                </h5>
 
-                <div style="float: right;">
-                    <?php if ($isWritable): ?>
-                    <a class="preview-toggle" href="#">
-                        <i class="fas fa-edit"></i>
-                        <?= $lang->translate('EDITOR_EDIT') ?>
-                    </a>&nbsp;
-                    <?php endif; ?>
-                    <a id="EditorDownload" class="" href="<?= $editableFile->getForceDownloadLink() ?>">
-                        <i class="fas fa-cloud-download-alt"></i>
-                        <?= $lang->translate('EDITOR_DOWNLOAD') ?>
-                    </a>
+                <div class="card-body <?= $editableFile->isMarkdown() ? 'markdown-body' : '' ?>">
+                    <div id="EditorPreview"></div>
                 </div>
             </div>
-            <hr>
-            <div id="EditorPreview"></div>
         </div>
 
-        <div class="col"></div>
+        <div class="col-md"></div>
     </div>
 </div>
 
