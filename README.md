@@ -10,8 +10,8 @@ This is an application that offers simple cloud storage-like possibilities for y
 * Encryption of all files uploaded
 * Sharing of files with optional password protection
 * Advanced search functionality
-* Color formatting of code for popular programming languages
 * Create, edit and view plain text and Markdown files
+* Color formatting of code for popular programming languages (as separate source files or part of Markdown)
 * View images as a gallery
 * Save URLs to websites as files
 

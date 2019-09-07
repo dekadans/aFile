@@ -34,7 +34,6 @@ class aFileEditor {
         let code = this.getText();
         code = code.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
         previewElement.innerHTML = '<pre><code class="editorCode">'+ code +'</code></pre>';
-        hljs.highlightBlock(previewElement);
     }
 
     togglePreview() {
@@ -55,6 +54,10 @@ class aFileEditor {
         } else if (this.code) {
             this.highlightCode();
         }
+
+        document.querySelectorAll('#EditorPreview pre code').forEach((block) => {
+            hljs.highlightBlock(block);
+        });
     }
 
     saveContent() {
