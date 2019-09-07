@@ -19,7 +19,7 @@ This is an application that offers simple cloud storage-like possibilities for y
 
 * Clone or download the code to your web server
 * Set up a virtual host or similar to point to the webroot directory
-* Run `install.sh`
+* Run `install.sh` in a terminal, shell or Git Bash (on Windows)
 * Run `php bin/afile.php add-user [your desired username]`
 * Ready to use!
 * _(Optional)_ Run `php bin/afile.php key [username] > key.txt` and save the resulting file somewhere safe and physically separate from the installation. If you forget your password you can then change it by running `php bin/afile.php password [username] --keypath=key.txt`
