@@ -435,7 +435,7 @@ class aFile {
 
         $('#Download').click(e => {
             if (this.selected) {
-                let url = 'dl' + (this.info.skip_dl_php_extension ? '' : '.php') + '/' + this.selected.data('stringid');
+                let url = 'dl' + (this.info.skip_dl_php_extension !== '0' ? '' : '.php') + '/' + this.selected.data('stringid');
 
                 if (this.selected.data('newtab')) {
                     window.open(url);

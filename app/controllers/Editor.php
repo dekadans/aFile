@@ -1,6 +1,7 @@
 <?php
 namespace controllers;
 
+use lib\DataTypes\File;
 use lib\DataTypes\FileContent;
 
 class Editor extends AbstractController
@@ -8,6 +9,29 @@ class Editor extends AbstractController
     public function getAccessLevel()
     {
         return self::ACCESS_LOGIN;
+    }
+
+    public function actionGet()
+    {
+        $fileString = $this->param('file');
+        /** @var File $file */
+        $file = $this->getFileRepository()->findByUniqueString($fileString);
+        $fileEditable = $file->isEditable();
+
+        if ($file->isFile() && $fileEditable !== false) {
+            return $this->outputJSON([
+                'name' => $file->getName(),
+                'date' => $file->getReadableDate($this->translation()),
+                'code' => $fileEditable->isCode(),
+                'markdown' => $fileEditable->isMarkdown(),
+                'text' => $fileEditable->getText(),
+                'downloadLink' => $fileEditable->getForceDownloadLink()
+            ]);
+        } else {
+            return $this->outputJSON([
+                'error' => 'Invalid file'
+            ]);
+        }
     }
 
     public function actionWrite()
