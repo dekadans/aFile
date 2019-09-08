@@ -7,6 +7,10 @@ Förbättra felrapportering genom att testa vanliga fel
 Refaktorera
 * Exceptions. Stöd för loggning. 
 * Accesskontroller till AuthenticationService
+* Skapa klasser för vyer
+
+JS
+* Vue
 
 Refaktorera sök  
 * Sök endast nedåt i trädet. Bör gå med lokala variabler-magi.
