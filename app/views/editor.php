@@ -23,6 +23,7 @@ $openInPreview = $editableFile->hasPreview() && !empty($text);
     <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/highlight.min.js"></script>
 
     <script src="<?= AFILE_LOCATION ?>vendor/@fortawesome/fontawesome-free/js/all.min.js"></script>
+    <script src="<?= AFILE_LOCATION ?>vendor/vue/dist/vue.js"></script>
 
     <script src="<?= AFILE_LOCATION ?>vendor/jquery/dist/jquery.slim.min.js"></script>
     <script src="<?= AFILE_LOCATION ?>vendor/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
@@ -32,22 +33,26 @@ $openInPreview = $editableFile->hasPreview() && !empty($text);
 
     <link rel="stylesheet" href="<?= AFILE_LOCATION ?>assets/general.css">
     <script type="text/javascript" src="<?= AFILE_LOCATION ?>assets/afile-ajax.js"></script>
-    <script type="text/javascript" src="<?= AFILE_LOCATION ?>assets/afile-editor.js"></script>
+    <script type="text/javascript" src="<?= AFILE_LOCATION ?>assets/afile-editor2.js" defer></script>
 
     <script type="text/javascript">
         let f;
         $(function(){
-            f = new aFileEditor();
+            //f = new aFileEditor();
 
-            f.markdown = <?= $editableFile->isMarkdown() ? 'true' : 'false' ?>;
-            f.code = <?= $editableFile->isCode() ? 'true' : 'false' ?>;
-            f.parsePreview();
+            //f.markdown = <?= $editableFile->isMarkdown() ? 'true' : 'false' ?>;
+            //f.code = <?= $editableFile->isCode() ? 'true' : 'false' ?>;
+            //f.parsePreview();
         });
     </script>
 </head>
 <body>
+<div id="Editor">
+    <preview v-bind:file="file" v-if="preview"></preview>
+</div>
 
-<div id="EditorContainer" class="<?= $openInPreview ? 'd-none' : '' ?>">
+
+<!--<div id="EditorContainer" class="<?= $openInPreview ? 'd-none' : '' ?>">
 
     <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
@@ -108,7 +113,7 @@ $openInPreview = $editableFile->hasPreview() && !empty($text);
 
         <div class="col-md"></div>
     </div>
-</div>
+</div>-->
 
 </body>
 </html>

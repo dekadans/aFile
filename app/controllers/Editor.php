@@ -20,6 +20,7 @@ class Editor extends AbstractController
 
         if ($file->isFile() && $fileEditable !== false) {
             return $this->outputJSON([
+                'id' => $file->getId(),
                 'name' => $file->getName(),
                 'date' => $file->getReadableDate($this->translation()),
                 'code' => $fileEditable->isCode(),
