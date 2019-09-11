@@ -41,7 +41,11 @@ class EditableFile
 
     public function getText()
     {
-        return $this->file->getContent()->getAsText();
+        $text = $this->file->getContent()->getAsText();
+        if (mb_detect_encoding($text, 'UTF-8', true) === false) {
+            $text = utf8_encode($text);
+        }
+        return $text;
     }
 
     public function setUrlToken(string $urlToken)

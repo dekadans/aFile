@@ -26,7 +26,8 @@ class Editor extends AbstractController
                 'code' => $fileEditable->isCode(),
                 'markdown' => $fileEditable->isMarkdown(),
                 'text' => $fileEditable->getText(),
-                'downloadLink' => $fileEditable->getForceDownloadLink()
+                'downloadLink' => $fileEditable->getForceDownloadLink(),
+                'editable' => $this->checkFileAccess($file)
             ]);
         } else {
             return $this->outputJSON([

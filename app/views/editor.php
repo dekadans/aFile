@@ -48,7 +48,7 @@ $openInPreview = $editableFile->hasPreview() && !empty($text);
 </head>
 <body>
 <div id="Editor">
-    <preview v-bind:file="file" v-if="preview"></preview>
+    <preview v-bind:file="file" v-if="preview" v-on:open-editor="openEditor"></preview>
 </div>
 
 
