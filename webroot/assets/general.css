@@ -106,6 +106,7 @@ html, body, #AppContainer {
 #Editor {
     width: 100%;
     min-height: 400px;
+    height: 100%;
     outline: none;
 }
 

@@ -1,12 +1,4 @@
 <?php
-/**
- * @var \lib\Repositories\TranslationRepository $lang
- * @var \lib\DataTypes\EditableFile $editableFile
- * @var bool $isWritable
- */
-
-$text = $editableFile->getText();
-$openInPreview = $editableFile->hasPreview() && !empty($text);
 ?>
 <!DOCTYPE html>
 <html>
@@ -15,7 +7,7 @@ $openInPreview = $editableFile->hasPreview() && !empty($text);
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title><?= $editableFile->getFile()->getName() ?></title>
+    <title>aFile</title>
 
     <script type="text/javascript" src="<?= AFILE_LOCATION ?>vendor/showdown/dist/showdown.min.js"></script>
 
@@ -36,84 +28,14 @@ $openInPreview = $editableFile->hasPreview() && !empty($text);
     <script type="text/javascript" src="<?= AFILE_LOCATION ?>assets/afile-editor2.js" defer></script>
 
     <script type="text/javascript">
-        let f;
-        $(function(){
-            //f = new aFileEditor();
-
-            //f.markdown = <?= $editableFile->isMarkdown() ? 'true' : 'false' ?>;
-            //f.code = <?= $editableFile->isCode() ? 'true' : 'false' ?>;
-            //f.parsePreview();
-        });
+        let file = <?= $file ?>;
     </script>
 </head>
 <body>
 <div id="Editor">
-    <preview v-bind:file="file" v-if="preview" v-on:open-editor="openEditor"></preview>
+    <preview v-bind:file="file" v-if="preview" v-on:open-editor="preview = false"></preview>
+    <editor v-bind:file="file" v-bind:message="savedMessage" v-if="!preview" v-on:save="save" v-on:close-editor="preview = true"></editor>
 </div>
-
-
-<!--<div id="EditorContainer" class="<?= $openInPreview ? 'd-none' : '' ?>">
-
-    <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#" id="BrandHome"><?= $editableFile->getFile()->getName() ?></a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-                <div class="navbar-nav mr-auto">
-                    <?php if ($isWritable): ?>
-                    <button id="EditorSave" class="btn btn-outline-success my-2 my-sm-0 <?= $openInPreview ? 'd-none' : '' ?>"><?= $lang->translate('EDITOR_SAVE') ?></button>
-                    <?php endif; ?>
-
-                    <span class="navbar-text ml-3 d-none" id="EditorSavedMessage"><?= $lang->translate('EDITOR_SAVED') ?></span>
-                </div>
-                <div class="navbar-nav">
-                    <a id="EditorClose" class="nav-item nav-link <?= $editableFile->hasPreview() ? '' : 'd-none' ?>" href="#">
-                        <i class="far fa-times-circle"></i>
-                        <?= $lang->translate('EDITOR_CLOSE') ?>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </nav>
-
-    <textarea id="EditorTextarea" data-fileid="<?= $editableFile->getFile()->getId() ?>" spellcheck="false" <?= $isWritable ? '' : 'readonly' ?>><?= $text ?></textarea>
-</div>
-
-<div class="container editor-preview <?= $openInPreview ? '' : 'd-none' ?>" style="margin-bottom: 100px;">
-    <div class="row">
-        <div class="col-md"></div>
-        <div class="col-md-10">
-
-            <div class="card">
-                <h5 class="card-header"><?= $editableFile->getFile()->getName() ?>
-                    <div class="float-right">
-                        <small class="text-muted">
-                            <?= $editableFile->getFile()->getReadableDate($lang) ?>&nbsp;&nbsp;|&nbsp;&nbsp;
-                            <?php if ($isWritable): ?>
-                                <a class="preview-toggle" href="#">
-                                    <i class="fas fa-edit"></i>
-                                    <?= $lang->translate('EDITOR_EDIT') ?>
-                                </a>&nbsp;
-                            <?php endif; ?>
-                            <a id="EditorDownload" class="" href="<?= $editableFile->getForceDownloadLink() ?>">
-                                <i class="fas fa-cloud-download-alt"></i>
-                                <?= $lang->translate('EDITOR_DOWNLOAD') ?>
-                            </a>
-                        </small>
-                    </div>
-                </h5>
-
-                <div class="card-body <?= $editableFile->isMarkdown() ? 'markdown-body' : '' ?>">
-                    <div id="EditorPreview"></div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md"></div>
-    </div>
-</div>-->
 
 </body>
 </html>

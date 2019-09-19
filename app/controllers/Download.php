@@ -2,6 +2,7 @@
 
 namespace controllers;
 
+use lib\DataTypes\EditableFile;
 use lib\DataTypes\File;
 use lib\DataTypes\FileToken;
 use lib\DataTypes\Link;
@@ -107,16 +108,28 @@ class Download extends AbstractController {
         } else if ($this->file instanceof Link) {
             return $this->linkRedirect();
         } else if ($editableFile = $this->file->isEditable()) {
-            $editableFile->setUrlToken($this->urlToken);
-            $isWritable = $this->checkFileAccess($this->file);
-            return (new HTMLResponse('editor', [
-                'editableFile' => $editableFile,
-                'isWritable' => $isWritable,
-                'lang' => $this->translation()
-            ]))->psr7();
+            return (new HTMLResponse('editor', $this->getEditorData($editableFile)))->psr7();
         } else {
             return (new DownloadResponse($this->file, $this->file->isInlineDownload()))->psr7();
         }
+    }
+
+    private function getEditorData(EditableFile $editableFile)
+    {
+        $editableFile->setUrlToken($this->urlToken);
+        $file = [
+            'id' => $this->file->getId(),
+            'name' => $this->file->getName(),
+            'date' => $this->file->getReadableDate($this->translation()),
+            'code' => $editableFile->isCode(),
+            'markdown' => $editableFile->isMarkdown(),
+            'text' => $editableFile->getText(),
+            'downloadLink' => $editableFile->getForceDownloadLink(),
+            'editable' => $this->checkFileAccess($this->file)
+        ];
+        return [
+            'file' => json_encode($file)
+        ];
     }
 
     private function linkRedirect() : ResponseInterface

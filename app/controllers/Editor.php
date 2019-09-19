@@ -11,31 +11,6 @@ class Editor extends AbstractController
         return self::ACCESS_LOGIN;
     }
 
-    public function actionGet()
-    {
-        $fileString = $this->param('file');
-        /** @var File $file */
-        $file = $this->getFileRepository()->findByUniqueString($fileString);
-        $fileEditable = $file->isEditable();
-
-        if ($file->isFile() && $fileEditable !== false) {
-            return $this->outputJSON([
-                'id' => $file->getId(),
-                'name' => $file->getName(),
-                'date' => $file->getReadableDate($this->translation()),
-                'code' => $fileEditable->isCode(),
-                'markdown' => $fileEditable->isMarkdown(),
-                'text' => $fileEditable->getText(),
-                'downloadLink' => $fileEditable->getForceDownloadLink(),
-                'editable' => $this->checkFileAccess($file)
-            ]);
-        } else {
-            return $this->outputJSON([
-                'error' => 'Invalid file'
-            ]);
-        }
-    }
-
     public function actionWrite()
     {
         $fileId = $this->param('id');
