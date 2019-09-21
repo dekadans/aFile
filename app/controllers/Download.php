@@ -117,18 +117,18 @@ class Download extends AbstractController {
     private function getEditorData(EditableFile $editableFile)
     {
         $editableFile->setUrlToken($this->urlToken);
-        $file = [
-            'id' => $this->file->getId(),
-            'name' => $this->file->getName(),
-            'date' => $this->file->getReadableDate($this->translation()),
-            'code' => $editableFile->isCode(),
-            'markdown' => $editableFile->isMarkdown(),
-            'text' => $editableFile->getText(),
-            'downloadLink' => $editableFile->getForceDownloadLink(),
-            'editable' => $this->checkFileAccess($this->file)
-        ];
+
         return [
-            'file' => json_encode($file)
+            'file' => json_encode([
+                'id' => $this->file->getId(),
+                'name' => $this->file->getName(),
+                'date' => $this->file->getReadableDate($this->translation()),
+                'code' => $editableFile->isCode(),
+                'markdown' => $editableFile->isMarkdown(),
+                'text' => $editableFile->getText(),
+                'downloadLink' => $editableFile->getForceDownloadLink(),
+                'editable' => $this->checkFileAccess($this->file)
+            ])
         ];
     }
 

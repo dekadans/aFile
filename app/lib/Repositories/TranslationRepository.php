@@ -10,6 +10,7 @@ class TranslationRepository {
         $languagePath = __DIR__ . '/../../../config/' . $language . '.json';
         $languageFile = file_get_contents($languagePath);
         $languageFile = json_decode($languageFile, true);
+        $this->language = $language;
         $this->languageData = $languageFile;
     }
 

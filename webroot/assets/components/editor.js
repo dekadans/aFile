@@ -31,7 +31,7 @@ Vue.directive('highlightjs', {
 Vue.component('preview', {
     props : ['file'],
     computed : {
-        parseContent : function() {
+        parsedContent : function() {
             if (this.file.markdown) {
                 return markdownConverter.makeHtml(this.file.text);
             } else if (this.file.code) {
@@ -52,21 +52,21 @@ Vue.component('preview', {
                 <h5 class="card-header">{{ file.name }}
                     <div class="float-right">
                         <small class="text-muted">
-                            {{ file.date }}&nbsp;&nbsp;|
+                            {{ file.date }}&nbsp;&nbsp;|&nbsp;&nbsp;
                             <a class="preview-toggle" v-if="file.editable" v-on:click.prevent="$emit('open-editor')" href="#">
-                                &nbsp;&nbsp;<i class="fas fa-edit"></i>
-                                Edit
+                                <i class="fas fa-edit"></i>
+                                {{ $t('EDITOR_EDIT') }}
                             </a>&nbsp;
                             <a id="EditorDownload" class="" :href="file.downloadLink">
                                 <i class="fas fa-cloud-download-alt"></i>
-                                Download
+                                {{ $t('EDITOR_DOWNLOAD') }}
                             </a>
                         </small>
                     </div>
                 </h5>
 
                 <div class="card-body markdown-body">
-                    <div id="EditorPreview" v-html="parseContent" v-highlightjs>
+                    <div id="EditorPreview" v-html="parsedContent" v-highlightjs>
                     </div>
                 </div>
             </div>
@@ -79,14 +79,76 @@ Vue.component('preview', {
 });
 
 Vue.component('editor', {
-    props : ['file', 'message'],
+    props : ['file'],
+    data : function() {
+        return {
+            message : false
+        };
+    },
     computed : {
         hasPreview : function() {
             return (this.file.markdown || this.file.code);
         }
     },
+    methods : {
+        textareaKeydown(e) {
+            if (e.key.length === 1 && !e.metaKey) {
+                this.$emit('warn', true);
+            }
+
+            let start = e.target.selectionStart;
+            let end = e.target.selectionEnd;
+            let value = e.target.value;
+
+            if (e.which === 9) {
+                e.target.value = value.substring(0, start)
+                    + "\t"
+                    + value.substring(end);
+
+                e.target.selectionStart = e.target.selectionEnd = start + 1;
+                e.preventDefault();
+            } else if (e.which === 13) {
+                e.preventDefault();
+
+                let countTabs = 0;
+                for (let i = start-1; i>=0; i--) {
+                    if (value.charAt(i) === "\t") {
+                        countTabs++;
+                    } else if (value.charAt(i) === "\n") {
+                        break;
+                    } else {
+                        countTabs = 0;
+                    }
+                }
+
+                e.target.value = value.substring(0, start)
+                    + "\n"
+                    + "\t".repeat(countTabs)
+                    + value.substring(end);
+
+                e.target.selectionStart = e.target.selectionEnd = start + countTabs+1;
+                countTabs = 0;
+            }
+        },
+        save () {
+            aFileAjax.fetch('POST', 'Editor', 'Write', {
+                content : this.file.text,
+                id : this.file.id
+            }).then(jsonResponse => {
+                if (jsonResponse.status === 'ok') {
+                    this.$emit('warn', false);
+                    this.message = true;
+                    setTimeout(() => {
+                        this.message = false;
+                    }, 3000);
+                } else {
+                    alert('Failed');
+                }
+            });
+        }
+    },
     template : `
-<div id="EditorContainer">
+<div id="EditorContainer" v-on:keydown.s.meta.prevent="save()" v-on:keydown.s.ctrl.prevent="save()">
 
     <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
@@ -96,20 +158,20 @@ Vue.component('editor', {
             </button>
             <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
                 <div class="navbar-nav mr-auto" v-if="file.editable">
-                    <button id="EditorSave" v-on:click="$emit('save')" class="btn btn-outline-success my-2 my-sm-0">Save</button>
-                    <span v-show="message" class="navbar-text ml-3">Saved</span>
+                    <button id="EditorSave" v-on:click="save()" class="btn btn-outline-success my-2 my-sm-0">{{ $t('EDITOR_SAVE') }}</button>
+                    <span v-show="message" class="navbar-text ml-3">{{ $t('EDITOR_SAVED') }}</span>
                 </div>
                 <div class="navbar-nav" v-if="hasPreview">
                     <a id="EditorClose" v-on:click.prevent="$emit('close-editor')" class="nav-item nav-link" href="#">
                         <i class="far fa-times-circle"></i>
-                        Close
+                        {{ $t('EDITOR_CLOSE') }}
                     </a>
                 </div>
             </div>
         </div>
     </nav>
 
-    <textarea id="EditorTextarea" spellcheck="false" v-model="file.text"></textarea>
+    <textarea id="EditorTextarea" spellcheck="false" v-model="file.text" v-on:keydown="textareaKeydown($event)"></textarea>
 </div>
     `
 });
@@ -119,27 +181,19 @@ let editor = new Vue({
     data : {
         file : file,
         preview : false,
-        savedMessage : false
-    },
-    methods : {
-        save () {
-            aFileAjax.fetch('POST', 'Editor', 'Write', {
-                content : this.file.text,
-                id : this.file.id
-            }).then(jsonResponse => {
-                if (jsonResponse.status === 'ok') {
-                    this.savedMessage = true;
-                    setTimeout(() => {
-                        this.savedMessage = false;
-                    }, 3000);
-                } else {
-                    alert('Failed');
-                }
-            });
-        }
+        warningOnClose : false
     },
     mounted : function() {
         document.querySelector('title').innerHTML = this.file.name;
         this.preview = (this.file.markdown || this.file.code) && this.file.text !== '';
-    }
+    },
+    created : function() {
+        window.addEventListener('beforeunload', (e) => {
+            if (this.warningOnClose) {
+                e.preventDefault();
+                e.returnValue = '';
+            }
+        });
+    },
+    i18n
 });
