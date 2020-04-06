@@ -11,12 +11,12 @@ class AuthenticationCookie
     /** @var string */
     private $selector;
     /** @var string */
-    private $encryptionKey;
+    private $token;
 
     public function __construct(string $selector, string $encryptionKey)
     {
         $this->selector = $selector;
-        $this->encryptionKey = $encryptionKey;
+        $this->token = $encryptionKey;
     }
 
     public static function createFromRequest(ServerRequestInterface $request)
@@ -34,7 +34,7 @@ class AuthenticationCookie
 
     public function set(int $expires)
     {
-        $cookie = $this->selector . ':' . $this->encryptionKey;
+        $cookie = $this->selector . ':' . $this->token;
         setcookie(self::COOKIE_NAME, $cookie, $expires, '/');
     }
 
@@ -54,9 +54,9 @@ class AuthenticationCookie
     /**
      * @return string
      */
-    public function getEncryptionKey(): string
+    public function getToken(): string
     {
-        return $this->encryptionKey;
+        return $this->token;
     }
 
     /**

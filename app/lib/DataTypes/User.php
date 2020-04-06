@@ -13,6 +13,7 @@ class User {
         if (!empty($userData)) {
             $this->id = $userData['id'];
             $this->username = $userData['username'];
+            $this->encryption_key = $userData['encryption_key'];
             $this->account_type = $userData['account_type'];
             $this->hashedPassword = $userData['password'];
         }

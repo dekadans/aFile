@@ -2,6 +2,7 @@
 namespace lib\Repositories;
 
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
+use Defuse\Crypto\Key;
 use Defuse\Crypto\KeyProtectedByPassword;
 use lib\DataTypes\AuthenticationToken;
 use lib\Database;
@@ -58,23 +59,6 @@ class UserRepository
         }
         else {
             return new User([]);
-        }
-    }
-
-    /**
-     * @param int $userId
-     * @return KeyProtectedByPassword|bool
-     */
-    public function getProtectedEncryptionKeyForUser($userId)
-    {
-        $userStatement = $this->pdo->prepare('SELECT encryption_key FROM users WHERE id = ?');
-        $userStatement->execute([$userId]);
-        $user = $userStatement->fetch();
-
-        if (isset($user['encryption_key'])) {
-            return KeyProtectedByPassword::loadFromAsciiSafeString($user['encryption_key']);
-        } else {
-            return false;
         }
     }
 
@@ -169,7 +153,7 @@ class UserRepository
         if (!$this->getUserByUsername($username)->isset()) {
             $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
             try {
-                $encryptionKey = KeyProtectedByPassword::createRandomPasswordProtectedKey($password)->saveToAsciiSafeString();
+                $encryptionKey = Key::createNewRandomKey()->saveToAsciiSafeString();
             } catch (EnvironmentIsBrokenException $e) {
                 return $e->getMessage();
             }
@@ -191,29 +175,10 @@ class UserRepository
 
     public function updatePassword(User $user, string $oldPassword, string $newPassword)
     {
-        $key = $this->getProtectedEncryptionKeyForUser($user->getId());
-
-        $key->changePassword($oldPassword, $newPassword);
-
-        $protectedKey = $key->saveToAsciiSafeString();
         $newHashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
 
-        $statement = $this->pdo->prepare("UPDATE users SET password = ?, encryption_key = ? WHERE id = ?;");
-        if (!$statement->execute([$newHashedPassword, $protectedKey, $user->getId()])) {
-            throw new \RuntimeException('Could not change password.');
-        } else {
-            return true;
-        }
-    }
-
-    public function updatePasswordAndKey(User $user, KeyProtectedByPassword $protectedKey, string $newPassword)
-    {
-        $protectedKeyAscii = $protectedKey->saveToAsciiSafeString();
-
-        $newHashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
-
-        $statement = $this->pdo->prepare("UPDATE users SET password = ?, encryption_key = ? WHERE id = ?;");
-        if (!$statement->execute([$newHashedPassword, $protectedKeyAscii, $user->getId()])) {
+        $statement = $this->pdo->prepare("UPDATE users SET password = ? WHERE id = ?;");
+        if (!$statement->execute([$newHashedPassword, $user->getId()])) {
             throw new \RuntimeException('Could not change password.');
         } else {
             return true;

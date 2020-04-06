@@ -37,17 +37,10 @@ class AuthenticationService
 
         if ($user->isset()) {
             if (password_verify($password, $user->getHashedPassword())) {
-                $encryptionKey = $this->findEncryptionKeyForUser($user, $password);
-
-                if ($encryptionKey) {
-                    $this->userRepository->deleteExpiredAuthenticationTokens();
-
-                    $user->setKey($encryptionKey);
-                    $this->createCookie($user);
-
-                    $this->signedInUser = $user;
-                    return true;
-                }
+                $this->userRepository->deleteExpiredAuthenticationTokens();
+                $this->createCookie($user);
+                $this->signedInUser = $user;
+                return true;
             }
         }
 
@@ -82,12 +75,11 @@ class AuthenticationService
             if ($cookie !== false) {
                 // Authenticate using cookie
                 $authTokenInDb = $this->userRepository->getAuthenticationTokenBySelector($cookie->getSelector());
-                $hashedTokenInCookie = hash('sha256', $cookie->getEncryptionKey());
+                $hashedTokenInCookie = hash('sha256', $cookie->getToken());
 
                 if ($authTokenInDb && $authTokenInDb->getUser()->isset() && hash_equals($authTokenInDb->getHashedToken(), $hashedTokenInCookie)) {
                     if ($authTokenInDb->getExpires() > time()) {
                         $user = $authTokenInDb->getUser();
-                        $user->setKey($cookie->getEncryptionKey());
                         $this->signedInUser = $user;
 
                         $this->refreshCookie($cookie);
@@ -103,30 +95,12 @@ class AuthenticationService
         return false;
     }
 
-    private function findEncryptionKeyForUser(User $user, string $password)
-    {
-        $protectedKeyObject = $this->userRepository->getProtectedEncryptionKeyForUser($user->getId());
-
-        if ($protectedKeyObject) {
-            try {
-                $keyObject = $protectedKeyObject->unlockKey($password);
-                $keyAscii = $keyObject->saveToAsciiSafeString();
-
-                return $keyAscii;
-            }
-            catch (\Exception $e) {
-                throw new AuthenticationException('Could not sign in. Error caught with message: ' . $e->getMessage());
-            }
-        }
-
-        return false;
-    }
-
     private function createCookie(User $user)
     {
         $selector = bin2hex(random_bytes(6));
+        $token = bin2hex(random_bytes(32));
 
-        $hashedToken = hash('sha256', $user->getKey());
+        $hashedToken = hash('sha256', $token);
         $expires = strtotime($this->tokenLife);
 
         $authToken = new AuthenticationToken(
@@ -139,7 +113,7 @@ class AuthenticationService
         $result = $this->userRepository->addAuthTokenToUser($authToken);
 
         if ($result) {
-            $cookie = new AuthenticationCookie($selector, $user->getKey());
+            $cookie = new AuthenticationCookie($selector, $token);
             $cookie->set($this->stayLoggedIn ? $expires : 0);
         }
     }

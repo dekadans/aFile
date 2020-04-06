@@ -44,7 +44,6 @@ class PasswordCommand extends Command
         $this->setDescription('Change the password of a user.');
 
         $this->addArgument('username', InputArgument::REQUIRED, 'Username of the user whose password should be changed.');
-        $this->addOption('keypath', 'k', InputOption::VALUE_REQUIRED, 'The path to the file containing the key');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -59,39 +58,11 @@ class PasswordCommand extends Command
             throw new \RuntimeException('User not found for username ' . $username);
         }
 
-        $key = $this->getKey($input, $io);
-
-        if ($key) {
-            $io->note('Encryption key found');
-            $this->enterNewPassword($io);
-            $newProtectedKey = $this->encryptionService->passwordEncryptKey($key, $this->newPassword);
-            $this->userRepository->updatePasswordAndKey($this->user, $newProtectedKey, $this->newPassword);
-        } else {
-            $this->enterCurrentPassword($io);
-            $this->enterNewPassword($io);
-            $this->userRepository->updatePassword($this->user, $this->oldPassword, $this->newPassword);
-        }
+        $this->enterCurrentPassword($io);
+        $this->enterNewPassword($io);
+        $this->userRepository->updatePassword($this->user, $this->oldPassword, $this->newPassword);
 
         $io->success('The password has been changed.');
-    }
-
-    private function getKey(InputInterface $input, SymfonyStyle $io)
-    {
-        $keypath = $input->getOption('keypath');
-
-        if (!empty($keypath)) {
-            if (file_exists($keypath)) {
-                $keyString = file_get_contents($keypath);
-                try {
-                    $key = Key::loadFromAsciiSafeString($keyString);
-                    return $key;
-                } catch (BadFormatException $e) {
-                }
-            }
-            $io->error('A path to an encryption key was provided, but a valid key was not found.');
-        }
-
-        return false;
     }
 
     private function enterCurrentPassword(SymfonyStyle $io)

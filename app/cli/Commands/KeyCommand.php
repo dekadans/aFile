@@ -44,15 +44,9 @@ class KeyCommand extends Command
             throw new \RuntimeException('User not found for username ' . $username);
         }
 
-        $protectedKey = $this->userRepository->getProtectedEncryptionKeyForUser($this->user->getId());
-
-        $password = $this->enterPassword($eio);
-
-        $key = $protectedKey->unlockKey($password);
-
         $eio->note('Save this key somewhere safe, physically separate from the aFile installation.');
 
-        $io->writeln($key->saveToAsciiSafeString());
+        $io->writeln($this->user->getKey());
         $eio->newLine();
     }
 
